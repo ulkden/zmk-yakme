@@ -1,28 +1,50 @@
-// TEMPORARY diagnostic (removed before merge): which elements make WebKit report CSP style errors?
+// TEMPORARY diagnostic (removed before merge): which step makes WebKit report CSP style errors?
 import { test as base } from '@playwright/test';
 
-const CASES = {
-  select: '<select><option>a</option><option>b</option></select>',
-  'input-list': '<input list="dl"><datalist id="dl"><option value="A"></option></datalist>',
-  dialog: '<dialog open>x</dialog>',
-  'input-number': '<input type="number" value="1">',
-  'input-checkbox': '<input type="checkbox">',
-  'input-file': '<input type="file">',
-  textarea: '<textarea>x</textarea>',
-  'details-summary': '<details><summary>s</summary>x</details>',
-};
-
-for (const [name, html] of Object.entries(CASES)) {
-  base(`diag ${name}`, async ({ page }) => {
-    const errors = [];
-    page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
-    await page.goto('/');
-    await page.evaluate((markup) => {
-      const t = document.createElement('template');
-      t.innerHTML = markup; // eslint-disable-line no-restricted-properties -- temporary diagnostic with constant markup
-      document.body.append(t.content);
-    }, html);
-    await page.waitForTimeout(300);
-    console.log(`DIAG ${name}: ${errors.length ? 'CSP-ERROR ' + errors[0].slice(0, 80) : 'ok'}`);
-  });
+async function setup(page, errors) {
+  page.on('console', (m) => m.type() === 'error' && errors.push(m.text().slice(0, 60)));
+  await page.goto('/');
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await page.getByRole('button', { name: 'Try the example' }).click();
+  await page.locator('#keyboard .key').nth(41).waitFor();
 }
+
+base('diag A: select a key (behavior select appears)', async ({ page }) => {
+  const errors = [];
+  await setup(page, errors);
+  await page.locator('#keyboard .key').nth(1).click();
+  await page.waitForTimeout(500);
+  console.log(`DIAG A after key click: ${errors.length} errors`);
+  await page.locator('#inspector select.behavior').evaluate((el) => el.value);
+  await page.waitForTimeout(300);
+  console.log(`DIAG A after evaluate value: ${errors.length} errors`);
+  await page.locator('#inspector input.raw').inputValue();
+  await page.waitForTimeout(300);
+  console.log(`DIAG A after inputValue: ${errors.length} errors`);
+  await page.locator('#inspector select.behavior').focus();
+  await page.waitForTimeout(300);
+  console.log(`DIAG A after focus select: ${errors.length} errors`);
+});
+
+base('diag B: plain select vs optgroup inside the app page', async ({ page }) => {
+  const errors = [];
+  await setup(page, errors);
+  await page.evaluate(() => {
+    const s = document.createElement('select');
+    const g = document.createElement('optgroup');
+    g.label = 'G';
+    g.append(new Option('x', 'x'));
+    s.append(g);
+    document.getElementById('inspector').append(s);
+  });
+  await page.waitForTimeout(500);
+  console.log(`DIAG B optgroup select in inspector: ${errors.length} errors`);
+  await page.evaluate(() => {
+    const s = document.createElement('select');
+    s.append(new Option('y', 'y'));
+    document.getElementById('status').append(s);
+  });
+  await page.waitForTimeout(500);
+  console.log(`DIAG B plain select in status: ${errors.length} errors`);
+});
