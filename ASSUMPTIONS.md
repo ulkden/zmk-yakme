@@ -51,7 +51,10 @@ Decisions made while building unattended. Each one can be changed. Review and te
     unset) and **`slow-release`** (checkbox). **Symbolic key positions** (e.g. `#define`d names in
     `key-positions`) are accepted: they're written back unchanged, and the UI warns that it can't place
     them on the keyboard. Any other combo properties are still preserved verbatim.
-14. Clicking a key in Combos mode with no combo selected creates a new combo containing that key.
+14. 🛠 **Decided (to implement):** In Combos mode, key clicks do nothing until a combo exists and is
+    selected. **"+ New combo" is the only way to create one**, and it selects the new combo. Then key clicks
+    add or remove keys from the selected combo. With no combo selected, the panel hints at
+    "+ New combo".
 15. Clicking a palette keycode fills the *last keycode parameter* of the current behavior
     (e.g. the tap key of `&mt`/`&lt`). Behaviors without a keycode param are replaced with `&kp X`.
 16. State autosaves to `localStorage`. "New" and imports replace the current state (undoable).
