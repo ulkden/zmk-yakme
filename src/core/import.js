@@ -4,7 +4,7 @@ import { parseQmkLayouts, parseKleLayout } from './layout-json.js';
 import { gridLayout } from './layout-ops.js';
 import { parseKeymap } from './keymap-parse.js';
 import { emptyKeymap } from './keymap-ops.js';
-import { deserialize, keyCount } from './state.js';
+import { readProject, keyCount } from './state.js';
 import { legendToBinding } from './legends.js';
 
 // KLE "raw data" is JSON-like but has unquoted keys and no outer brackets.
@@ -33,8 +33,9 @@ function importJson(text) {
     result.errors.push(`Could not parse JSON: ${err.message}`);
     return result;
   }
-  result.project = deserialize(data);
-  if (result.project) return result;
+  const project = readProject(data);
+  if (project.state) return { ...result, project: project.state };
+  if (project.kind !== 'not-project') return { ...result, errors: [project.error] };
   if (Array.isArray(data)) result.layouts = [parseKleLayout(data)];
   else if (data?.layouts) result.layouts = parseQmkLayouts(data);
   if (!result.layouts.length) result.errors.push('JSON is not a QMK info.json, KLE layout, or saved project');

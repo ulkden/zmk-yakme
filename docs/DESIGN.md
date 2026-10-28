@@ -50,7 +50,9 @@ src/main.js  wiring
 tests/       node:test files (run with `npm test` or open tests/index.html)
 ```
 
-Data model (stored in localStorage, undoable):
+Data model (stored in localStorage and in `.zmk-project.json` files as a versioned document,
+`{ app, version, layouts, layoutIndex, keymap, fileName }`; see `src/core/project-format.js` for the
+format version and migrations; the document parts are undoable):
 
 ```js
 state = {
