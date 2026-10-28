@@ -76,6 +76,8 @@ function comboLines(combo, id) {
     `${IND}key-positions = <${combo.keyPositions.join(' ')}>;`,
     `${IND}bindings = <${combo.binding}>;`,
     ...(combo.layers?.length ? [`${IND}layers = <${combo.layers.join(' ')}>;`] : []),
+    ...(combo.requirePriorIdle != null ? [`${IND}require-prior-idle-ms = <${combo.requirePriorIdle}>;`] : []),
+    ...(combo.slowRelease ? [`${IND}slow-release;`] : []),
     ...(combo.extra ?? []).map((e) => IND + e),
     '};',
   ];

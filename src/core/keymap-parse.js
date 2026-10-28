@@ -4,7 +4,7 @@ import { evalExpr } from '../dts/expr.js';
 import { splitBindings, bindingsPerLine, splitParams } from './bindings.js';
 
 const LAYER_PROPS = new Set(['bindings', 'display-name', 'label']);
-const COMBO_PROPS = new Set(['bindings', 'key-positions', 'timeout-ms', 'layers']);
+const COMBO_PROPS = new Set(['bindings', 'key-positions', 'timeout-ms', 'layers', 'require-prior-idle-ms', 'slow-release']);
 
 function extraProps(node, handled, text) {
   return node.props.filter((p) => !handled.has(p.name)).map((p) => text.slice(p.start, p.end).trim());
@@ -16,6 +16,16 @@ function intList(cells) {
     .filter((n) => !Number.isNaN(n));
 }
 
+// Key positions may be numbers or names (e.g. #defines); names are kept as strings.
+function positionList(cells) {
+  return splitParams(cells ?? '').map((t) => {
+    const n = evalExpr(t);
+    return Number.isNaN(n) ? t : n;
+  });
+}
+
+const optionalInt = (node, name) => (getProp(node, name) ? intList(propCells(node, name))[0] ?? null : null);
+
 function parseLayer(node, text) {
   return {
     id: node.name,
@@ -26,13 +36,14 @@ function parseLayer(node, text) {
 }
 
 function parseCombo(node, text) {
-  const timeout = getProp(node, 'timeout-ms') ? intList(propCells(node, 'timeout-ms'))[0] ?? null : null;
   return {
     name: node.name,
-    keyPositions: intList(propCells(node, 'key-positions')),
+    keyPositions: positionList(propCells(node, 'key-positions')),
     binding: splitBindings(propCells(node, 'bindings'))[0] ?? '&none',
-    timeout,
+    timeout: optionalInt(node, 'timeout-ms'),
     layers: intList(propCells(node, 'layers')),
+    requirePriorIdle: optionalInt(node, 'require-prior-idle-ms'),
+    slowRelease: !!getProp(node, 'slow-release'),
     extra: extraProps(node, COMBO_PROPS, text),
   };
 }

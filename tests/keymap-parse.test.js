@@ -38,16 +38,28 @@ describe('parseKeymap', () => {
   test('reads combos', () => {
     const km = parseKeymap(FULL_KEYMAP);
     assert.deepEqual(km.combos, [
-      { name: 'combo_esc', keyPositions: [0, 1], binding: '&kp ESC', timeout: 50, layers: [], extra: [] },
+      { name: 'combo_esc', keyPositions: [0, 1], binding: '&kp ESC', timeout: 50, layers: [], requirePriorIdle: null, slowRelease: false, extra: [] },
       {
         name: 'combo_tab',
         keyPositions: [2, 3],
         binding: '&kp TAB',
         timeout: null,
         layers: [0, 1],
-        extra: ['require-prior-idle-ms = <150>;'],
+        requirePriorIdle: 150,
+        slowRelease: false,
+        extra: [],
       },
     ]);
+  });
+
+  test('reads slow-release, symbolic positions and keeps unknown combo props', () => {
+    const src = `/ { combos { compatible = "zmk,combos";
+      c { key-positions = <LT0 (1 + 1) RT0>; bindings = <&kp A>; slow-release; hold-trigger = <1>; }; };
+      keymap { compatible = "zmk,keymap"; l { bindings = <&kp A>; }; }; };`;
+    const [c] = parseKeymap(src).combos;
+    assert.deepEqual(c.keyPositions, ['LT0', 2, 'RT0']);
+    assert.equal(c.slowRelease, true);
+    assert.deepEqual(c.extra, ['hold-trigger = <1>;']);
   });
 
   test('lists custom behaviors and macros by label', () => {

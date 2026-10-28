@@ -105,7 +105,16 @@ function uniqueComboName(km) {
 }
 
 export function addCombo(km, keyPositions = []) {
-  const combo = { name: uniqueComboName(km), keyPositions: [...keyPositions], binding: '&none', timeout: null, layers: [], extra: [] };
+  const combo = {
+    name: uniqueComboName(km),
+    keyPositions: [...keyPositions],
+    binding: '&none',
+    timeout: null,
+    layers: [],
+    requirePriorIdle: null,
+    slowRelease: false,
+    extra: [],
+  };
   return withCombos(km, [...km.combos, combo]);
 }
 
@@ -121,6 +130,9 @@ export function toggleComboKey(km, idx, pos) {
   const combo = km.combos[idx];
   if (!combo) return km;
   const has = combo.keyPositions.includes(pos);
-  const keyPositions = has ? combo.keyPositions.filter((p) => p !== pos) : [...combo.keyPositions, pos].sort((a, b) => a - b);
+  // Numeric positions stay sorted; named positions keep their order after them.
+  const next = has ? combo.keyPositions.filter((p) => p !== pos) : [...combo.keyPositions, pos];
+  const nums = next.filter((p) => typeof p === 'number').sort((a, b) => a - b);
+  const keyPositions = [...nums, ...next.filter((p) => typeof p !== 'number')];
   return updateCombo(km, idx, { keyPositions });
 }

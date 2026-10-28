@@ -51,3 +51,30 @@ export function toast(message, kind = 'info') {
   toastTimer = setTimeout(() => (el.className = ''), 2600);
 }
 
+
+// Re-render `el` while keeping focus (and caret) on the field with the same `name`.
+// Pair with requestAnimationFrame so a blur→change→focus sequence has finished first.
+export function renderKeepingFocus(el, render) {
+  const active = document.activeElement;
+  const name = active && el.contains(active) ? active.getAttribute('name') : null;
+  const caret = name && typeof active.selectionStart === 'number' ? [active.selectionStart, active.selectionEnd] : null;
+  render();
+  const next = name && el.querySelector(`[name="${name}"]`);
+  if (!next || next === active) return;
+  next.focus();
+  if (caret) {
+    try {
+      next.setSelectionRange(...caret);
+    } catch {
+      // number inputs don't support selection ranges
+    }
+  }
+}
+
+// Coalesce many store updates into one render per animation frame.
+export function frameScheduler(fn) {
+  let pending = 0;
+  return () => {
+    if (!pending) pending = requestAnimationFrame(() => ((pending = 0), fn()));
+  };
+}

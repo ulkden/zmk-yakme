@@ -63,6 +63,10 @@ describe('keymap ops', () => {
     assert.deepEqual(k.combos[1].keyPositions, [1, 3]);
     k = ops.toggleComboKey(k, 1, 3);
     assert.deepEqual(k.combos[1].keyPositions, [1]);
+    k = ops.updateCombo(k, 1, { keyPositions: ['NAMED', 1] });
+    k = ops.toggleComboKey(k, 1, 0);
+    assert.deepEqual(k.combos[1].keyPositions, [0, 1, 'NAMED']);
+    k = ops.updateCombo(k, 1, { keyPositions: [1] });
     k = ops.updateCombo(k, 1, { binding: '&kp ESC', timeout: 30 });
     assert.equal(k.combos[1].binding, '&kp ESC');
     k = ops.removeCombo(k, 0);

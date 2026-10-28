@@ -47,7 +47,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
     starting base-layer bindings: a legend that matches a keycode or label (e.g. `Q`, `Esc`, `⇧`, `1`)
     becomes `&kp CODE`, and anything else becomes `&none`. For multi-legend keys, the main (top-left or
     center) legend is used.
-13. 🛠 **Decided (to implement):** The combo editor adds **`require-prior-idle-ms`** (number, empty =
+13. ✅ **Implemented:** The combo editor adds **`require-prior-idle-ms`** (number, empty =
     unset) and **`slow-release`** (checkbox). **Symbolic key positions** (e.g. `#define`d names in
     `key-positions`) are accepted: they're written back unchanged, and the UI warns that it can't place
     them on the keyboard. Any other combo properties are still preserved verbatim.

@@ -34,6 +34,16 @@ test('change behavior and params in the side panel', async ({ page }) => {
   await expect(key(page, 2).locator('.hold')).toHaveText('Lower');
 });
 
+test('tabbing between combo fields keeps focus', async ({ page }) => {
+  await loadExample(page);
+  await page.getByRole('button', { name: /Combos/ }).click();
+  await page.locator('.combo-item').first().click();
+  await page.locator('[name="combo-timeout"]').fill('35');
+  await page.keyboard.press('Tab');
+  await expect(page.locator('[name="combo-idle"]')).toBeFocused();
+  await expect(page.locator('[name="combo-timeout"]')).toHaveValue('35');
+});
+
 test('keyboard shortcuts: arrows, delete, undo, redo', async ({ page }) => {
   await loadExample(page);
   await key(page, 1).click();
@@ -97,8 +107,17 @@ test('combos: create by clicking keys and assign a keycode', async ({ page }) =>
   await expect(page.locator('.combo-item.active .combo-out')).toHaveText('⇥');
   await page.locator('.combo-editor .field', { hasText: 'Timeout' }).locator('input').fill('40');
   await page.locator('.combo-editor .field', { hasText: 'Timeout' }).locator('input').press('Enter');
+  await page.locator('.combo-editor [name="combo-idle"]').fill('150');
+  await page.locator('.combo-editor [name="combo-idle"]').press('Enter');
+  await page.getByLabel('Slow release').check();
   await page.locator('.combo-editor .chip', { hasText: 'Base' }).click();
   await expect(page.locator('.combo-editor .chip.on')).toHaveText('Base');
+  await page.getByRole('button', { name: 'Export…' }).click();
+  const pre = page.locator('dialog pre.preview');
+  await expect(pre).toContainText('require-prior-idle-ms = <150>;');
+  await expect(pre).toContainText('slow-release;');
+  await expect(pre).toContainText('timeout-ms = <40>;');
+  await page.getByRole('button', { name: 'Close' }).click();
   await expect(page.locator('#status')).toContainText('2 combos');
   await page.getByRole('button', { name: 'Delete combo' }).click();
   await expect(page.locator('#status')).toContainText('1 combos');

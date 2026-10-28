@@ -96,6 +96,8 @@ describe('validate', () => {
     };
     const w = validate(s);
     assert.equal(w.length, 4);
+    s.keymap.combos[0].keyPositions = [0, 'NAMED'];
+    assert.match(validate(s).at(-2).text, /named position\(s\) NAMED/);
     assert.match(w[0].text, /1 bindings for 2 keys/);
   });
 });

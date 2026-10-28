@@ -1,5 +1,5 @@
 // Side panel: edits the selected key's binding, or combos in combos mode.
-import { h, replace } from './dom.js';
+import { h, replace, renderKeepingFocus, frameScheduler } from './dom.js';
 import { bindingEditor } from './binding-editor.js';
 import { bindingLabel } from '../core/labels.js';
 
@@ -28,7 +28,7 @@ function keyPanel(state, actions) {
     h(
       'label.check',
       {},
-      h('input', { type: 'checkbox', checked: !!ui.advance, onchange: (e) => actions.setAdvance(e.target.checked) }),
+      h('input', { type: 'checkbox', name: 'advance', checked: !!ui.advance, onchange: (e) => actions.setAdvance(e.target.checked) }),
       ' Advance to next key after picking a keycode',
     ),
   );
@@ -65,6 +65,22 @@ function layerChips(combo, layers, actions) {
   );
 }
 
+function msField(label, name, value, placeholder, onChange) {
+  return h(
+    'label.field',
+    {},
+    h('span', {}, label),
+    h('input', {
+      type: 'number',
+      name,
+      min: 0,
+      value: value ?? '',
+      placeholder,
+      onchange: (e) => onChange(e.target.value === '' ? null : Number(e.target.value)),
+    }),
+  );
+}
+
 function comboEditor(state, actions) {
   const combo = state.keymap.combos[state.ui.combo];
   if (!combo) return h('p.muted', {}, 'Select a combo, or press "+ New combo" and then click keys to add them.');
@@ -72,19 +88,15 @@ function comboEditor(state, actions) {
     'div.combo-editor',
     {},
     h('p.muted', {}, 'Click keys on the keyboard to add or remove them.'),
-    h('label.field', {}, h('span', {}, 'Name'), h('input', { type: 'text', value: combo.name, spellcheck: false, onchange: (e) => actions.updateCombo({ name: e.target.value.trim() || combo.name }) })),
+    h('label.field', {}, h('span', {}, 'Name'), h('input', { type: 'text', name: 'combo-name', value: combo.name, spellcheck: false, onchange: (e) => actions.updateCombo({ name: e.target.value.trim() || combo.name }) })),
     bindingEditor(combo.binding, ctxOf(state), (binding) => actions.updateCombo({ binding })),
+    msField('Timeout ms', 'combo-timeout', combo.timeout, 'default (50)', (timeout) => actions.updateCombo({ timeout })),
+    msField('Prior idle ms', 'combo-idle', combo.requirePriorIdle, 'off', (requirePriorIdle) => actions.updateCombo({ requirePriorIdle })),
     h(
-      'label.field',
-      {},
-      h('span', {}, 'Timeout ms'),
-      h('input', {
-        type: 'number',
-        min: 0,
-        value: combo.timeout ?? '',
-        placeholder: 'default (50)',
-        onchange: (e) => actions.updateCombo({ timeout: e.target.value === '' ? null : Number(e.target.value) }),
-      }),
+      'label.check.field-check',
+      { title: 'Release the combo only when all of its keys are released' },
+      h('input', { type: 'checkbox', name: 'combo-slow', checked: !!combo.slowRelease, onchange: (e) => actions.updateCombo({ slowRelease: e.target.checked }) }),
+      ' Slow release',
     ),
     h('div.field', {}, h('span', {}, 'Layers'), layerChips(combo, state.keymap.layers, actions)),
     h('p.muted.small', {}, 'No layers selected = active on all layers.'),
@@ -99,6 +111,6 @@ export function mountInspector(el, store, actions) {
     if (state.ui.mode === 'combos') replace(el, h('h3', {}, 'Combos'), comboList(state, actions), comboEditor(state, actions));
     else replace(el, keyPanel(state, actions));
   };
-  store.subscribe(render);
+  store.subscribe(frameScheduler(() => renderKeepingFocus(el, render)));
   render();
 }

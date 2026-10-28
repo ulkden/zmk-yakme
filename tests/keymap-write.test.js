@@ -50,7 +50,10 @@ describe('writeKeymap', () => {
 
   test('inserts a combos node when the source has none', () => {
     const km = parseKeymap(ELVN_KEYMAP);
-    km.combos = [{ name: 'c1', keyPositions: [0, 1], binding: '&kp TAB', timeout: 40, layers: [], extra: [] }];
+    km.combos = [
+      { name: 'c1', keyPositions: [0, 1], binding: '&kp TAB', timeout: 40, layers: [], requirePriorIdle: null, slowRelease: false, extra: [] },
+      { name: 'c2', keyPositions: [2, 'POS_X'], binding: '&kp Q', timeout: null, layers: [1], requirePriorIdle: 120, slowRelease: true, extra: [] },
+    ];
     const re = parseKeymap(writeKeymap(km));
     assert.deepEqual(re.combos, km.combos);
   });

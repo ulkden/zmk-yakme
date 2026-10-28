@@ -167,6 +167,7 @@ input.raw { font-family: var(--mono); font-size: 12px; }
 .quick { display: flex; gap: 6px; margin: 4px 0 14px; }
 .check { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 12px; }
 .empty-hint { color: var(--muted); }
+.field-check { margin: 0 0 10px 90px; }
 
 .combo-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
 .combo-item { display: grid; grid-template-columns: 1fr auto; text-align: left; gap: 0 8px; background: transparent; }

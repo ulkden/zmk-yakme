@@ -7,11 +7,11 @@ import { MODIFIERS } from '../data/keycodes.js';
 
 const PARAM_NAMES = { keycode: 'Key', mod: 'Modifier', layer: 'Layer', number: 'Number', raw: 'Param' };
 
-function select(value, options, onchange) {
+function select(name, value, options, onchange) {
   const opts = options.some((o) => o.value === value) ? options : [{ value, label: value || '—' }, ...options];
   return h(
     'select',
-    { onchange: (e) => onchange(e.target.value) },
+    { name, onchange: (e) => onchange(e.target.value) },
     opts.map((o) => h('option', { value: o.value, selected: o.value === value }, o.label)),
   );
 }
@@ -25,16 +25,18 @@ function behaviorSelect(behavior, custom, onchange) {
   }
   const known = BEHAVIORS.some((b) => b.name === behavior) || custom.some((b) => b.label === behavior);
   if (!known) groups.unshift(h('option', { value: behavior, selected: true }, `&${behavior || '?'}`));
-  return h('select.behavior', { onchange: (e) => onchange(e.target.value) }, groups);
+  return h('select.behavior', { name: 'behavior', onchange: (e) => onchange(e.target.value) }, groups);
 }
 
-function paramInput(type, value, ctx, onchange) {
+function paramInput(type, i, value, ctx, onchange) {
   const t = type.replace(/\?$/, '');
-  if (t === 'mod') return select(value, MODIFIERS.map((m) => ({ value: m, label: m })), onchange);
-  if (t === 'layer') return select(value, ctx.layers.map((l, i) => ({ value: String(i), label: `${i} · ${l.name}` })), onchange);
-  if (OPTIONS[t]) return select(value, OPTIONS[t].map((o) => ({ value: o, label: o })), onchange);
+  const name = `param-${i}`;
+  if (t === 'mod') return select(name, value, MODIFIERS.map((m) => ({ value: m, label: m })), onchange);
+  if (t === 'layer') return select(name, value, ctx.layers.map((l, i) => ({ value: String(i), label: `${i} · ${l.name}` })), onchange);
+  if (OPTIONS[t]) return select(name, value, OPTIONS[t].map((o) => ({ value: o, label: o })), onchange);
   return h('input', {
     type: 'text',
+    name,
     value: value ?? '',
     placeholder: type.endsWith('?') ? 'optional' : '',
     spellcheck: false,
@@ -53,7 +55,7 @@ export function bindingEditor(binding, ctx, onChange) {
       'label.field',
       {},
       h('span', {}, PARAM_NAMES[type.replace(/\?$/, '')] ?? type.replace(/\?$/, '')),
-      paramInput(type, params[i], ctx, (v) => onChange(setParam(binding, i, v))),
+      paramInput(type, i, params[i], ctx, (v) => onChange(setParam(binding, i, v))),
     ),
   );
   return h(
@@ -67,6 +69,7 @@ export function bindingEditor(binding, ctx, onChange) {
       h('span', {}, 'Raw'),
       h('input.raw', {
         type: 'text',
+        name: 'raw',
         value: binding,
         spellcheck: false,
         onchange: (e) => {
