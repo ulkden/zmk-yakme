@@ -83,7 +83,8 @@ Decisions made while building unattended. Each one can be changed. Review and te
     direction** (using key centers, rotation included) instead of by index. **Type-to-assign:** with a key
     selected and focus on the page, typing a letter or digit assigns `&kp X` and advances to the next key
     (always, regardless of the auto-advance setting). Modifier combos such as Ctrl+Z still go to shortcuts.
-23. Exported layer bindings are padded to the layout's key count. The exported file name follows the
-    imported keymap's file name, or `keymap.keymap`.
+23. 🛠 **Decided (to implement):** Exported layers are padded to the layout's key count. The file name
+    defaults to the imported keymap's name (or `keymap.keymap`), and it is **shown and editable in the
+    export notice / preview**. The edited name is remembered with the project.
 24. Keymaps can also be imported from a URL. `github.com/.../blob/...` links are rewritten to
     `raw.githubusercontent.com` so the browser can fetch them (CORS).
