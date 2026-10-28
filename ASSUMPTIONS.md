@@ -29,12 +29,12 @@ Decisions made while building unattended. Each one can be changed. Review and te
    display name for new layers (`nav_layer`), and every layer gets a `display-name`. In addition, the
    **node name is shown as its own editable field** in the layer actions, sanitized to a valid
    devicetree name and kept unique.
-8. 🔍 **Investigated (decision pending):** 10 boards from the ZMK repo (Corne, Lily58, Sofle, Kyria,
-   Ferris, Reviung41, Planck, 60% ANSI, BDN9) were imported through the UI. All import cleanly and render
-   correctly (stagger, rotated thumbs, wide keys). **Fixed:** row detection split column-staggered rows
-   (5 of 9 boards); rows now break when x moves left or y jumps ≥ 1.5u, and an imported keymap's own line
-   breaks are kept when they fit. **Open:** bindings alignment style and diagram width (see the
-   walkthrough options).
+8. ✅ **Resolved:** 10 boards from the ZMK repo (Corne, Lily58, Sofle, Kyria, Ferris, Reviung41, Planck,
+   60% ANSI, BDN9) were imported through the UI. All import cleanly and render correctly. Row detection was
+   fixed (it split column-staggered rows on 5 of 9 boards): rows now break when x moves left or y jumps
+   ≥ 1.5u, and an imported keymap's own line breaks are kept when they fit. **Bindings** keep style A
+   (aligned by position in row). **Diagrams** use physical placement with labels capped at 6 characters
+   (Corne ≈ 110 chars wide). Custom hold-taps are now labelled like `&mt`.
 9. ✅ **Implemented:** Short layers are padded on export (`&none` on layer 0, `&trans`
    elsewhere), and extra bindings are kept and shown as a warning. In addition, the warning gets a
    one-click **"Trim extra bindings"** action (undoable).
@@ -42,11 +42,10 @@ Decisions made while building unattended. Each one can be changed. Review and te
     `&mo &lt &to &tog &sl` and combo `layers`, and references to a deleted layer become `&trans`.
     Symbolic params (e.g. `&mo NAV` with a `#define`) are left untouched, **but a warning is shown after a
     move/delete when symbolic layer references exist**, so the user can check their `#define`s.
-11. ✅ **Kept for now (TODO: re-evaluate):** When a file has several physical layouts, the first is used
-    and a selector appears in the status bar. **TODO:** try this with a real open-source board that ships
-    multiple layouts (e.g. 5- and 6-column variants) during the #8 investigation, then make a final call.
-    **Findings:** Kyria (two layouts in one file) gets the selector as designed. Corne ships its 5- and
-    6-column layouts as *separate files*; importing both together keeps only the last one.
+11. ✅ **Resolved:** Layouts appear in a status-bar selector. Layout files imported together are merged
+    (e.g. Corne's separate 5- and 6-column files), and the layout whose key count matches the keymap is
+    selected automatically. Verified with Kyria (two layouts in one
+    file) and Corne (5- and 6-column layouts in separate files).
 12. ✅ **Implemented:** KLE import keeps geometry (x, y, w, h, r, rx, ry). The secondary
     rectangle (w2/h2/x2/y2) is still ignored. **New:** when no keymap is loaded, KLE legends become the
     starting base-layer bindings: a legend that matches a keycode or label (e.g. `Q`, `Esc`, `⇧`, `1`)

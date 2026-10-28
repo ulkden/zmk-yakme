@@ -78,6 +78,12 @@ describe('import', () => {
     assert.equal(s.layouts[0].name, 'Default Layout');
   });
 
+  test('picks the layout whose key count matches the keymap', () => {
+    const two = { layouts: [{ name: 'small', keys: [{}, {}] }, { name: 'big', keys: Array(11).fill({}) }], keymap: null, project: null, errors: [] };
+    const s = applyImport(applyImport(initialState(), importText(ELVN_KEYMAP)), two);
+    assert.equal(s.layoutIndex, 1);
+  });
+
   test('reads QMK, KLE (incl. raw data) and project JSON', () => {
     assert.equal(importText('{"layouts":{"L":{"layout":[{"x":0,"y":0}]}}}').layouts[0].keys.length, 1);
     assert.equal(importText('[["Q","W"],["A"]]').layouts[0].keys.length, 3);

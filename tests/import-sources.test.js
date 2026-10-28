@@ -2,7 +2,7 @@ import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { legendToBinding, legendToCode } from '../src/core/legends.js';
 import { parseGithubUrl, repoFiles, importOrder, listRepo, rawUrl } from '../src/core/github.js';
-import { importText, applyImport } from '../src/core/import.js';
+import { importText, applyImport, combineResults } from '../src/core/import.js';
 import { initialState } from '../src/core/state.js';
 
 describe('KLE legends', () => {
@@ -30,6 +30,29 @@ describe('KLE legends', () => {
   test('importing KLE without a keymap seeds the base layer', () => {
     const s = applyImport(initialState(), importText('[["Esc","!\\n1","Q"],[{"w":2},"Shift","Fn"]]'));
     assert.deepEqual(s.keymap.layers[0].bindings, ['&kp ESC', '&kp N1', '&kp Q', '&kp LSHIFT', '&none']);
+  });
+});
+
+describe('combineResults', () => {
+  const layout = (name) => ({ layouts: [{ name, keys: [] }], keymap: null, project: null, errors: [] });
+  const keymap = (id) => ({ layouts: [], keymap: { id }, project: null, errors: [] });
+
+  test('merges layouts from files imported together and keeps the last keymap', () => {
+    const [only] = combineResults([
+      { name: '5column.dtsi', result: layout('5 Column') },
+      { name: 'a.keymap', result: keymap('a') },
+      { name: '6column.dtsi', result: layout('6 Column') },
+      { name: 'corne.keymap', result: keymap('b') },
+    ]);
+    assert.equal(only.name, 'corne.keymap');
+    assert.deepEqual(only.result.layouts.map((l) => l.name), ['5 Column', '6 Column']);
+    assert.deepEqual(only.result.keymap, { id: 'b' });
+  });
+
+  test('keeps projects separate', () => {
+    const project = { layouts: [], keymap: null, project: { p: 1 }, errors: [] };
+    const out = combineResults([{ name: 'x.json', result: project }, { name: 'l.dtsi', result: layout('L') }]);
+    assert.deepEqual(out.map((e) => e.name), ['l.dtsi', 'x.json']);
   });
 });
 

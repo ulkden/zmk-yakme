@@ -65,6 +65,35 @@ function seededKeymap(layout, count) {
   return { ...km, layers: [{ ...km.layers[0], bindings }] };
 }
 
+// Several files imported together act as one import: their layouts are combined (so a
+// board's 5- and 6-column layout files both stay available) and the last keymap wins.
+// entries: [{ name, result }] with error-free results. Projects are kept separate.
+export function combineResults(entries) {
+  const projects = entries.filter((e) => e.result.project);
+  const files = entries.filter((e) => !e.result.project);
+  const combined = [];
+  if (files.length) {
+    const keymapEntry = files.filter((e) => e.result.keymap).at(-1);
+    combined.push({
+      name: keymapEntry?.name ?? files.at(-1).name,
+      result: {
+        layouts: files.flatMap((e) => e.result.layouts),
+        keymap: keymapEntry?.result.keymap ?? null,
+        project: null,
+        errors: [],
+      },
+    });
+  }
+  return [...combined, ...projects];
+}
+
+// Prefer the layout whose key count matches the keymap (e.g. a Corne's 6- vs 5-column layout).
+function matchingLayout(layouts, keymap) {
+  const count = keymap?.layers[0]?.bindings.length;
+  const idx = layouts.findIndex((l) => l.keys.length === count);
+  return idx < 0 ? 0 : idx;
+}
+
 function inferLayout(keymap) {
   const rows = keymap.rowHints?.length ? keymap.rowHints : [keymap.layers[0]?.bindings.length ?? 0];
   return { ...gridLayout(rows, 'Inferred grid'), inferred: true };
@@ -76,7 +105,7 @@ export function applyImport(state, result) {
   let { layouts, layoutIndex, keymap } = state;
   if (result.layouts.length) {
     layouts = result.layouts;
-    layoutIndex = 0;
+    layoutIndex = matchingLayout(layouts, result.keymap ?? keymap);
   }
   if (result.keymap) {
     keymap = result.keymap;

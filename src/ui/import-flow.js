@@ -2,7 +2,7 @@
 import { h, toast } from './dom.js';
 import { askConfirm, dialog } from './modal.js';
 import { ISSUES_URL } from '../data/project.js';
-import { importText } from '../core/import.js';
+import { importText, combineResults } from '../core/import.js';
 import { isDirty } from '../core/state.js';
 
 // Ask before replacing a keymap that has changes not yet exported or saved.
@@ -17,7 +17,8 @@ const replacesKeymap = (result) => !!(result.keymap || result.project);
 export async function applyResult(result, name, store, actions) {
   if (replacesKeymap(result) && !(await confirmReplace(store))) return false;
   actions.importResult(result, name);
-  const parts = [result.layouts.length && 'layout', result.keymap && 'keymap', result.project && 'project'].filter(Boolean);
+  const n = result.layouts.length;
+  const parts = [n && (n > 1 ? `${n} layouts` : 'layout'), result.keymap && 'keymap', result.project && 'project'].filter(Boolean);
   toast(`Imported ${parts.join(' + ')}${name ? ` from ${name}` : ''}`);
   return true;
 }
@@ -38,26 +39,23 @@ export function reportImportError(result, name) {
   ]);
 }
 
-export async function importFiles(files, store, actions) {
+// Parse texts ([{ name, text }]), report failures, and apply the rest as one import.
+// Returns how many results were applied.
+export async function importTexts(entries, store, actions) {
+  const parsed = [];
+  for (const { name, text } of entries) {
+    const result = importText(text);
+    if (result.errors.length) reportImportError(result, name);
+    else parsed.push({ name, result });
+  }
   let ok = 0;
-  for (const file of files) {
-    const result = importText(await file.text());
-    if (result.errors.length) {
-      reportImportError(result, file.name);
-      continue;
-    }
-    if (await applyResult(result, file.name, store, actions)) ok++;
+  for (const { name, result } of combineResults(parsed)) {
+    if (await applyResult(result, name, store, actions)) ok++;
   }
   return ok;
 }
 
-// Import already-fetched texts ([{ name, text }]) in order; returns how many were applied.
-export async function importTexts(entries, store, actions) {
-  let ok = 0;
-  for (const { name, text } of entries) {
-    const result = importText(text);
-    if (result.errors.length) reportImportError(result, name);
-    else if (await applyResult(result, name, store, actions)) ok++;
-  }
-  return ok;
+export async function importFiles(files, store, actions) {
+  const entries = await Promise.all(files.map(async (file) => ({ name: file.name, text: await file.text() })));
+  return importTexts(entries, store, actions);
 }

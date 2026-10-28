@@ -26,6 +26,13 @@ test('import a keymap file, then its physical layout', async ({ page }) => {
   await expect(page.locator('#status')).toContainText('No issues');
 });
 
+test('layout files imported together are merged', async ({ page }) => {
+  const alt = ELVN_LAYOUT.replace(/default_layout/g, 'alt_layout').replace('Default Layout', 'Alt Layout');
+  await importFiles(page, [file('a.dtsi', ELVN_LAYOUT), file('b.dtsi', alt), file('elvn.keymap', ELVN_KEYMAP)]);
+  await expect(page.locator('#status select option')).toHaveText(['Default Layout', 'Alt Layout']);
+  await expect(keys(page)).toHaveCount(4);
+});
+
 test('paste import detects keymap with combos and custom behaviors', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(FULL_KEYMAP);

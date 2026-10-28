@@ -12,13 +12,13 @@ const layers = [{ name: 'Base' }, { name: 'Nav' }];
 describe('layer diagrams', () => {
   test('diagramLabel summarizes behaviors', () => {
     assert.equal(diagramLabel('&kp A', layers), 'A');
-    assert.equal(diagramLabel('&mt LCTRL ESC', layers), 'Esc/Ctrl');
+    assert.equal(diagramLabel('&mt LCTRL ESC', layers), 'Esc/C…');
     assert.equal(diagramLabel('&lt 1 SPACE', layers), '␣/Nav');
     assert.equal(diagramLabel('&mo 1', layers), 'mo Nav');
-    assert.equal(diagramLabel('&bt BT_SEL 0', layers), 'bt SEL 0');
+    assert.equal(diagramLabel('&bt BT_SEL 0', layers), 'bt SE…');
     assert.equal(diagramLabel('&none', layers), '');
     assert.equal(diagramLabel('&kp LC(LS(LA(LG(Z))))', layers), '⌃⇧⌥◆Z');
-    assert.equal(diagramLabel('&my_very_long_macro', layers).length, 9);
+    assert.equal(diagramLabel('&my_very_long_macro', layers).length, 6);
   });
 
   test('layerDiagram places keys by x, keeping split gaps', () => {

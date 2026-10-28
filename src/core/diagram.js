@@ -3,7 +3,8 @@ import { bindingLabel } from './labels.js';
 import { parseBinding } from './bindings.js';
 import { gridLayout, rowsFromLayout } from './layout-ops.js';
 
-const MAX_LABEL = 9;
+// Labels are capped so diagrams of large split boards stay around 110–130 characters wide.
+const MAX_LABEL = 6;
 
 export function diagramLabel(binding, layers) {
   const { tap, hold, kind } = bindingLabel(binding, layers);
@@ -23,7 +24,7 @@ function center(text, width) {
 // One text line per physical row; key labels are placed by their x position.
 export function layerDiagram(bindings, layers, keys, rows = rowsFromLayout(keys)) {
   const labels = keys.map((_, i) => diagramLabel(bindings[i] ?? '', layers));
-  const cell = Math.max(5, ...labels.map((l) => l.length + 2));
+  const cell = Math.max(5, ...labels.map((l) => l.length + 1));
   const stride = cell + 1;
   const minX = Math.min(...keys.map((k) => k.x));
   const lines = [];
