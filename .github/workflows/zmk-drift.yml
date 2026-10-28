@@ -1,0 +1,61 @@
+# Monthly check of the editor against ZMK's main branch, to notice ZMK changes the editor doesn't
+# handle yet (new built-in behaviors, keymaps or layouts that no longer round-trip). When it fails
+# it opens one issue labelled zmk-drift, or comments on the one already open.
+# Pull requests that change the check run it too, but never file issues.
+name: ZMK drift check
+
+on:
+  schedule:
+    - cron: '23 6 1 * *' # 06:23 UTC on the 1st of each month
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/zmk-drift.mjs
+      - tests/zmk-checks.js
+      - .github/workflows/zmk-drift.yml
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    name: ZMK drift check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # Only the devicetree files are needed; no dependencies are installed.
+      - name: Fetch ZMK main
+        run: |
+          git clone --quiet --depth 1 --filter=blob:none --sparse https://github.com/zmkfirmware/zmk "$RUNNER_TEMP/zmk"
+          git -C "$RUNNER_TEMP/zmk" sparse-checkout set app/dts app/boards
+      - name: Check the editor against ZMK
+        id: check
+        run: |
+          status=0
+          node scripts/zmk-drift.mjs "$RUNNER_TEMP/zmk" > "$RUNNER_TEMP/report.md" || status=$?
+          cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+      - name: Open or update the drift issue
+        if: failure() && steps.check.outcome == 'failure' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create zmk-drift --color FBCA04 \
+            --description "ZMK changed in a way the editor doesn't handle yet" 2>/dev/null || true
+          printf '\n[Workflow run](%s)\n' "$RUN_URL" >> "$RUNNER_TEMP/report.md"
+          number=$(gh issue list --label zmk-drift --state open --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file "$RUNNER_TEMP/report.md"
+          else
+            gh issue create --label zmk-drift --body-file "$RUNNER_TEMP/report.md" \
+              --title "ZMK drift: the editor needs updating for recent ZMK changes"
+          fi
