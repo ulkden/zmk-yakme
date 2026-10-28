@@ -57,7 +57,11 @@ Decisions made while building unattended. Each one can be changed. Review and te
     "+ New combo".
 15. ✅ **Confirmed:** Clicking a palette keycode fills the *last keycode parameter* of the current behavior
     (e.g. the tap key of `&mt`/`&lt`). Behaviors without a keycode param are replaced with `&kp X`.
-16. State autosaves to `localStorage`. "New" and imports replace the current state (undoable).
+16. 🛠 **Decided (to implement):** State still autosaves to `localStorage`. **New:** (a) "New", "Load
+    example" and imports that would replace a keymap **ask for confirmation when there are unexported
+    changes**; (b) **Save project / Open project** buttons write and read a JSON project file (layouts +
+    keymap + file name), so work can be backed up and moved between browsers. Project files are already
+    recognized by Import.
 17. Dark mode only, system font stack, no web fonts (works offline).
 18. Pointing behaviors (`&mkp/&mmv/&msc`) add `dt-bindings/zmk/pointing.h` (current ZMK). Older
     configs used `mouse.h`.
