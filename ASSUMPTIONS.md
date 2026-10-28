@@ -21,8 +21,9 @@ Decisions made while building unattended. Each one can be changed. Review and te
    `keymap`/`combos` nodes are replaced. The export UI (Download / Copy / Preview) must **tell the user
    this happens**, with a toggle that turns diagrams off. Off means today's behavior: no comments inside
    those nodes. Content outside the two nodes is still preserved verbatim.
-6. Missing `#include`s for used behaviors (`bt.h`, `outputs.h`, `rgb.h`, `ext_power.h`,
-   `pointing.h`) are added automatically after the last existing `#include`.
+6. 🛠 **Decided (to implement):** Missing `#include`s for used behaviors (`bt.h`, `outputs.h`, `rgb.h`,
+   `ext_power.h`, `pointing.h`) are still added automatically after the last existing `#include`
+   (existing ones are never removed), **and the export notice lists which includes were added**.
 7. Layer node names are kept from the source. New layers get a sanitized node name
    (`layer_name`), and every layer gets a `display-name`.
 8. Bindings are formatted one row per physical row: a new row starts when a key's `y` changes by
