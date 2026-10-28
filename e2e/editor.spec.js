@@ -49,18 +49,38 @@ test('keyboard shortcuts: arrows, delete, undo, redo', async ({ page }) => {
   await expect(page.locator('#keyboard .key.selected')).toHaveCount(0);
 });
 
-test('layer add, rename, move and delete', async ({ page }) => {
+test('layer settings popover: rename, node name, move and delete', async ({ page }) => {
   await loadExample(page);
   await page.getByTitle('Add layer').click();
   await expect(page.locator('.tab-list .tab.active')).toHaveText('3Layer 3');
-  page.once('dialog', (d) => d.accept('Nav'));
-  await page.getByTitle('Rename layer').click();
+  await page.getByTitle('Layer settings', { exact: true }).click();
+  const pop = page.locator('.layer-popover');
+  await pop.locator('[name="layer-name"]').fill('Nav');
+  await pop.locator('[name="layer-id"]').click();
   await expect(page.locator('.tab-list .tab.active')).toHaveText('3Nav');
-  await page.getByTitle('Move left').click();
+  await expect(pop.locator('[name="layer-id"]')).toBeFocused();
+  await pop.locator('[name="layer-id"]').fill('Nav Layer!');
+  await pop.locator('[name="layer-id"]').press('Enter');
+  await expect(pop.locator('[name="layer-id"]')).toHaveValue('nav_layer');
+  await pop.getByRole('button', { name: '‹ Move left' }).click();
   await expect(page.locator('.tab-list .tab.active')).toHaveText('2Nav');
-  page.once('dialog', (d) => d.accept());
-  await page.getByTitle('Delete layer').click();
+  await pop.getByRole('button', { name: 'Delete layer' }).click();
+  await expect(pop).toContainText('Delete "Nav"?');
+  await pop.getByRole('button', { name: 'Delete', exact: true }).click();
   await expect(page.locator('.tab-list .tab:not(.add)')).toHaveText(['0Base', '1Lower', '2Raise']);
+  await page.getByRole('button', { name: 'Export…' }).click();
+  await expect(page.locator('dialog pre.preview')).not.toContainText('nav_layer');
+});
+
+test('layer popover opens on double-click and closes with Escape or outside click', async ({ page }) => {
+  await loadExample(page);
+  await page.locator('.tab-list .tab.active').dblclick();
+  await expect(page.locator('.layer-popover')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.layer-popover')).toHaveCount(0);
+  await page.getByTitle('Layer settings', { exact: true }).click();
+  await key(page, 5).click();
+  await expect(page.locator('.layer-popover')).toHaveCount(0);
 });
 
 test('combos: create by clicking keys and assign a keycode', async ({ page }) => {

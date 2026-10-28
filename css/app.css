@@ -89,7 +89,8 @@ body.empty .inspector, body.empty .tabs, body.empty .keyboard, body.empty .palet
 .welcome-actions { display: flex; gap: 10px; justify-content: center; margin: 24px 0 14px; flex-wrap: wrap; }
 
 /* Tabs */
-.tabs { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.tabs { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+.tabs-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .tab-list { display: flex; gap: 4px; flex-wrap: wrap; }
 .tab { background: transparent; border-color: transparent; color: var(--muted); }
 .tab:hover:not(:disabled) { color: var(--text); }
@@ -97,9 +98,28 @@ body.empty .inspector, body.empty .tabs, body.empty .keyboard, body.empty .palet
 .tab-idx { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-right: 6px; }
 .tab.add { font-weight: 600; }
 .tab.combos { margin-left: auto; }
-.layer-actions { display: flex; gap: 2px; }
-.layer-actions button { background: transparent; border-color: transparent; color: var(--muted); }
-.layer-actions button:hover:not(:disabled) { color: var(--text); }
+.tabs { position: relative; }
+.layer-edit { background: transparent; border-color: transparent; color: var(--muted); }
+.layer-edit:hover, .layer-edit.active { color: var(--text); }
+.layer-popover {
+  position: absolute;
+  top: calc(100% - 4px);
+  left: 16px;
+  z-index: 5;
+  width: 380px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+.popover-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.popover-head button { background: transparent; border-color: transparent; }
+.popover-actions { display: flex; gap: 6px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.confirm-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; width: 100%; color: var(--warn); font-size: 12px; }
+button.danger.solid { background: var(--danger); border-color: var(--danger); color: #0b0d10; font-weight: 600; }
+input.mono { font-family: var(--mono); font-size: 12px; }
+.layer-popover .field { grid-template-columns: 96px 1fr; }
 
 /* Keyboard */
 .keyboard { padding: 28px 16px; display: flex; justify-content: center; }

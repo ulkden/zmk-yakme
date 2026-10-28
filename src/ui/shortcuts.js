@@ -15,8 +15,9 @@ export function mountShortcuts(store, actions) {
       e.preventDefault();
       return actions.redo();
     }
-    if (typing(document.activeElement) || mod || document.querySelector('dialog[open]')) return;
     const s = store.get();
+    if (e.key === 'Escape' && s.ui.layerMenu) return actions.closeLayerMenu();
+    if (typing(document.activeElement) || mod || document.querySelector('dialog[open]')) return;
     if (!s.keymap || s.ui.mode !== 'layers') return;
     const n = keyCount(s);
     if (e.key === 'Escape') actions.selectKey(null);

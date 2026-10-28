@@ -74,4 +74,11 @@ describe('keymap ops', () => {
     assert.deepEqual(t.layers.map((l) => l.bindings.length), [2, 2, 2]);
     assert.deepEqual(ops.symbolicLayerRefs(km()), ['NAV']);
   });
+
+  test('setLayerId sanitizes and keeps node names unique', () => {
+    assert.equal(ops.setLayerId(km(), 2, 'Num Pad!').layers[2].id, 'num_pad');
+    assert.equal(ops.setLayerId(km(), 2, 'a').layers[2].id, 'a_2');
+    assert.equal(ops.setLayerId(km(), 0, 'a').layers[0].id, 'a');
+    assert.equal(ops.setLayerId(km(), 1, '9x').layers[1].id, 'layer_9x');
+  });
 });

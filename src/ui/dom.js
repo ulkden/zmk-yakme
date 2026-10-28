@@ -50,3 +50,4 @@ export function toast(message, kind = 'info') {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => (el.className = ''), 2600);
 }
+

@@ -1,5 +1,6 @@
 // Pure operations on the keymap model. Every function returns a new keymap.
 import { parseBinding, formatBinding } from './bindings.js';
+import { sanitizeId, layerIds } from './keymap-write.js';
 
 export const LAYER_BEHAVIORS = new Set(['mo', 'lt', 'to', 'tog', 'sl']);
 
@@ -35,6 +36,15 @@ export function addLayer(km, keyCount, name) {
 
 export function renameLayer(km, idx, name) {
   return withLayers(km, km.layers.map((l, i) => (i === idx ? { ...l, name } : l)));
+}
+
+// Set a layer's devicetree node name: sanitized, and made unique among the other layers.
+export function setLayerId(km, idx, raw) {
+  const others = new Set(layerIds(km.layers).filter((_, i) => i !== idx));
+  const base = sanitizeId(raw, 'layer');
+  let id = base;
+  for (let n = 2; others.has(id); n++) id = `${base}_${n}`;
+  return withLayers(km, km.layers.map((l, i) => (i === idx ? { ...l, id } : l)));
 }
 
 // Rewrite numeric layer references; mapIdx(old) returns the new index or null (removed).

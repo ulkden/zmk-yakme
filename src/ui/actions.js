@@ -5,6 +5,7 @@ import { applyImport } from '../core/import.js';
 import { gridLayout } from '../core/layout-ops.js';
 import { keyCount, initialState } from '../core/state.js';
 import { exampleState } from '../data/example.js';
+import { layerIds } from '../core/keymap-write.js';
 
 // options: { savePref(name, value), notify(message, kind) } for browser-only side effects.
 export function createActions(store, { savePref = () => {}, notify = () => {} } = {}) {
@@ -23,8 +24,16 @@ export function createActions(store, { savePref = () => {}, notify = () => {} } 
   const actions = {
     undo: () => store.undo(),
     redo: () => store.redo(),
-    setMode: (mode) => setUi({ mode }),
-    selectLayer: (layer) => setUi({ layer, mode: 'layers' }),
+    setMode: (mode) => setUi({ mode, layerMenu: false }),
+    selectLayer: (layer) => setUi({ layer, mode: 'layers', ...(get().ui.layer !== layer ? { layerMenu: false } : {}) }),
+    openLayerMenu: () => setUi({ layerMenu: true }),
+    closeLayerMenu: () => setUi({ layerMenu: false }),
+    toggleLayerMenu: () => setUi({ layerMenu: !get().ui.layerMenu }),
+    // Returns the node name actually stored (sanitized and unique).
+    setLayerId(idx, id) {
+      editKeymap((km) => ops.setLayerId(km, idx, id));
+      return layerIds(get().keymap.layers)[idx];
+    },
     selectKey: (key) => setUi({ key }),
     selectCombo: (combo) => setUi({ combo, mode: 'combos' }),
     setAdvance(advance) {

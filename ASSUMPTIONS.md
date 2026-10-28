@@ -24,7 +24,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
 6. ✅ **Implemented:** Missing `#include`s for used behaviors (`bt.h`, `outputs.h`, `rgb.h`,
    `ext_power.h`, `pointing.h`) are still added automatically after the last existing `#include`
    (existing ones are never removed), **and the export notice lists which includes were added**.
-7. 🛠 **Decided (to implement):** Node names stay stable by default: kept from the source, or made from the
+7. ✅ **Implemented:** Node names stay stable by default: kept from the source, or made from the
    display name for new layers (`nav_layer`), and every layer gets a `display-name`. In addition, the
    **node name is shown as its own editable field** in the layer actions, sanitized to a valid
    devicetree name and kept unique.
@@ -75,7 +75,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
     so the issues URL is a placeholder (one constant) until it's published.
 20. ✅ **Implemented:** "Advance to next key after picking a keycode" stays **off by default**,
     and **the choice is remembered** across reloads (localStorage preference, separate from the document).
-21. 🛠 **Decided (to implement):** Replace `prompt()`/`confirm()` with a **layer settings popover**: ✎ (or
+21. ✅ **Implemented:** Replace `prompt()`/`confirm()` with a **layer settings popover**: ✎ (or
     double-clicking the active tab) opens a small panel under the tab with display name, node name
     (see #7), move left/right and delete. Delete confirms inline in the same panel.
 22. 🛠 **Decided (to implement):** Delete/Backspace clears the selected key (`&none` on layer 0, `&trans`

@@ -107,6 +107,9 @@ test('screenshots for visual review', async ({ page }, info) => {
   await loadExample(page);
   await key(page, 12).click();
   await page.screenshot({ path: info.outputPath('02-editor.png'), fullPage: true });
+  await page.getByTitle('Layer settings', { exact: true }).click();
+  await page.screenshot({ path: info.outputPath('05-layer-popover.png') });
+  await page.keyboard.press('Escape');
   await page.getByRole('button', { name: /Combos/ }).click();
   await page.locator('.combo-item').first().click();
   await page.screenshot({ path: info.outputPath('03-combos.png'), fullPage: true });
