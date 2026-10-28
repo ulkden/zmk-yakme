@@ -4,8 +4,9 @@ const LIMIT = 200;
 const docOf = (s) => ({ layouts: s.layouts, layoutIndex: s.layoutIndex, keymap: s.keymap });
 const docChanged = (a, b) => a.layouts !== b.layouts || a.layoutIndex !== b.layoutIndex || a.keymap !== b.keymap;
 
-export function createStore(initial) {
-  let state = initial;
+// normalize(state) runs after every change (e.g. to clamp UI selections).
+export function createStore(initial, { normalize = (s) => s } = {}) {
+  let state = normalize(initial);
   const listeners = new Set();
   const past = [];
   const future = [];
@@ -26,19 +27,19 @@ export function createStore(initial) {
         if (past.length > LIMIT) past.shift();
         future.length = 0;
       }
-      state = next;
+      state = normalize(next);
       emit();
     },
     undo() {
       if (!past.length) return;
       future.push(docOf(state));
-      state = { ...state, ...past.pop() };
+      state = normalize({ ...state, ...past.pop() });
       emit();
     },
     redo() {
       if (!future.length) return;
       past.push(docOf(state));
-      state = { ...state, ...future.pop() };
+      state = normalize({ ...state, ...future.pop() });
       emit();
     },
     canUndo: () => past.length > 0,

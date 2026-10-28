@@ -30,7 +30,7 @@ export const BEHAVIORS = [
 ];
 
 export const OPTIONS = {
-  bt: ['BT_SEL', 'BT_CLR', 'BT_CLR_ALL', 'BT_NXT', 'BT_PRV', 'BT_DISC'],
+  bt: ['BT_CLR', 'BT_SEL', 'BT_CLR_ALL', 'BT_NXT', 'BT_PRV', 'BT_DISC'],
   out: ['OUT_USB', 'OUT_BLE', 'OUT_TOG'],
   rgb: ['RGB_TOG', 'RGB_ON', 'RGB_OFF', 'RGB_HUI', 'RGB_HUD', 'RGB_SAI', 'RGB_SAD', 'RGB_BRI', 'RGB_BRD', 'RGB_SPI', 'RGB_SPD', 'RGB_EFF', 'RGB_EFR'],
   ext_power: ['EP_ON', 'EP_OFF', 'EP_TOG'],
