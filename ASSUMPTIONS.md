@@ -9,9 +9,10 @@ Decisions made while building unattended. Each one can be changed. Review and te
    GitHub Pages. ES modules need http(s), so for local use run `python3 -m http.server` (opening `index.html` as a file won't work).
 
 ## Scope / interpretation
-3. "Key combination behaviors" is read as **ZMK combos** (`zmk,combos`). Hold-tap/mod-morph/macro
-   definitions are not edited, but they are *preserved* on export and their labels show up as
-   selectable behaviors.
+3. 🛠 **Decided (to implement):** Combos **and** custom behavior definitions can be created and edited:
+   hold-tap, mod-morph and macros. Plan: a "Behaviors" tab next to Combos that lists the behaviors
+   defined in the file, with add/edit/delete in the side panel. Generated nodes go in
+   `behaviors { }` / `macros { }`, and other behavior types are still preserved verbatim.
 4. Code from the referenced projects was **not copied**. Everything is a from-scratch
    reimplementation, which avoids license questions. The zmk-layout-helper's import formats
    (QMK info.json, KLE JSON, ZMK dtsi) are supported as layout inputs.
