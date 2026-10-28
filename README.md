@@ -23,11 +23,17 @@ python3 -m http.server 8080      # or: npm run serve
 ## Tests
 
 ```sh
-npm test                          # unit tests (node:test, no installs needed)
-npm install && npx playwright install chromium
-npm run test:e2e                  # browser tests (Playwright, starts its own server)
+nvm use                           # Node version from .nvmrc
+npm ci
+npm test                          # unit tests (node:test)
+npm run lint && npm run format:check
+npx playwright install chromium
+npm run test:e2e                  # browser tests on Chromium (starts its own server)
+npm run test:e2e:all              # Chromium, Firefox and WebKit (as CI does)
 # unit tests also run in a browser: http://localhost:8080/tests/
 ```
+
+CI runs all of the above on every pull request; `main` only accepts changes through a PR with green checks.
 
 ## Deploy
 
