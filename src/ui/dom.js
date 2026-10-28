@@ -7,14 +7,34 @@ export function h(spec, props = {}, ...children) {
   if (classes.length) el.className = classes.join(' ');
   for (const [k, v] of Object.entries(props ?? {})) {
     if (v === undefined || v === null || (v === false && !(k in el))) continue;
+    if (k === 'onchange') continue; // attached below, once the input type is known
     if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
     else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
     else if (k === 'class') el.className += (el.className ? ' ' : '') + v;
     else if (k in el && k !== 'list') el[k] = v;
     else el.setAttribute(k, v === true ? '' : v);
   }
+  if (props?.onchange) onCommit(el, props.onchange);
   append(el, children);
   return el;
+}
+
+const TEXT_INPUTS = new Set(['text', 'number', 'url', 'search']);
+
+// Text-like inputs commit on Enter as well as on blur. Chrome and Firefox fire `change`
+// on Enter but WebKit/Safari does not, so Enter commits explicitly and the following
+// `change` (if any) is skipped when the value is unchanged.
+function onCommit(el, handler) {
+  if (el.tagName !== 'INPUT' || !TEXT_INPUTS.has(el.type)) return el.addEventListener('change', handler);
+  let committed = el.value;
+  const commit = (e) => {
+    if (el.value === committed) return;
+    committed = el.value;
+    handler(e);
+    committed = el.value; // handlers may normalize the field (e.g. sanitized node names)
+  };
+  el.addEventListener('change', commit);
+  el.addEventListener('keydown', (e) => e.key === 'Enter' && commit(e));
 }
 
 function append(el, children) {
