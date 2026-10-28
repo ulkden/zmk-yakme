@@ -73,7 +73,8 @@ Decisions made while building unattended. Each one can be changed. Review and te
     and a clear message explains they aren't supported yet**. Below it, in small text, the message links to the
     project's GitHub issues page to request the feature. **Open item:** the repo has no GitHub remote yet,
     so the issues URL is a placeholder (one constant) until it's published.
-20. "Advance to next key after picking a keycode" is **off** by default (toggle in the side panel).
+20. 🛠 **Decided (to implement):** "Advance to next key after picking a keycode" stays **off by default**,
+    and **the choice is remembered** across reloads (localStorage preference, separate from the document).
 21. Layer rename uses the browser's `prompt()` dialog (✎ button or double-click an active tab). This is
     a simple MVP choice that can become inline editing later.
 22. Delete/Backspace on a selected key sets `&none` on layer 0 and `&trans` on other layers.
