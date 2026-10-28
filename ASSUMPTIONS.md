@@ -39,8 +39,9 @@ Decisions made while building unattended. Each one can be changed. Review and te
     `&mo &lt &to &tog &sl` and combo `layers`, and references to a deleted layer become `&trans`.
     Symbolic params (e.g. `&mo NAV` with a `#define`) are left untouched, **but a warning is shown after a
     move/delete when symbolic layer references exist**, so the user can check their `#define`s.
-11. When a file has several physical layouts, the first is used and a selector appears in the
-    status bar.
+11. ✅ **Kept for now (TODO: re-evaluate):** When a file has several physical layouts, the first is used
+    and a selector appears in the status bar. **TODO:** try this with a real open-source board that ships
+    multiple layouts (e.g. 5- and 6-column variants) during the #8 investigation, then make a final call.
 12. KLE parsing covers geometry (x, y, w, h, r, rx, ry) only. Legends and the secondary
     rectangle (w2/h2/x2/y2) are ignored.
 13. Combo `key-positions`/`layers` must be numeric (simple integer expressions are evaluated).
