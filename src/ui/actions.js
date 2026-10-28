@@ -6,13 +6,19 @@ import { gridLayout } from '../core/layout-ops.js';
 import { keyCount, initialState } from '../core/state.js';
 import { exampleState } from '../data/example.js';
 
-export function createActions(store) {
+// options: { savePref(name, value), notify(message, kind) } for browser-only side effects.
+export function createActions(store, { savePref = () => {}, notify = () => {} } = {}) {
   const get = store.get;
   const setUi = (patch) =>
     store.update((s) => (Object.keys(patch).every((k) => s.ui[k] === patch[k]) ? s : { ...s, ui: { ...s.ui, ...patch } }), {
       history: false,
     });
   const editKeymap = (fn) => store.update((s) => (s.keymap ? { ...s, keymap: fn(s.keymap, s) } : s));
+
+  const warnSymbolicRefs = () => {
+    const refs = ops.symbolicLayerRefs(get().keymap);
+    if (refs.length) notify(`Layer numbers changed. Check the #defines for ${refs.join(', ')}; named references aren't renumbered.`, 'warn');
+  };
 
   const actions = {
     undo: () => store.undo(),
@@ -21,17 +27,18 @@ export function createActions(store) {
     selectLayer: (layer) => setUi({ layer, mode: 'layers' }),
     selectKey: (key) => setUi({ key }),
     selectCombo: (combo) => setUi({ combo, mode: 'combos' }),
-    setAdvance: (advance) => setUi({ advance }),
+    setAdvance(advance) {
+      setUi({ advance });
+      savePref('advance', advance);
+    },
+    setFileName: (fileName) => store.update((s) => ({ ...s, fileName }), { history: false }),
+    markClean: () => store.update((s) => ({ ...s, cleanKeymap: s.keymap }), { history: false }),
     selectLayout: (layoutIndex) => store.update((s) => ({ ...s, layoutIndex })),
 
     keyClick(pos) {
       const { ui } = get();
-      if (ui.mode !== 'combos') return actions.selectKey(ui.key === pos ? null : pos);
-      if (ui.combo === null) {
-        editKeymap((km) => ops.addCombo(km, [pos]));
-        return setUi({ combo: get().keymap.combos.length - 1 });
-      }
-      editKeymap((km) => ops.toggleComboKey(km, ui.combo, pos));
+      if (ui.mode === 'layers') return actions.selectKey(ui.key === pos ? null : pos);
+      if (ui.mode === 'combos' && ui.combo !== null) editKeymap((km) => ops.toggleComboKey(km, ui.combo, pos));
     },
 
     setKeyBinding(binding) {
@@ -62,13 +69,16 @@ export function createActions(store) {
     removeLayer(idx) {
       editKeymap((km) => ops.removeLayer(km, idx));
       setUi({ layer: Math.max(0, idx - 1) });
+      warnSymbolicRefs();
     },
     moveLayer(idx, delta) {
       const to = idx + delta;
       if (to < 0 || to >= get().keymap.layers.length) return;
       editKeymap((km) => ops.moveLayer(km, idx, to));
       setUi({ layer: to });
+      warnSymbolicRefs();
     },
+    trimExtraBindings: () => editKeymap((km, s) => ops.trimLayers(km, keyCount(s))),
 
     addCombo() {
       editKeymap((km) => ops.addCombo(km));
@@ -88,7 +98,8 @@ export function createActions(store) {
     importResult(result, fileName) {
       store.update((s) => {
         const next = applyImport(s, result);
-        return result.keymap && fileName ? { ...next, fileName } : next;
+        const named = result.keymap && fileName ? { ...next, fileName } : next;
+        return next.keymap !== s.keymap ? { ...named, cleanKeymap: named.keymap } : named;
       });
     },
     newKeymap(rows, layerCount, keepLayout) {
@@ -97,10 +108,14 @@ export function createActions(store) {
         const base = { ...initialState(), ui: { ...initialState().ui, advance: s.ui.advance }, layouts };
         let km = ops.emptyKeymap(keyCount(base));
         for (let i = 1; i < layerCount; i++) km = ops.addLayer(km, keyCount(base));
-        return { ...base, keymap: km };
+        return { ...base, keymap: km, cleanKeymap: km };
       });
     },
-    loadExample: () => store.update(() => exampleState()),
+    loadExample: () =>
+      store.update((s) => {
+        const ex = exampleState();
+        return { ...ex, ui: { ...ex.ui, advance: s.ui.advance }, cleanKeymap: ex.keymap };
+      }),
   };
   return actions;
 }

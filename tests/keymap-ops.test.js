@@ -68,4 +68,10 @@ describe('keymap ops', () => {
     k = ops.removeCombo(k, 0);
     assert.deepEqual(k.combos.map((c) => c.name), ['combo_2']);
   });
+
+  test('trimLayers and symbolicLayerRefs', () => {
+    const t = ops.trimLayers(km(), 2);
+    assert.deepEqual(t.layers.map((l) => l.bindings.length), [2, 2, 2]);
+    assert.deepEqual(ops.symbolicLayerRefs(km()), ['NAV']);
+  });
 });

@@ -22,6 +22,8 @@ test('import a keymap file, then its physical layout', async ({ page }) => {
   await expect(page.locator('#status')).toContainText('Default Layout');
   await page.locator('#status button.warn').click();
   await expect(page.locator('#status .warnings')).toContainText('7 binding(s) beyond');
+  await page.getByRole('button', { name: 'Trim extra bindings' }).click();
+  await expect(page.locator('#status')).toContainText('No issues');
 });
 
 test('paste import detects keymap with combos and custom behaviors', async ({ page }) => {
@@ -54,28 +56,43 @@ test('drag and drop a file imports it', async ({ page }) => {
   await expect(page.locator('#drop-overlay')).not.toHaveClass(/show/);
 });
 
-test('download produces a valid keymap with edits', async ({ page }) => {
+test('export dialog downloads a valid keymap with an editable name', async ({ page }) => {
   await importFiles(page, [file('elvn.keymap', ELVN_KEYMAP)]);
   await key(page, 0).click();
   await page.locator('#inspector input.raw').fill('&kp ESC');
   await page.locator('#inspector input.raw').press('Enter');
+  await page.getByRole('button', { name: 'Export…' }).click();
+  const name = page.locator('dialog input.filename');
+  await expect(name).toHaveValue('elvn.keymap');
+  await name.fill('my-board');
   const dl = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Download .keymap' }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Download' }).click();
   const download = await dl;
-  expect(download.suggestedFilename()).toBe('elvn.keymap');
+  expect(download.suggestedFilename()).toBe('my-board.keymap');
   const text = await readFile(await download.path(), 'utf8');
   expect(text).toContain('#include <behaviors.dtsi>');
   expect(text).toMatch(/&kp ESC\s+&kp B\n/);
-  expect(text).toContain('display-name = "default_layer";');
+  await page.getByRole('button', { name: 'Export…' }).click();
+  await expect(page.locator('dialog input.filename')).toHaveValue('my-board.keymap');
 });
 
-test('preview dialog shows the generated keymap', async ({ page }) => {
+test('export dialog lists includes that will be added', async ({ page }) => {
+  await importFiles(page, [file('elvn.keymap', ELVN_KEYMAP)]);
+  await key(page, 0).click();
+  await page.locator('#inspector input.raw').fill('&bt BT_CLR');
+  await page.locator('#inspector input.raw').press('Enter');
+  await page.getByRole('button', { name: 'Export…' }).click();
+  await expect(page.locator('dialog ul.notices')).toContainText('<dt-bindings/zmk/bt.h>');
+  await expect(page.locator('dialog pre.preview')).toContainText('#include <dt-bindings/zmk/bt.h>');
+});
+
+test('export dialog previews the example keymap', async ({ page }) => {
   await loadExample(page);
-  await page.getByRole('button', { name: 'Preview' }).click();
+  await page.getByRole('button', { name: 'Export…' }).click();
   const pre = page.locator('dialog pre.preview');
   await expect(pre).toContainText('compatible = "zmk,keymap";');
   await expect(pre).toContainText('combo_esc {');
-  await expect(pre).toContainText('#include <dt-bindings/zmk/bt.h>');
+  await expect(page.locator('dialog ul.notices')).toHaveCount(0);
   await page.getByRole('button', { name: 'Close' }).click();
   await expect(page.locator('dialog[open]')).toHaveCount(0);
 });

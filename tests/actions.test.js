@@ -10,7 +10,10 @@ import { ELVN_KEYMAP, ELVN_LAYOUT } from './fixtures/elvn.js';
 
 function setup() {
   const store = createStore(initialState(), { normalize: normalizeUi });
-  return { store, actions: createActions(store) };
+  const prefs = {};
+  const notes = [];
+  const actions = createActions(store, { savePref: (k, v) => (prefs[k] = v), notify: (m) => notes.push(m) });
+  return { store, actions, prefs, notes };
 }
 
 describe('actions (UI flows without DOM)', () => {
@@ -64,13 +67,16 @@ describe('actions (UI flows without DOM)', () => {
     assert.equal(store.get().keymap.layers[0].bindings[40], '&mo 2');
   });
 
-  test('combos mode: first key click creates a combo, later clicks toggle', () => {
+  test('combos mode: keys only toggle after "+ New combo"', () => {
     const { store, actions } = setup();
     actions.loadExample();
     actions.setMode('combos');
-    assert.equal(store.get().ui.combo, null);
     actions.keyClick(5);
+    assert.equal(store.get().ui.combo, null);
+    assert.equal(store.get().keymap.combos.length, 1);
+    actions.addCombo();
     assert.equal(store.get().ui.combo, 1);
+    actions.keyClick(5);
     actions.keyClick(6);
     actions.pickKeycode('TAB');
     const combo = store.get().keymap.combos[1];
@@ -102,5 +108,50 @@ describe('actions (UI flows without DOM)', () => {
     actions.newKeymap([], 1, true);
     assert.equal(store.get().layouts[0].name, 'Default Layout');
     assert.deepEqual(store.get().keymap.layers[0].bindings, ['&none', '&none', '&none', '&none']);
+  });
+
+  test('auto-advance preference is saved', () => {
+    const { store, actions, prefs } = setup();
+    actions.setAdvance(true);
+    assert.equal(store.get().ui.advance, true);
+    assert.deepEqual(prefs, { advance: true });
+  });
+
+  test('trimExtraBindings drops bindings beyond the layout', () => {
+    const { store, actions } = setup();
+    actions.importResult(importText(ELVN_KEYMAP));
+    actions.importResult(importText(ELVN_LAYOUT));
+    actions.trimExtraBindings();
+    assert.equal(store.get().keymap.layers[0].bindings.length, 4);
+    actions.undo();
+    assert.equal(store.get().keymap.layers[0].bindings.length, 11);
+  });
+
+  test('moving layers warns when named layer references exist', () => {
+    const { actions, notes } = setup();
+    actions.loadExample();
+    actions.moveLayer(1, 1);
+    assert.equal(notes.length, 0);
+    actions.selectKey(0);
+    actions.setKeyBinding('&mo NAV');
+    actions.moveLayer(2, -1);
+    assert.match(notes[0], /NAV/);
+  });
+
+  test('imports and exports track unexported changes', () => {
+    const { store, actions } = setup();
+    actions.loadExample();
+    assert.equal(store.get().keymap, store.get().cleanKeymap);
+    actions.selectKey(0);
+    actions.pickKeycode('Q');
+    assert.notEqual(store.get().keymap, store.get().cleanKeymap);
+    actions.markClean();
+    assert.equal(store.get().keymap, store.get().cleanKeymap);
+  });
+
+  test('file name can be set', () => {
+    const { store, actions } = setup();
+    actions.setFileName('mine.keymap');
+    assert.equal(store.get().fileName, 'mine.keymap');
   });
 });

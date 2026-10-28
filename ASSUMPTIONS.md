@@ -21,7 +21,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
    `keymap`/`combos` nodes are replaced. The export UI (Download / Copy / Preview) must **tell the user
    this happens**, with a toggle that turns diagrams off. Off means today's behavior: no comments inside
    those nodes. Content outside the two nodes is still preserved verbatim.
-6. 🛠 **Decided (to implement):** Missing `#include`s for used behaviors (`bt.h`, `outputs.h`, `rgb.h`,
+6. ✅ **Implemented:** Missing `#include`s for used behaviors (`bt.h`, `outputs.h`, `rgb.h`,
    `ext_power.h`, `pointing.h`) are still added automatically after the last existing `#include`
    (existing ones are never removed), **and the export notice lists which includes were added**.
 7. 🛠 **Decided (to implement):** Node names stay stable by default: kept from the source, or made from the
@@ -32,10 +32,10 @@ Decisions made while building unattended. Each one can be changed. Review and te
    ≥ 0.5u or `x` goes backwards), with columns padded. Plan: import several popular split and
    single-board ZMK keyboards from GitHub (layouts + keymaps), check how they look in the editor and
    in the exported text, then pick a more refined approach based on what looks wrong.
-9. 🛠 **Decided (to implement):** Short layers are padded on export (`&none` on layer 0, `&trans`
+9. ✅ **Implemented:** Short layers are padded on export (`&none` on layer 0, `&trans`
    elsewhere), and extra bindings are kept and shown as a warning. In addition, the warning gets a
    one-click **"Trim extra bindings"** action (undoable).
-10. 🛠 **Decided (to implement):** Deleting or moving layers renumbers **numeric** params in
+10. ✅ **Implemented:** Deleting or moving layers renumbers **numeric** params in
     `&mo &lt &to &tog &sl` and combo `layers`, and references to a deleted layer become `&trans`.
     Symbolic params (e.g. `&mo NAV` with a `#define`) are left untouched, **but a warning is shown after a
     move/delete when symbolic layer references exist**, so the user can check their `#define`s.
@@ -51,7 +51,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
     unset) and **`slow-release`** (checkbox). **Symbolic key positions** (e.g. `#define`d names in
     `key-positions`) are accepted: they're written back unchanged, and the UI warns that it can't place
     them on the keyboard. Any other combo properties are still preserved verbatim.
-14. 🛠 **Decided (to implement):** In Combos mode, key clicks do nothing until a combo exists and is
+14. ✅ **Implemented:** In Combos mode, key clicks do nothing until a combo exists and is
     selected. **"+ New combo" is the only way to create one**, and it selects the new combo. Then key clicks
     add or remove keys from the selected combo. With no combo selected, the panel hints at
     "+ New combo".
@@ -65,7 +65,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
 17. 🛠 **Decided (to implement):** Dark mode only. **New:** bundle a monospace font locally (JetBrains Mono,
     SIL OFL 1.1, with its license file in `fonts/`) for key labels, the palette, raw binding fields and the
     preview. The rest of the UI keeps the system font stack. No external requests, so it still works offline.
-18. 🛠 **Decided (to implement):** Pointing behaviors (`&mkp/&mmv/&msc`) add
+18. ✅ **Implemented:** Pointing behaviors (`&mkp/&mmv/&msc`) add
     `dt-bindings/zmk/pointing.h`, **unless the file already includes `dt-bindings/zmk/mouse.h`** (older
     ZMK), in which case nothing is added.
 19. 🛠 **Decided (to implement):** Keymaps written with helper macros (`ZMK_LAYER`, `ZMK_COMBO`,
@@ -73,7 +73,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
     and a clear message explains they aren't supported yet**. Below it, in small text, the message links to the
     project's GitHub issues page to request the feature. **Open item:** the repo has no GitHub remote yet,
     so the issues URL is a placeholder (one constant) until it's published.
-20. 🛠 **Decided (to implement):** "Advance to next key after picking a keycode" stays **off by default**,
+20. ✅ **Implemented:** "Advance to next key after picking a keycode" stays **off by default**,
     and **the choice is remembered** across reloads (localStorage preference, separate from the document).
 21. 🛠 **Decided (to implement):** Replace `prompt()`/`confirm()` with a **layer settings popover**: ✎ (or
     double-clicking the active tab) opens a small panel under the tab with display name, node name
@@ -83,7 +83,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
     direction** (using key centers, rotation included) instead of by index. **Type-to-assign:** with a key
     selected and focus on the page, typing a letter or digit assigns `&kp X`, and advances to the next key
     **only when auto-advance (#20) is on**. Modifier combos such as Ctrl+Z still go to shortcuts.
-23. 🛠 **Decided (to implement):** Exported layers are padded to the layout's key count. The file name
+23. ✅ **Implemented:** Exported layers are padded to the layout's key count. The file name
     defaults to the imported keymap's name (or `keymap.keymap`), and it is **shown and editable in the
     export notice / preview**. The edited name is remembered with the project.
 24. 🛠 **Decided (to implement):** Single-file URL import stays (`blob` links are rewritten to `raw`).

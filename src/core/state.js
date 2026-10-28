@@ -35,14 +35,27 @@ export function normalizeUi(state) {
 }
 
 export function serialize(state) {
-  return JSON.stringify({ app: APP_ID, version: 1, layouts: state.layouts, layoutIndex: state.layoutIndex, keymap: state.keymap });
+  return JSON.stringify({
+    app: APP_ID,
+    version: 1,
+    layouts: state.layouts,
+    layoutIndex: state.layoutIndex,
+    keymap: state.keymap,
+    fileName: state.fileName ?? null,
+  });
 }
 
 export function deserialize(json) {
   try {
     const data = typeof json === 'string' ? JSON.parse(json) : json;
     if (data?.app !== APP_ID || !Array.isArray(data.layouts)) return null;
-    return { ...initialState(), layouts: data.layouts, layoutIndex: data.layoutIndex ?? 0, keymap: data.keymap ?? null };
+    return {
+      ...initialState(),
+      layouts: data.layouts,
+      layoutIndex: data.layoutIndex ?? 0,
+      keymap: data.keymap ?? null,
+      fileName: data.fileName ?? null,
+    };
   } catch {
     return null;
   }

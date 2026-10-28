@@ -67,6 +67,9 @@ test('combos: create by clicking keys and assign a keycode', async ({ page }) =>
   await loadExample(page);
   await page.getByRole('button', { name: /Combos/ }).click();
   await key(page, 13).click();
+  await expect(page.locator('#status')).toContainText('1 combos');
+  await page.getByRole('button', { name: '+ New combo' }).click();
+  await key(page, 13).click();
   await key(page, 14).click();
   await pick(page, '⇥');
   await expect(key(page, 13)).toHaveClass(/combo-on/);
@@ -79,6 +82,17 @@ test('combos: create by clicking keys and assign a keycode', async ({ page }) =>
   await expect(page.locator('#status')).toContainText('2 combos');
   await page.getByRole('button', { name: 'Delete combo' }).click();
   await expect(page.locator('#status')).toContainText('1 combos');
+});
+
+test('auto-advance preference survives a reload', async ({ page }) => {
+  await loadExample(page);
+  await key(page, 1).click();
+  await page.getByLabel('Advance to next key after picking a keycode').check();
+  await page.reload();
+  await key(page, 1).click();
+  await expect(page.getByLabel('Advance to next key after picking a keycode')).toBeChecked();
+  await pick(page, 'Z');
+  await expect(key(page, 2)).toHaveClass(/selected/);
 });
 
 test('autosave survives a reload', async ({ page }) => {

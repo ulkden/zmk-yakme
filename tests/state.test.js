@@ -96,6 +96,6 @@ describe('validate', () => {
     };
     const w = validate(s);
     assert.equal(w.length, 4);
-    assert.match(w[0], /1 bindings for 2 keys/);
+    assert.match(w[0].text, /1 bindings for 2 keys/);
   });
 });

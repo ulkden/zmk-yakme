@@ -1,7 +1,7 @@
 // Import, New and Preview dialogs.
 import { h, replace, download, toast } from './dom.js';
 import { importText } from '../core/import.js';
-import { exportKeymap, exportFileName, toRawUrl } from '../core/export.js';
+import { exportKeymapDetailed, exportFileName, toRawUrl } from '../core/export.js';
 
 export async function importFiles(files, actions) {
   let ok = 0;
@@ -97,22 +97,51 @@ function openNew(store, actions) {
   ]);
 }
 
-function openPreview(store) {
+function exportNotices(addedIncludes) {
+  const items = [];
+  if (addedIncludes.length) {
+    items.push(h('li', {}, 'These includes will be added: ', addedIncludes.map((i) => h('code', {}, `<${i}>`, ' '))));
+  }
+  return items.length ? h('ul.notices', {}, items) : null;
+}
+
+function openExport(store, actions) {
   const s = store.get();
-  const text = exportKeymap(s);
+  const { text, addedIncludes } = exportKeymapDetailed(s);
+  const name = h('input.filename', {
+    type: 'text',
+    value: exportFileName(s),
+    spellcheck: false,
+    onchange: (e) => actions.setFileName(e.target.value.trim() || null),
+  });
+  const currentName = () => exportFileName({ fileName: name.value.trim() });
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(text);
-      toast('Copied');
+      actions.markClean();
+      toast('Keymap copied to clipboard');
     } catch {
       toast('Clipboard unavailable — select the text and copy manually', 'warn');
     }
   };
-  const dlg = dialog('Preview', h('pre.preview', {}, text), [
+  const save = () => {
+    actions.setFileName(name.value.trim() || null);
+    download(currentName(), text);
+    actions.markClean();
+    dlg.close();
+  };
+  const body = h(
+    'div.export-body',
+    {},
+    h('label.field', {}, h('span', {}, 'File name'), name),
+    exportNotices(addedIncludes),
+    h('pre.preview', {}, text),
+  );
+  const dlg = dialog('Export keymap', body, [
     h('button', { onclick: () => dlg.close() }, 'Close'),
     h('span.grow'),
     h('button', { onclick: copy }, 'Copy'),
-    h('button.primary', { onclick: () => download(exportFileName(s), text) }, 'Download'),
+    h('button.primary', { onclick: save }, 'Download'),
   ]);
 }
 
@@ -120,6 +149,6 @@ export function createDialogs(store, actions) {
   return {
     openImport: () => openImport(actions),
     openNew: () => openNew(store, actions),
-    openPreview: () => openPreview(store),
+    openExport: () => openExport(store, actions),
   };
 }

@@ -56,6 +56,23 @@ export function remapLayerRefs(km, mapIdx) {
   };
 }
 
+// Drop bindings beyond the layout's key count.
+export function trimLayers(km, keyCount) {
+  return withLayers(km, km.layers.map((l) => (l.bindings.length > keyCount ? { ...l, bindings: l.bindings.slice(0, keyCount) } : l)));
+}
+
+// Non-numeric layer params (e.g. `&mo NAV`) that renumbering cannot update.
+export function symbolicLayerRefs(km) {
+  const found = new Set();
+  const check = (b) => {
+    const { behavior, params } = parseBinding(b);
+    if (LAYER_BEHAVIORS.has(behavior) && params[0] && !/^\d+$/.test(params[0])) found.add(params[0]);
+  };
+  km.layers.forEach((l) => l.bindings.forEach(check));
+  km.combos.forEach((c) => check(c.binding));
+  return [...found];
+}
+
 export function removeLayer(km, idx) {
   if (km.layers.length <= 1) return km;
   const remapped = remapLayerRefs(km, (i) => (i === idx ? null : i > idx ? i - 1 : i));

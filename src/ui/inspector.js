@@ -67,7 +67,7 @@ function layerChips(combo, layers, actions) {
 
 function comboEditor(state, actions) {
   const combo = state.keymap.combos[state.ui.combo];
-  if (!combo) return h('p.muted', {}, 'Select a combo, or click keys on the keyboard to start a new one.');
+  if (!combo) return h('p.muted', {}, 'Select a combo, or press "+ New combo" and then click keys to add them.');
   return h(
     'div.combo-editor',
     {},

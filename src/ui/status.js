@@ -3,6 +3,13 @@ import { h, replace } from './dom.js';
 import { activeLayout, keyCount } from '../core/state.js';
 import { validate } from '../core/validate.js';
 
+const FIXES = { trim: { label: 'Trim extra bindings', run: (actions) => actions.trimExtraBindings() } };
+
+function warningItem(w, actions) {
+  const fix = FIXES[w.fix];
+  return h('li', {}, w.text, fix ? h('button.link', { onclick: () => fix.run(actions) }, fix.label) : null);
+}
+
 export function mountStatus(el, store, actions) {
   let open = false;
   const render = () => {
@@ -24,7 +31,7 @@ export function mountStatus(el, store, actions) {
     replace(
       el,
       h('div.status-row', {}, layoutPart, h('span.muted', {}, `${keyCount(s)} keys · ${s.keymap.layers.length} layers · ${s.keymap.combos.length} combos`), h('span.grow'), warnBtn),
-      open && warnings.length ? h('ul.warnings', {}, warnings.map((w) => h('li', {}, w))) : null,
+      open && warnings.length ? h('ul.warnings', {}, warnings.map((w) => warningItem(w, actions))) : null,
     );
   };
   store.subscribe(render);
