@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { stampJs, stampCss, stampHtml, stampFile } from '../scripts/stamp.js';
+import { stampJs, stampCss, stampHtml, stampFile, stampBuild } from '../scripts/stamp.js';
 
 const V = '0.1.0+abc1234';
 const Q = '?v=0.1.0%2Babc1234';
@@ -48,5 +48,11 @@ describe('deploy cache-busting stamps', () => {
   test('stampFile picks the stamper by extension and leaves other files alone', () => {
     assert.equal(stampFile('a.js', "import './b.js';", V), `import './b.js${Q}';`);
     assert.equal(stampFile('LICENSE', "import './b.js';", V), "import './b.js';");
+  });
+
+  test('stampBuild fills in the deployed commit and fails loudly if the marker moved', () => {
+    const src = "export const VERSION = '0.1.0';\nexport const BUILD = '';\n";
+    assert.equal(stampBuild(src, 'abc1234'), 'export const VERSION = \'0.1.0\';\nexport const BUILD = "abc1234";\n');
+    assert.throws(() => stampBuild("export const BUILD = 'x';", 'abc1234'), /not found/);
   });
 });

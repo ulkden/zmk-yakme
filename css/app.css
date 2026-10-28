@@ -590,6 +590,18 @@ textarea.macro-steps {
 .status .ok {
   color: var(--ok);
 }
+a.version {
+  color: var(--muted);
+  text-decoration: none;
+}
+a.version:hover,
+a.version:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.version-line {
+  margin-top: 28px;
+}
 button.link {
   background: none;
   border: 0;

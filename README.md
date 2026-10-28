@@ -60,6 +60,12 @@ Every merge to `main` runs the full CI suite and then publishes to GitHub Pages
 with a version stamp (`?v=<version>+<commit>`) on every module, stylesheet and font URL, so browsers
 don't mix cached old files with new ones after a deploy. `npm run test:site` builds and smoke-tests it.
 
+## Releases
+
+The app shows its version in the status bar and on the welcome screen, linking to that release's notes.
+See [CHANGELOG.md](CHANGELOG.md) for what changed, and [GitHub Releases](https://github.com/ulkden/zmk-yakme/releases)
+for every merged pull request. How to cut a release is described in [AGENTS.md](AGENTS.md#releases).
+
 ## Usage cheatsheet
 
 | Do this | How |
