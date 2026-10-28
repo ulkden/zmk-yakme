@@ -16,8 +16,11 @@ Decisions made while building unattended. Each one can be changed. Review and te
 4. ✅ **Resolved:** MIT `LICENSE` added and both projects credited in the README. Code from the referenced projects was **not copied**. Everything is a from-scratch
    reimplementation, which avoids license questions. The zmk-layout-helper's import formats
    (QMK info.json, KLE JSON, ZMK dtsi) are supported as layout inputs.
-5. Export preserves the imported file's text and regenerates only the `keymap` and `combos`
-   nodes. **Comments inside those two nodes (e.g. ASCII-art layer diagrams) are lost.**
+5. 🛠 **Decided (to implement):** On export, generate a fresh ASCII-art diagram of each layer as a
+   comment above its node, so the diagram always matches the bindings. Existing comments inside the
+   `keymap`/`combos` nodes are replaced. The export UI (Download / Copy / Preview) must **tell the user
+   this happens**, with a toggle that turns diagrams off. Off means today's behavior: no comments inside
+   those nodes. Content outside the two nodes is still preserved verbatim.
 6. Missing `#include`s for used behaviors (`bt.h`, `outputs.h`, `rgb.h`, `ext_power.h`,
    `pointing.h`) are added automatically after the last existing `#include`.
 7. Layer node names are kept from the source. New layers get a sanitized node name
