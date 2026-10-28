@@ -75,9 +75,8 @@ Decisions made while building unattended. Each one can be changed. Review and te
 19. ✅ **Implemented:** Keymaps written with helper macros (`ZMK_LAYER`, `ZMK_COMBO`,
     `ZMK_HOLD_TAP`, …, from zmk-helpers / zmk-nodefree-config) are still not parsed, but they are **detected,
     and a clear message explains they aren't supported yet**. Below it, in small text, the message links to the
-    project's GitHub issues page to request the feature. **Open item:** the repo has no GitHub remote yet,
-    so the issues URL is a placeholder until it's published:
-    set `REPO_URL` in `src/data/project.js`.
+    project's GitHub issues page to request the feature. The link points to
+    https://github.com/ulkden/zmk-yakme/issues.
 20. ✅ **Implemented:** "Advance to next key after picking a keycode" stays **off by default**,
     and **the choice is remembered** across reloads (localStorage preference, separate from the document).
 21. ✅ **Implemented:** Replace `prompt()`/`confirm()` with a **layer settings popover**: ✎ (or

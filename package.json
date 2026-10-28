@@ -1,5 +1,5 @@
 {
-  "name": "zmk-keymap-editor-basic",
+  "name": "zmk-yakme",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -12,5 +12,9 @@
   "license": "MIT",
   "devDependencies": {
     "@playwright/test": "^1.64.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ulkden/zmk-yakme.git"
   }
 }
