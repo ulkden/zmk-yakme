@@ -42,8 +42,11 @@ Decisions made while building unattended. Each one can be changed. Review and te
 11. ✅ **Kept for now (TODO: re-evaluate):** When a file has several physical layouts, the first is used
     and a selector appears in the status bar. **TODO:** try this with a real open-source board that ships
     multiple layouts (e.g. 5- and 6-column variants) during the #8 investigation, then make a final call.
-12. KLE parsing covers geometry (x, y, w, h, r, rx, ry) only. Legends and the secondary
-    rectangle (w2/h2/x2/y2) are ignored.
+12. 🛠 **Decided (to implement):** KLE import keeps geometry (x, y, w, h, r, rx, ry). The secondary
+    rectangle (w2/h2/x2/y2) is still ignored. **New:** when no keymap is loaded, KLE legends become the
+    starting base-layer bindings: a legend that matches a keycode or label (e.g. `Q`, `Esc`, `⇧`, `1`)
+    becomes `&kp CODE`, and anything else becomes `&none`. For multi-legend keys, the main (top-left or
+    center) legend is used.
 13. Combo `key-positions`/`layers` must be numeric (simple integer expressions are evaluated).
     Other combo properties (e.g. `require-prior-idle-ms`, `slow-release`) are preserved verbatim
     but not editable in the UI.
