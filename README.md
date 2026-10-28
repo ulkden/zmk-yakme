@@ -14,9 +14,10 @@ It runs entirely in your browser: no install, no account, no firmware changes.
    `.keymap`, from files, drag and drop, pasted text, or a GitHub file or repository URL.
 2. **Edit** keys (palette, behavior picker or just type a letter), layers, combos, and custom hold-tap,
    mod-morph and macro behaviors, with undo/redo and warnings for things that won't work.
-3. **Export** a `.keymap`. The layers, combos and behaviors are written out neatly, optionally with a
-   diagram of each layer as a comment. Everything else in your file (`#include`s, `#define`s, comments
-   and other settings outside those sections) stays as it was, and missing `#include`s are added for you.
+3. **Export** a `.keymap`. The layers and combos are written out neatly, optionally with a diagram of
+   each layer as a comment (comments inside those two sections are replaced), and behaviors you edited
+   are rewritten. Everything else in your file (`#include`s, `#define`s, other comments, unedited
+   behaviors and other settings) stays as it was, and missing `#include`s are added for you.
 
 Your work autosaves in the browser, and **Save project** keeps a backup file you can open later.
 

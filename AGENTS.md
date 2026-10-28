@@ -38,8 +38,11 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
   the undo history; UI-only changes (`ui.*`) do not.
 - Browser-only side effects (storage, clipboard, toasts) are injected into actions, so actions stay
   testable in Node.
-- **Never lose user data.** Export regenerates only what was edited and preserves everything else in
-  an imported file. Saved data (autosave, `.zmk-project.json`) is a public format: change it only
+- **Never lose user data.** Export of an imported file rewrites only the `keymap` and `combos` nodes
+  and the behavior nodes that were edited or deleted. Properties the editor doesn't know inside them,
+  and everything outside them, are kept verbatim. Comments inside `keymap` and `combos` are replaced
+  (agreed in `ASSUMPTIONS.md` #5 and stated in the Export dialog); if this changes, update the
+  README, `docs/DESIGN.md` and the dialog with it. Saved data (autosave, `.zmk-project.json`) is a public format: change it only
   with a `FORMAT_VERSION` bump, a migration and a new fixture in `tests/fixtures/saved/` (see
   `src/core/project-format.js`). Never edit existing fixtures or migrations.
 
