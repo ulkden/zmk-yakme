@@ -65,8 +65,9 @@ Decisions made while building unattended. Each one can be changed. Review and te
 17. 🛠 **Decided (to implement):** Dark mode only. **New:** bundle a monospace font locally (JetBrains Mono,
     SIL OFL 1.1, with its license file in `fonts/`) for key labels, the palette, raw binding fields and the
     preview. The rest of the UI keeps the system font stack. No external requests, so it still works offline.
-18. Pointing behaviors (`&mkp/&mmv/&msc`) add `dt-bindings/zmk/pointing.h` (current ZMK). Older
-    configs used `mouse.h`.
+18. 🛠 **Decided (to implement):** Pointing behaviors (`&mkp/&mmv/&msc`) add
+    `dt-bindings/zmk/pointing.h`, **unless the file already includes `dt-bindings/zmk/mouse.h`** (older
+    ZMK), in which case nothing is added.
 19. Keymaps written with preprocessor helper macros (e.g. zmk-nodefree-config's `ZMK_LAYER(...)`)
     are **not** parsed. Only real devicetree nodes are.
 20. "Advance to next key after picking a keycode" is **off** by default (toggle in the side panel).
