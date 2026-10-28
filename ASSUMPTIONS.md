@@ -47,9 +47,10 @@ Decisions made while building unattended. Each one can be changed. Review and te
     starting base-layer bindings: a legend that matches a keycode or label (e.g. `Q`, `Esc`, `⇧`, `1`)
     becomes `&kp CODE`, and anything else becomes `&none`. For multi-legend keys, the main (top-left or
     center) legend is used.
-13. Combo `key-positions`/`layers` must be numeric (simple integer expressions are evaluated).
-    Other combo properties (e.g. `require-prior-idle-ms`, `slow-release`) are preserved verbatim
-    but not editable in the UI.
+13. 🛠 **Decided (to implement):** The combo editor adds **`require-prior-idle-ms`** (number, empty =
+    unset) and **`slow-release`** (checkbox). **Symbolic key positions** (e.g. `#define`d names in
+    `key-positions`) are accepted: they're written back unchanged, and the UI warns that it can't place
+    them on the keyboard. Any other combo properties are still preserved verbatim.
 14. Clicking a key in Combos mode with no combo selected creates a new combo containing that key.
 15. Clicking a palette keycode fills the *last keycode parameter* of the current behavior
     (e.g. the tap key of `&mt`/`&lt`). Behaviors without a keycode param are replaced with `&kp X`.
