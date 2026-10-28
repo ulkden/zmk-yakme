@@ -2,7 +2,8 @@ import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseKeymap } from '../src/core/keymap-parse.js';
 import { writeKeymap, formatRows, layerIds } from '../src/core/keymap-write.js';
-import { requiredIncludes, ensureIncludes } from '../src/core/includes.js';
+import { requiredIncludes, ensureIncludes, addIncludes } from '../src/core/includes.js';
+import { writeKeymapDetailed } from '../src/core/keymap-write.js';
 import { FULL_KEYMAP } from './fixtures/full-keymap.js';
 import { ELVN_KEYMAP } from './fixtures/elvn.js';
 
@@ -96,5 +97,23 @@ describe('includes', () => {
     const out = ensureIncludes(src, ['behaviors.dtsi', 'dt-bindings/zmk/bt.h']);
     assert.equal(out, '#include <behaviors.dtsi>\n#include <dt-bindings/zmk/keys.h>\n#include <dt-bindings/zmk/bt.h>\n\n/ { };\n');
     assert.equal(ensureIncludes(out, ['dt-bindings/zmk/bt.h']), out);
+  });
+
+  test('addIncludes reports what was added', () => {
+    const src = '#include <behaviors.dtsi>\n/ { };\n';
+    assert.deepEqual(addIncludes(src, ['behaviors.dtsi', 'dt-bindings/zmk/bt.h']).added, ['dt-bindings/zmk/bt.h']);
+  });
+
+  test('mouse.h satisfies pointing.h', () => {
+    const src = '#include <dt-bindings/zmk/mouse.h>\n/ { };\n';
+    assert.deepEqual(addIncludes(src, ['dt-bindings/zmk/pointing.h']).added, []);
+    assert.deepEqual(addIncludes('/ { };', ['dt-bindings/zmk/pointing.h']).added, ['dt-bindings/zmk/pointing.h']);
+  });
+
+  test('writeKeymapDetailed lists includes added to an imported file', () => {
+    const km = parseKeymap(ELVN_KEYMAP);
+    km.layers[0].bindings[0] = '&out OUT_USB';
+    assert.deepEqual(writeKeymapDetailed(km).addedIncludes, ['dt-bindings/zmk/outputs.h']);
+    assert.deepEqual(writeKeymapDetailed({ ...km, source: null }).addedIncludes, []);
   });
 });

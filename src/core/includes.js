@@ -14,6 +14,11 @@ const HEADER_FOR = {
   msc: 'dt-bindings/zmk/pointing.h',
 };
 
+// Older headers that satisfy a newer one (e.g. ZMK before pointing.h used mouse.h).
+const ALTERNATES = {
+  'dt-bindings/zmk/pointing.h': ['dt-bindings/zmk/mouse.h'],
+};
+
 export function requiredIncludes(bindings) {
   const out = [...BASE];
   for (const b of bindings) {
@@ -23,15 +28,22 @@ export function requiredIncludes(bindings) {
   return out;
 }
 
-export function ensureIncludes(text, includes) {
-  const missing = includes.filter((inc) => !new RegExp(`#include\\s*[<"]${escapeRe(inc)}[>"]`).test(text));
-  if (!missing.length) return text;
-  const lines = missing.map((inc) => `#include <${inc}>`).join('\n');
+const hasInclude = (text, inc) => new RegExp(`#include\\s*[<"]${escapeRe(inc)}[>"]`).test(text);
+
+// Returns { text, added } where added lists the include paths that were inserted.
+export function addIncludes(text, includes) {
+  const added = includes.filter((inc) => ![inc, ...(ALTERNATES[inc] ?? [])].some((i) => hasInclude(text, i)));
+  if (!added.length) return { text, added };
+  const lines = added.map((inc) => `#include <${inc}>`).join('\n');
   const re = /^[ \t]*#include[^\n]*\n/gm;
   let lastEnd = -1;
   for (let m; (m = re.exec(text)); ) lastEnd = m.index + m[0].length;
-  if (lastEnd < 0) return `${lines}\n\n${text}`;
-  return text.slice(0, lastEnd) + lines + '\n' + text.slice(lastEnd);
+  if (lastEnd < 0) return { text: `${lines}\n\n${text}`, added };
+  return { text: text.slice(0, lastEnd) + lines + '\n' + text.slice(lastEnd), added };
+}
+
+export function ensureIncludes(text, includes) {
+  return addIncludes(text, includes).text;
 }
 
 function escapeRe(s) {

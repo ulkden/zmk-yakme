@@ -1,13 +1,23 @@
 // Produce the final .keymap text for the current state.
 import { activeLayout } from './state.js';
 import { rowsFromLayout } from './layout-ops.js';
-import { writeKeymap } from './keymap-write.js';
+import { writeKeymapDetailed } from './keymap-write.js';
 
-export function exportKeymap(state) {
-  if (!state.keymap) return '';
+// Returns { text, addedIncludes }. options: extra writer options (e.g. { diagrams }).
+export function exportKeymapDetailed(state, options = {}) {
+  if (!state.keymap) return { text: '', addedIncludes: [] };
   const layout = activeLayout(state);
-  if (!layout) return writeKeymap(state.keymap);
-  return writeKeymap(state.keymap, { rows: rowsFromLayout(layout.keys), keyCount: layout.keys.length });
+  if (!layout) return writeKeymapDetailed(state.keymap, options);
+  return writeKeymapDetailed(state.keymap, {
+    ...options,
+    rows: rowsFromLayout(layout.keys),
+    keyCount: layout.keys.length,
+    keys: layout.keys,
+  });
+}
+
+export function exportKeymap(state, options = {}) {
+  return exportKeymapDetailed(state, options).text;
 }
 
 export function exportFileName(state) {
