@@ -11,7 +11,7 @@ function keyPanel(state, actions) {
   const { ui, keymap } = state;
   const layer = keymap.layers[ui.layer];
   if (ui.key === null) {
-    return h('div.empty-hint', {}, h('p', {}, 'Select a key to edit it.'), h('p.muted', {}, 'Tip: ← → move between keys, Delete clears, Ctrl+Z undoes.'));
+    return h('div.empty-hint', {}, h('p', {}, 'Select a key to edit it.'), h('p.muted', {}, 'Tip: arrow keys move between keys, typing a letter or digit assigns it, Delete clears, Ctrl+Z undoes.'));
   }
   const binding = layer.bindings[ui.key] ?? (ui.layer === 0 ? '&none' : '&trans');
   return h(

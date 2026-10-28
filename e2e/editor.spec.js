@@ -52,11 +52,14 @@ test('tabbing between combo fields keeps focus', async ({ page }) => {
   await expect(page.locator('[name="combo-timeout"]')).toHaveValue('35');
 });
 
-test('keyboard shortcuts: arrows, delete, undo, redo', async ({ page }) => {
+test('keyboard shortcuts: spatial arrows, delete, undo, redo', async ({ page }) => {
   await loadExample(page);
   await key(page, 1).click();
   await page.keyboard.press('ArrowRight');
   await expect(key(page, 2)).toHaveClass(/selected/);
+  await page.keyboard.press('ArrowDown');
+  await expect(key(page, 14)).toHaveClass(/selected/);
+  await page.keyboard.press('ArrowUp');
   await page.keyboard.press('Delete');
   await expect(key(page, 2)).toHaveClass(/kind-none/);
   await page.keyboard.press('Control+z');
@@ -65,6 +68,19 @@ test('keyboard shortcuts: arrows, delete, undo, redo', async ({ page }) => {
   await expect(key(page, 2)).toHaveClass(/kind-none/);
   await page.keyboard.press('Escape');
   await expect(page.locator('#keyboard .key.selected')).toHaveCount(0);
+});
+
+test('type-to-assign follows the auto-advance setting', async ({ page }) => {
+  await loadExample(page);
+  await key(page, 1).click();
+  await page.keyboard.press('x');
+  await expect(key(page, 1).locator('.tap')).toHaveText('X');
+  await expect(key(page, 1)).toHaveClass(/selected/);
+  await page.getByLabel('Advance to next key after picking a keycode').check();
+  await key(page, 3).click();
+  await page.keyboard.press('7');
+  await expect(key(page, 3).locator('.tap')).toHaveText('7');
+  await expect(key(page, 4)).toHaveClass(/selected/);
 });
 
 test('layer settings popover: rename, node name, move and delete', async ({ page }) => {

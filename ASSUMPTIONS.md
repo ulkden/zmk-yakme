@@ -80,7 +80,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
 21. ✅ **Implemented:** Replace `prompt()`/`confirm()` with a **layer settings popover**: ✎ (or
     double-clicking the active tab) opens a small panel under the tab with display name, node name
     (see #7), move left/right and delete. Delete confirms inline in the same panel.
-22. 🛠 **Decided (to implement):** Delete/Backspace clears the selected key (`&none` on layer 0, `&trans`
+22. ✅ **Implemented:** Delete/Backspace clears the selected key (`&none` on layer 0, `&trans`
     elsewhere), and Esc deselects. **New:** arrow keys (←↑→↓) move to the **physically nearest key in that
     direction** (using key centers, rotation included) instead of by index. **Type-to-assign:** with a key
     selected and focus on the page, typing a letter or digit assigns `&kp X`, and advances to the next key

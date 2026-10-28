@@ -2,7 +2,7 @@ import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseDtsLayouts } from '../src/core/layout-dts.js';
 import { parseQmkLayouts, parseKleLayout } from '../src/core/layout-json.js';
-import { gridLayout, rowsFromLayout, layoutBounds } from '../src/core/layout-ops.js';
+import { gridLayout, rowsFromLayout, layoutBounds, nearestKey } from '../src/core/layout-ops.js';
 import { ELVN_LAYOUT } from './fixtures/elvn.js';
 
 const k = (x, y, extra = {}) => ({ x, y, w: 1, h: 1, r: 0, rx: 0, ry: 0, ...extra });
@@ -78,5 +78,16 @@ describe('layout ops', () => {
 
   test('layoutBounds of nothing is empty', () => {
     assert.deepEqual(layoutBounds([]), { minX: 0, minY: 0, maxX: 0, maxY: 0 });
+  });
+
+  test('nearestKey moves spatially', () => {
+    // 0 1 2 / 3 4 5, plus a staggered key 6 below 4 and a gap before 7
+    const keys = [k(0, 0), k(1, 0), k(2, 0), k(0, 1), k(1, 1), k(2, 1), k(1.4, 2), k(6, 0)];
+    assert.equal(nearestKey(keys, 1, 'down'), 4);
+    assert.equal(nearestKey(keys, 4, 'down'), 6);
+    assert.equal(nearestKey(keys, 4, 'up'), 1);
+    assert.equal(nearestKey(keys, 2, 'right'), 7);
+    assert.equal(nearestKey(keys, 0, 'left'), 0);
+    assert.equal(nearestKey(keys, 3, 'right'), 4);
   });
 });
