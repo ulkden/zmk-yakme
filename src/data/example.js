@@ -18,14 +18,14 @@ function exampleLayout() {
   return { name: 'Example 42-key split', keys };
 }
 
-const kp = (s) => s.split(' ').map((k) => (k.startsWith('&') ? k.replace(/_/g, ' ') : `&kp ${k}`));
+const kp = (s) => s.split(' ').map((k) => (k.startsWith('&') ? k.replace(/\+/g, ' ') : `&kp ${k}`));
 
 function exampleKeymap() {
   const base = [
     ...kp('TAB Q W E R T Y U I O P BSPC'),
-    ...kp('&mt_LCTRL_ESC A S D F G H J K L SEMI SQT'),
+    ...kp('&mt+LCTRL+ESC A S D F G H J K L SEMI SQT'),
     ...kp('LSHIFT Z X C V B N M COMMA DOT FSLH RET'),
-    ...kp('LGUI &mo_1 SPACE &lt_2_RET &mo_2 RALT'),
+    ...kp('LGUI &mo+1 SPACE &lt+2+RET &mo+2 RALT'),
   ];
   const lower = [
     ...kp('&trans N1 N2 N3 N4 N5 N6 N7 N8 N9 N0 &trans'),
@@ -35,8 +35,8 @@ function exampleKeymap() {
   ];
   const raise = [
     ...kp('&trans EXCL AT HASH DLLR PRCNT CARET AMPS STAR LPAR RPAR &trans'),
-    ...kp('&trans &bt_BT_SEL_0 &bt_BT_SEL_1 &bt_BT_CLR &none &none MINUS EQUAL LBRC RBRC BSLH GRAVE'),
-    ...kp('&trans &out_OUT_USB &out_OUT_BLE &none &none &none UNDER PLUS LBKT RBKT PIPE TILDE'),
+    ...kp('&trans &bt+BT_SEL+0 &bt+BT_SEL+1 &bt+BT_CLR &none &none MINUS EQUAL LBRC RBRC BSLH GRAVE'),
+    ...kp('&trans &out+OUT_USB &out+OUT_BLE &none &none &none UNDER PLUS LBKT RBKT PIPE TILDE'),
     ...kp('&trans &trans &trans &trans &trans &trans'),
   ];
   return {
