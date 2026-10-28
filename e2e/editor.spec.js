@@ -141,7 +141,7 @@ test('combos: create by clicking keys and assign a keycode', async ({ page }) =>
   await expect(pre).toContainText('require-prior-idle-ms = <150>;');
   await expect(pre).toContainText('slow-release;');
   await expect(pre).toContainText('timeout-ms = <40>;');
-  await page.getByRole('button', { name: 'Close' }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Close', exact: true }).click();
   await expect(page.locator('#status')).toContainText('2 combos');
   await page.getByRole('button', { name: 'Delete combo' }).click();
   await expect(page.locator('#status')).toContainText('1 combos');

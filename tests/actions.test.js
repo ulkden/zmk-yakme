@@ -12,8 +12,13 @@ function setup() {
   const store = createStore(initialState(), { normalize: normalizeUi });
   const prefs = {};
   const notes = [];
-  const actions = createActions(store, { savePref: (k, v) => (prefs[k] = v), notify: (m) => notes.push(m) });
-  return { store, actions, prefs, notes };
+  const cleared = [];
+  const actions = createActions(store, {
+    savePref: (k, v) => (prefs[k] = v),
+    notify: (m) => notes.push(m),
+    clearStorage: (opts) => cleared.push(opts),
+  });
+  return { store, actions, prefs, notes, cleared };
 }
 
 describe('actions (UI flows without DOM)', () => {
@@ -153,5 +158,33 @@ describe('actions (UI flows without DOM)', () => {
     const { store, actions } = setup();
     actions.setFileName('mine.keymap');
     assert.equal(store.get().fileName, 'mine.keymap');
+  });
+
+  test('closeKeymap returns to a fresh state without undo history', () => {
+    const { store, actions, cleared } = setup();
+    actions.loadExample();
+    actions.setAdvance(true);
+    actions.selectKey(0);
+    actions.pickKeycode('Q');
+    actions.setFileName('mine.keymap');
+    actions.closeKeymap();
+    const s = store.get();
+    assert.equal(s.keymap, null);
+    assert.deepEqual(s.layouts, []);
+    assert.equal(s.fileName, undefined);
+    assert.equal(s.ui.advance, true);
+    assert.ok(!store.canUndo());
+    assert.deepEqual(cleared, [{ resetPrefs: false }]);
+  });
+
+  test('closeKeymap can also reset preferences', () => {
+    const { store, actions, cleared } = setup();
+    actions.loadExample();
+    actions.setAdvance(true);
+    actions.setDiagrams(false);
+    actions.closeKeymap({ resetPrefs: true });
+    assert.equal(store.get().ui.advance, undefined);
+    assert.equal(store.get().ui.diagrams, true);
+    assert.deepEqual(cleared, [{ resetPrefs: true }]);
   });
 });

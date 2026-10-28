@@ -36,6 +36,7 @@ keymap, or both. Files can also be dropped anywhere on the page.
 | Add custom behavior    | Behaviors tab → + Hold-tap/Mod-morph/Macro (2)     |
 | Export                 | Export… → Download (2)                             |
 | Save project           | Save project (1)                                   |
+| Close keymap           | Close keymap → Close keymap (2)                    |
 
 ## Architecture
 

@@ -33,10 +33,12 @@ export function mountToolbar(el, store, actions, dialogs) {
   const redo = h('button.icon', { onclick: actions.redo, title: 'Redo (Ctrl+Shift+Z)' }, '↷');
   const exportBtn = h('button.primary', { onclick: dialogs.openExport, title: 'Preview, copy or download the .keymap' }, 'Export…');
   const project = projectButtons(store, actions);
+  const close = h('button', { onclick: dialogs.openClose, title: 'Close the keymap and start fresh' }, 'Close keymap');
   replace(
     el,
     h('button', { onclick: dialogs.openImport, title: 'Import layout or keymap (or drop files anywhere)' }, 'Import'),
     h('button', { onclick: dialogs.openNew }, 'New'),
+    close,
     h('span.sep'),
     project.open,
     project.save,
@@ -50,7 +52,7 @@ export function mountToolbar(el, store, actions, dialogs) {
   const sync = () => {
     undo.disabled = !store.canUndo();
     redo.disabled = !store.canRedo();
-    exportBtn.disabled = project.save.disabled = !store.get().keymap;
+    exportBtn.disabled = project.save.disabled = close.disabled = !store.get().keymap;
   };
   store.subscribe(sync);
   sync();

@@ -104,10 +104,10 @@ test('export dialog previews the example keymap', async ({ page }) => {
   await page.getByLabel('Generate a layer diagram comment above each layer').uncheck();
   await expect(pre).not.toContainText('// Base');
   await expect(page.locator('dialog ul.notices')).toContainText('No comments are written');
-  await page.getByRole('button', { name: 'Close' }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Close', exact: true }).click();
   await page.getByRole('button', { name: 'Export…' }).click();
   await expect(page.getByLabel('Generate a layer diagram comment above each layer')).not.toBeChecked();
-  await page.getByRole('button', { name: 'Close' }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Close', exact: true }).click();
   await expect(page.locator('dialog[open]')).toHaveCount(0);
 });
 
@@ -133,7 +133,7 @@ test('screenshots for visual review', async ({ page }, info) => {
   await page.getByRole('button', { name: 'Export…' }).click();
   await page.locator('dialog pre.preview').evaluate((el) => (el.scrollTop = el.scrollHeight * 0.25));
   await page.screenshot({ path: info.outputPath('06-export.png') });
-  await page.getByRole('button', { name: 'Close' }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Close', exact: true }).click();
   await page.getByRole('button', { name: /^Behaviors/ }).click();
   await page.getByRole('button', { name: '+ Hold-tap' }).click();
   await page.screenshot({ path: info.outputPath('07-behaviors.png') });

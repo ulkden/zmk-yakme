@@ -20,6 +20,22 @@ export function savePref(name, value) {
   }
 }
 
+export function clearPrefs() {
+  try {
+    localStorage.removeItem(PREFS_KEY);
+  } catch {
+    // storage unavailable: nothing to clear
+  }
+}
+
+export function clearDocument() {
+  try {
+    localStorage.removeItem(DOC_KEY);
+  } catch {
+    // storage unavailable: nothing to clear
+  }
+}
+
 export function loadDocument() {
   try {
     const raw = localStorage.getItem(DOC_KEY);
@@ -35,6 +51,7 @@ export function loadDocument() {
 const WATCHED = ['keymap', 'layouts', 'layoutIndex', 'fileName', 'cleanKeymap'];
 
 function saveNow(s) {
+  if (!s.keymap && !s.layouts.length) return clearDocument();
   try {
     const data = JSON.parse(serialize(s));
     const dirty = isDirty(s);
