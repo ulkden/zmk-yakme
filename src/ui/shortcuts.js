@@ -1,6 +1,6 @@
 // Keyboard shortcuts and drag-and-drop import.
 import { keyCount } from '../core/state.js';
-import { importFiles } from './dialogs.js';
+import { importFiles } from './import-flow.js';
 
 const typing = (el) => el && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName));
 
@@ -33,7 +33,7 @@ export function mountShortcuts(store, actions) {
   });
 }
 
-export function mountDropzone(actions) {
+export function mountDropzone(store, actions) {
   const overlay = document.getElementById('drop-overlay');
   let depth = 0;
   const show = (on) => overlay.classList.toggle('show', on);
@@ -52,6 +52,6 @@ export function mountDropzone(actions) {
     depth = 0;
     show(false);
     const files = [...(e.dataTransfer?.files ?? [])];
-    if (files.length) importFiles(files, actions);
+    if (files.length) importFiles(files, store, actions);
   });
 }

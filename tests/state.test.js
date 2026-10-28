@@ -1,7 +1,7 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createStore } from '../src/core/store.js';
-import { initialState, serialize, deserialize, normalizeUi, keyCount } from '../src/core/state.js';
+import { initialState, serialize, deserialize, normalizeUi, keyCount, isDirty } from '../src/core/state.js';
 import { importText, applyImport, looseJson } from '../src/core/import.js';
 import { validate } from '../src/core/validate.js';
 import { ELVN_KEYMAP, ELVN_LAYOUT } from './fixtures/elvn.js';
@@ -36,6 +36,17 @@ describe('state helpers', () => {
     assert.deepEqual(back.layouts, s.layouts);
     assert.equal(deserialize('{"nope":1}'), null);
     assert.equal(deserialize('garbage'), null);
+  });
+
+  test('isDirty compares against the last clean keymap', () => {
+    const km = { layers: [] };
+    assert.equal(isDirty({ keymap: null }), false);
+    assert.equal(isDirty({ keymap: km, cleanKeymap: km }), false);
+    assert.equal(isDirty({ keymap: km, cleanKeymap: null }), true);
+  });
+
+  test('serialize keeps the file name', () => {
+    assert.equal(deserialize(serialize({ ...initialState(), fileName: 'x.keymap' })).fileName, 'x.keymap');
   });
 
   test('normalizeUi clamps selections', () => {

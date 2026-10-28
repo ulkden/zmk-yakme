@@ -15,6 +15,11 @@ export function activeLayout(state) {
   return state.layouts[state.layoutIndex] ?? state.layouts[0] ?? null;
 }
 
+// True when the keymap has changes that were not exported or saved as a project.
+export function isDirty(state) {
+  return !!state.keymap && state.keymap !== state.cleanKeymap;
+}
+
 export function keyCount(state) {
   const layout = activeLayout(state);
   if (layout) return layout.keys.length;

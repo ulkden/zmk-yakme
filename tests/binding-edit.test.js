@@ -1,7 +1,7 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { switchBehavior, applyKeycode, setParam } from '../src/core/binding-edit.js';
-import { exportKeymap, exportFileName, toRawUrl } from '../src/core/export.js';
+import { exportKeymap, exportFileName, projectFileName, toRawUrl } from '../src/core/export.js';
 import { parseKeymap } from '../src/core/keymap-parse.js';
 import { exampleState } from '../src/data/example.js';
 
@@ -41,6 +41,7 @@ describe('export', () => {
   test('exportFileName derives from the imported file', () => {
     assert.equal(exportFileName({ fileName: 'corne.keymap' }), 'corne.keymap');
     assert.equal(exportFileName({}), 'keymap.keymap');
+    assert.equal(projectFileName({ fileName: 'corne.keymap' }), 'corne.zmk-project.json');
   });
 
   test('toRawUrl converts GitHub blob links', () => {

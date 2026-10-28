@@ -30,7 +30,7 @@ mountPalette($('palette'), store, actions);
 mountInspector($('inspector'), store, actions);
 mountStatus($('status'), store, actions);
 mountShortcuts(store, actions);
-mountDropzone(actions);
+mountDropzone(store, actions);
 autosave(store);
 
 const syncLayout = () => document.body.classList.toggle('empty', !store.get().keymap);

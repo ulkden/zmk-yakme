@@ -25,6 +25,10 @@ export function exportFileName(state) {
   return `${base || 'keymap'}.keymap`;
 }
 
+export function projectFileName(state) {
+  return exportFileName(state).replace(/\.keymap$/, '.zmk-project.json');
+}
+
 // Turn a github.com "blob" link into a raw.githubusercontent.com link that allows CORS.
 export function toRawUrl(url) {
   const m = /^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/(.+)$/.exec(url.trim());

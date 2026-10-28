@@ -1,5 +1,5 @@
 // Browser storage: the autosaved document and small per-user preferences.
-import { serialize, deserialize, initialState } from '../core/state.js';
+import { serialize, deserialize, initialState, isDirty } from '../core/state.js';
 
 const DOC_KEY = 'zmk-keymap-editor:v1';
 const PREFS_KEY = 'zmk-keymap-editor:prefs';
@@ -37,7 +37,7 @@ const WATCHED = ['keymap', 'layouts', 'layoutIndex', 'fileName', 'cleanKeymap'];
 function saveNow(s) {
   try {
     const data = JSON.parse(serialize(s));
-    const dirty = !!s.keymap && s.keymap !== s.cleanKeymap;
+    const dirty = isDirty(s);
     localStorage.setItem(DOC_KEY, JSON.stringify({ ...data, dirty }));
   } catch {
     // storage full or unavailable: editing still works, it just isn't saved
