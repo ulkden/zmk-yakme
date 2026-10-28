@@ -24,17 +24,25 @@ const TEXT_INPUTS = new Set(['text', 'number', 'url', 'search']);
 // Text-like inputs commit on Enter as well as on blur. Chrome and Firefox fire `change`
 // on Enter but WebKit/Safari does not, so Enter commits explicitly and the following
 // `change` (if any) is skipped when the value is unchanged.
+// Textareas get the same pending-text tracking but keep Enter for new lines.
 function onCommit(el, handler) {
-  if (el.tagName !== 'INPUT' || !TEXT_INPUTS.has(el.type)) return el.addEventListener('change', handler);
+  const isTextInput = el.tagName === 'INPUT' && TEXT_INPUTS.has(el.type);
+  if (!isTextInput && el.tagName !== 'TEXTAREA') return el.addEventListener('change', handler);
   let committed = el.value;
   const commit = (e) => {
     if (el.value === committed) return;
     committed = el.value;
+    delete el.dataset.pending;
     handler(e);
     committed = el.value; // handlers may normalize the field (e.g. sanitized node names)
   };
+  // Marks typing that is not committed yet, so a re-render can carry it over (see renderKeepingFocus).
+  el.addEventListener('input', () => {
+    if (el.value === committed) delete el.dataset.pending;
+    else el.dataset.pending = '1';
+  });
   el.addEventListener('change', commit);
-  el.addEventListener('keydown', (e) => e.key === 'Enter' && commit(e));
+  if (isTextInput) el.addEventListener('keydown', (e) => e.key === 'Enter' && commit(e));
 }
 
 function append(el, children) {
@@ -72,14 +80,21 @@ export function toast(message, kind = 'info') {
 }
 
 // Re-render `el` while keeping focus (and caret) on the field with the same `name`.
+// Text typed into that field but not committed yet is carried over, so a re-render
+// caused by another field's commit never discards what the user is typing.
 // Pair with requestAnimationFrame so a blur→change→focus sequence has finished first.
 export function renderKeepingFocus(el, render) {
   const active = document.activeElement;
   const name = active && el.contains(active) ? active.getAttribute('name') : null;
   const caret = name && typeof active.selectionStart === 'number' ? [active.selectionStart, active.selectionEnd] : null;
+  const pending = name && active.dataset.pending ? active.value : null;
   render();
   const next = name && el.querySelector(`[name="${name}"]`);
   if (!next || next === active) return;
+  if (pending !== null) {
+    next.value = pending;
+    next.dataset.pending = '1';
+  }
   next.focus();
   if (caret) {
     try {
