@@ -68,8 +68,11 @@ Decisions made while building unattended. Each one can be changed. Review and te
 18. 🛠 **Decided (to implement):** Pointing behaviors (`&mkp/&mmv/&msc`) add
     `dt-bindings/zmk/pointing.h`, **unless the file already includes `dt-bindings/zmk/mouse.h`** (older
     ZMK), in which case nothing is added.
-19. Keymaps written with preprocessor helper macros (e.g. zmk-nodefree-config's `ZMK_LAYER(...)`)
-    are **not** parsed. Only real devicetree nodes are.
+19. 🛠 **Decided (to implement):** Keymaps written with helper macros (`ZMK_LAYER`, `ZMK_COMBO`,
+    `ZMK_HOLD_TAP`, …, from zmk-helpers / zmk-nodefree-config) are still not parsed, but they are **detected,
+    and a clear message explains they aren't supported yet**. Below it, in small text, the message links to the
+    project's GitHub issues page to request the feature. **Open item:** the repo has no GitHub remote yet,
+    so the issues URL is a placeholder (one constant) until it's published.
 20. "Advance to next key after picking a keycode" is **off** by default (toggle in the side panel).
 21. Layer rename uses the browser's `prompt()` dialog (✎ button or double-click an active tab). This is
     a simple MVP choice that can become inline editing later.
