@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Keymap Editor Tests</title>
+  <style>
+    body { background: #0f1115; color: #d7dae0; font: 13px/1.5 ui-monospace, monospace; padding: 16px; }
+    .ok { color: #8bd49c; } .fail { color: #f28b82; white-space: pre-wrap; }
+    h1 { font-size: 15px; }
+  </style>
+  <script type="importmap">
+    { "imports": { "node:test": "./shim/test.js", "node:assert/strict": "./shim/assert.js" } }
+  </script>
+</head>
+<body>
+  <h1 id="summary">Running…</h1>
+  <div id="out"></div>
+  <script type="module">
+    import { run } from 'node:test';
+    import './all.js';
+    const out = document.getElementById('out');
+    const { passed, failed } = await run(({ name, ok, err }) => {
+      const div = document.createElement('div');
+      div.className = ok ? 'ok' : 'fail';
+      div.textContent = (ok ? '✓ ' : '✗ ') + name + (err ? '\n    ' + (err.stack || err.message) : '');
+      out.appendChild(div);
+    });
+    document.getElementById('summary').textContent = `${passed} passed, ${failed} failed`;
+  </script>
+</body>
+</html>
