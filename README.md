@@ -48,7 +48,8 @@ Enable GitHub Pages for the repository root (branch `main`, folder `/`). No buil
 | Back up work | **Save project** / **Open project** (JSON). Work also autosaves in the browser. |
 | Undo / redo | <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> |
 
-See [docs/DESIGN.md](docs/DESIGN.md) for the functional design and [ASSUMPTIONS.md](ASSUMPTIONS.md) for open decisions.
+See [docs/DESIGN.md](docs/DESIGN.md) for the functional design, [ASSUMPTIONS.md](ASSUMPTIONS.md) for design decisions,
+and [docs/QA.md](docs/QA.md) for the manual QA process.
 
 ## Credits & license
 

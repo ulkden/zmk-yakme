@@ -1,0 +1,38 @@
+name: QA feedback
+description: A bug, rough edge or suggestion found while using the editor
+labels: ["feedback"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Getting started, Importing, Editing keys, Layers, Combos, Behaviors, Checking your work, Exporting, Saving your work, Other]
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options: [blocker, major, minor, idea]
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps
+      description: What you did, briefly.
+      placeholder: "1. Imported corne.keymap\n2. ..."
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+      description: What happened. Screenshots or the exported file are welcome.
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggestion
+      description: Optional idea or change.
