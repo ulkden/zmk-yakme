@@ -3,6 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Content-Security-Policy: only this site's own scripts, styles and fonts; network access only to
+      GitHub (URL / repository import). Keep in sync with ALLOWED_HOSTS in src/core/github.js.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src https://api.github.com https://raw.githubusercontent.com https://gist.githubusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
     <meta name="color-scheme" content="dark" />
     <title>ZMK Keymap Editor</title>
     <link rel="stylesheet" href="css/app.css" />

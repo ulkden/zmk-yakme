@@ -3,11 +3,13 @@ import { h, replace } from './dom.js';
 import { dialog } from './modal.js';
 import { importText } from '../core/import.js';
 import { toRawUrl } from '../core/export.js';
-import { parseGithubUrl } from '../core/github.js';
+import { parseGithubUrl, isAllowedUrl } from '../core/github.js';
 import { importFiles, applyResult, errorContent } from './import-flow.js';
 import { showRepoPicker } from './repo-picker.js';
 
 async function fetchText(url) {
+  if (!isAllowedUrl(url))
+    throw new Error('only https links to GitHub (github.com, raw.githubusercontent.com, gists) can be imported');
   const res = await fetch(toRawUrl(url));
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.text();

@@ -1,7 +1,7 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { legendToBinding, legendToCode } from '../src/core/legends.js';
-import { parseGithubUrl, repoFiles, importOrder, listRepo, rawUrl } from '../src/core/github.js';
+import { parseGithubUrl, repoFiles, importOrder, listRepo, rawUrl, isAllowedUrl } from '../src/core/github.js';
 import { importText, applyImport, combineResults } from '../src/core/import.js';
 import { initialState } from '../src/core/state.js';
 
@@ -129,6 +129,16 @@ describe('GitHub URLs', () => {
         ['elvn.overlay', false],
       ],
     );
+  });
+
+  test('isAllowedUrl only accepts https GitHub hosts', () => {
+    assert.equal(isAllowedUrl('https://github.com/me/r/blob/main/a.keymap'), true);
+    assert.equal(isAllowedUrl('https://raw.githubusercontent.com/me/r/main/a.keymap'), true);
+    assert.equal(isAllowedUrl('https://gist.githubusercontent.com/me/1/raw/a.keymap'), true);
+    assert.equal(isAllowedUrl('http://github.com/me/r'), false);
+    assert.equal(isAllowedUrl('https://github.com.evil.test/a'), false);
+    assert.equal(isAllowedUrl('https://example.com/a.keymap'), false);
+    assert.equal(isAllowedUrl('not a url'), false);
   });
 
   test('importOrder puts keymaps last', () => {
