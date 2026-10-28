@@ -75,8 +75,9 @@ Decisions made while building unattended. Each one can be changed. Review and te
     so the issues URL is a placeholder (one constant) until it's published.
 20. 🛠 **Decided (to implement):** "Advance to next key after picking a keycode" stays **off by default**,
     and **the choice is remembered** across reloads (localStorage preference, separate from the document).
-21. Layer rename uses the browser's `prompt()` dialog (✎ button or double-click an active tab). This is
-    a simple MVP choice that can become inline editing later.
+21. 🛠 **Decided (to implement):** Replace `prompt()`/`confirm()` with a **layer settings popover**: ✎ (or
+    double-clicking the active tab) opens a small panel under the tab with display name, node name
+    (see #7), move left/right and delete. Delete confirms inline in the same panel.
 22. Delete/Backspace on a selected key sets `&none` on layer 0 and `&trans` on other layers.
 23. Exported layer bindings are padded to the layout's key count. The exported file name follows the
     imported keymap's file name, or `keymap.keymap`.
