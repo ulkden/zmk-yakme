@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Client-side ZMK keymap editor: import a physical layout and keymap, edit layers and combos, export a .keymap file.",
   "scripts": {
-    "test": "node --test \"tests/**/*.test.js\"",
+    "test": "node --test tests/*.test.js",
     "serve": "python3 -m http.server 8080"
   },
   "license": "MIT"

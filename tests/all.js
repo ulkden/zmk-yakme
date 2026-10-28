@@ -8,3 +8,4 @@ import './keymap-ops.test.js';
 import './state.test.js';
 import './labels.test.js';
 import './binding-edit.test.js';
+import './actions.test.js';
