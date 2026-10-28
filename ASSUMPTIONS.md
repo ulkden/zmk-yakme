@@ -81,8 +81,8 @@ Decisions made while building unattended. Each one can be changed. Review and te
 22. 🛠 **Decided (to implement):** Delete/Backspace clears the selected key (`&none` on layer 0, `&trans`
     elsewhere), and Esc deselects. **New:** arrow keys (←↑→↓) move to the **physically nearest key in that
     direction** (using key centers, rotation included) instead of by index. **Type-to-assign:** with a key
-    selected and focus on the page, typing a letter or digit assigns `&kp X` and advances to the next key
-    (always, regardless of the auto-advance setting). Modifier combos such as Ctrl+Z still go to shortcuts.
+    selected and focus on the page, typing a letter or digit assigns `&kp X`, and advances to the next key
+    **only when auto-advance (#20) is on**. Modifier combos such as Ctrl+Z still go to shortcuts.
 23. 🛠 **Decided (to implement):** Exported layers are padded to the layout's key count. The file name
     defaults to the imported keymap's name (or `keymap.keymap`), and it is **shown and editable in the
     export notice / preview**. The edited name is remembered with the project.
