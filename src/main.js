@@ -1,7 +1,7 @@
 // Application entry point: build the store, restore saved work and mount components.
 import { createStore } from './core/store.js';
 import { normalizeUi } from './core/state.js';
-import { loadDocument, loadPrefs, savePref, autosave } from './ui/persist.js';
+import { loadDocument, loadPrefs, savePref, autosave, clearDocument, clearPrefs } from './ui/persist.js';
 import { toast } from './ui/dom.js';
 import { createActions } from './ui/actions.js';
 import { createDialogs } from './ui/dialogs.js';
@@ -18,7 +18,11 @@ const prefs = loadPrefs();
 const initial = loadDocument();
 initial.ui = { ...initial.ui, advance: !!prefs.advance, diagrams: prefs.diagrams ?? true };
 const store = createStore(initial, { normalize: normalizeUi });
-const actions = createActions(store, { savePref, notify: toast });
+const clearStorage = ({ resetPrefs }) => {
+  clearDocument();
+  if (resetPrefs) clearPrefs();
+};
+const actions = createActions(store, { savePref, notify: toast, clearStorage });
 const dialogs = createDialogs(store, actions);
 const $ = (id) => document.getElementById(id);
 

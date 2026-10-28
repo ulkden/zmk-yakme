@@ -11,7 +11,8 @@ the user guide once it passes.
 npm run serve        # then open http://localhost:8080
 ```
 
-For a fresh start (no saved keymap), use a private window or clear the site data for localhost.
+For a fresh start, use **Close keymap** in the toolbar. Tick *Also reset preferences* to also forget
+auto-advance and layer-diagram settings.
 
 ## How to test and give feedback
 

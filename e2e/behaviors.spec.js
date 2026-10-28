@@ -6,7 +6,7 @@ const behaviorsTab = (page) => page.getByRole('button', { name: /^Behaviors \(/ 
 async function exportText(page) {
   await page.getByRole('button', { name: 'Export…' }).click();
   const text = await page.locator('dialog pre.preview').textContent();
-  await page.getByRole('button', { name: 'Close' }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Close', exact: true }).click();
   return text;
 }
 

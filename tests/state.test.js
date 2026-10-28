@@ -22,6 +22,14 @@ describe('store', () => {
     assert.deepEqual(store.get().keymap, { v: 2 });
   });
 
+  test('reset replaces state and clears history', () => {
+    const store = createStore({ ...initialState(), keymap: { v: 1 } });
+    store.update((s) => ({ ...s, keymap: { v: 2 } }));
+    store.reset(initialState());
+    assert.equal(store.get().keymap, null);
+    assert.ok(!store.canUndo() && !store.canRedo());
+  });
+
   test('history: false skips the undo stack', () => {
     const store = createStore(initialState());
     store.update((s) => ({ ...s, keymap: {} }), { history: false });

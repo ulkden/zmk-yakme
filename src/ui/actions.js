@@ -135,7 +135,7 @@ function comboAndBehaviorActions(ctx) {
 }
 
 // Imports, new keymaps and the example all mark the result as "clean" (nothing unexported).
-function documentActions({ store }) {
+function documentActions({ store, clearStorage }) {
   const keepPrefs = (s, next) => ({ ...next, ui: { ...next.ui, advance: s.ui.advance, diagrams: s.ui.diagrams } });
   return {
     importResult(result, fileName) {
@@ -154,6 +154,14 @@ function documentActions({ store }) {
         return { ...base, keymap: km, cleanKeymap: km };
       });
     },
+    // Back to the welcome screen with no document, no saved copy and no undo history.
+    // resetPrefs also forgets auto-advance and layer-diagram preferences.
+    closeKeymap({ resetPrefs = false } = {}) {
+      const s = store.get();
+      const fresh = initialState();
+      clearStorage({ resetPrefs });
+      store.reset(resetPrefs ? fresh : keepPrefs(s, fresh));
+    },
     loadExample: () =>
       store.update((s) => {
         const ex = exampleState();
@@ -162,8 +170,9 @@ function documentActions({ store }) {
   };
 }
 
-// options: { savePref(name, value), notify(message, kind) } for browser-only side effects.
-export function createActions(store, { savePref = () => {}, notify = () => {} } = {}) {
+// options: { savePref(name, value), notify(message, kind), clearStorage({ resetPrefs }) }
+// for browser-only side effects.
+export function createActions(store, { savePref = () => {}, notify = () => {}, clearStorage = () => {} } = {}) {
   const get = store.get;
   const setUi = (patch) =>
     store.update((s) => (Object.keys(patch).every((k) => s.ui[k] === patch[k]) ? s : { ...s, ui: { ...s.ui, ...patch } }), {
@@ -171,6 +180,6 @@ export function createActions(store, { savePref = () => {}, notify = () => {} } 
     });
   const editKeymap = (fn) => store.update((s) => (s.keymap ? { ...s, keymap: fn(s.keymap, s) } : s));
   const actions = {};
-  const ctx = { store, get, setUi, editKeymap, savePref, notify, actions };
+  const ctx = { store, get, setUi, editKeymap, savePref, notify, clearStorage, actions };
   return Object.assign(actions, uiActions(ctx), keyActions(ctx), layerActions(ctx), comboAndBehaviorActions(ctx), documentActions(ctx));
 }
