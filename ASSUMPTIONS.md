@@ -28,8 +28,10 @@ Decisions made while building unattended. Each one can be changed. Review and te
    display name for new layers (`nav_layer`), and every layer gets a `display-name`. In addition, the
    **node name is shown as its own editable field** in the layer actions, sanitized to a valid
    devicetree name and kept unique.
-8. Bindings are formatted one row per physical row: a new row starts when a key's `y` changes by
-   ≥ 0.5u or `x` goes backwards. Columns are padded for alignment.
+8. 🔍 **To investigate:** Bindings currently export one row per physical row (new row when `y` changes by
+   ≥ 0.5u or `x` goes backwards), with columns padded. Plan: import several popular split and
+   single-board ZMK keyboards from GitHub (layouts + keymaps), check how they look in the editor and
+   in the exported text, then pick a more refined approach based on what looks wrong.
 9. If a layer has fewer bindings than the layout has keys, it is padded with `&trans` (`&none` on
    layer 0). Extra bindings beyond the key count are kept and reported as a warning.
 10. Deleting/moving layers remaps **numeric** layer params in `&mo &lt &to &tog &sl` and combo
