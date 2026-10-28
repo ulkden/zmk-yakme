@@ -80,6 +80,10 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
   with `h()` / text nodes.
 - Nothing leaves the browser. Network access only on explicit user action (URL / GitHub import), and
   only to GitHub. No analytics, trackers, external fonts or CDNs.
+- The Content-Security-Policy in `index.html` enforces this. Keep it in sync with `ALLOWED_HOSTS` in
+  `src/core/github.js`, and never loosen it (no `unsafe-inline` for scripts, no `unsafe-eval`, no new hosts)
+  without the maintainer's agreement. `style-src 'unsafe-inline'` is a deliberate exception for WebKit. Lint bans `innerHTML`, `eval` and similar.
+- Report vulnerabilities privately (see `SECURITY.md`).
 - Pin dependency versions exactly; pin GitHub Actions to commit SHAs; give workflows the least
   permissions they need.
 

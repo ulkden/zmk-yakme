@@ -24,6 +24,17 @@ export default [
       eqeqeq: ['error', 'always', { null: 'ignore' }],
       'no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none', ignoreRestSiblings: true }],
       'prefer-const': 'error',
+      // Imported files are untrusted: build DOM with h()/text nodes, never from HTML strings.
+      'no-restricted-properties': [
+        'error',
+        { property: 'innerHTML', message: 'Build DOM with h() / text nodes (untrusted input).' },
+        { property: 'outerHTML', message: 'Build DOM with h() / text nodes (untrusted input).' },
+        { property: 'insertAdjacentHTML', message: 'Build DOM with h() / text nodes (untrusted input).' },
+        { object: 'document', property: 'write', message: 'Not allowed.' },
+      ],
+      'no-eval': 'error',
+      'no-implied-eval': 'error',
+      'no-new-func': 'error',
       'no-var': 'error',
     },
   },

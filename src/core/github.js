@@ -2,6 +2,24 @@
 
 const EXT = /\.(keymap|dtsi|overlay|json)$/i;
 
+// The only hosts the app may contact (also enforced by the Content-Security-Policy in index.html).
+export const ALLOWED_HOSTS = [
+  'github.com',
+  'api.github.com',
+  'raw.githubusercontent.com',
+  'gist.githubusercontent.com',
+];
+
+// True for https URLs on an allowed GitHub host.
+export function isAllowedUrl(url) {
+  try {
+    const u = new URL(String(url).trim());
+    return u.protocol === 'https:' && ALLOWED_HOSTS.includes(u.hostname);
+  } catch {
+    return false;
+  }
+}
+
 // Returns { kind: 'file' | 'repo', owner, repo, ref, path } or null for non-GitHub URLs.
 export function parseGithubUrl(url) {
   const u = String(url ?? '')
