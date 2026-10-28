@@ -195,6 +195,12 @@ input.raw { font-family: var(--mono); font-size: 12px; }
 .combo-name { font-weight: 500; }
 .combo-out { color: var(--accent); }
 .add-combo { border-style: dashed; background: transparent; }
+.add-row { display: flex; gap: 4px; flex-wrap: wrap; }
+.add-row .add-combo { flex: 1; padding: 5px 6px; white-space: nowrap; font-size: 12px; }
+.combo-item .badge { align-self: center; }
+.mono { font-family: var(--mono); }
+.field.top { align-items: start; }
+textarea.macro-steps { width: 100%; min-height: 110px; resize: vertical; font-size: 12px; }
 .combo-editor { border-top: 1px solid var(--border); padding-top: 12px; }
 .chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .chip { padding: 2px 9px; font-size: 12px; border-radius: 12px; background: transparent; }

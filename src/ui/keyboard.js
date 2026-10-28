@@ -3,6 +3,7 @@ import { h, replace, isGlyph } from './dom.js';
 import { activeLayout } from '../core/state.js';
 import { layoutBounds } from '../core/layout-ops.js';
 import { bindingLabel } from '../core/labels.js';
+import { parseBinding } from '../core/bindings.js';
 
 const MAX_UNIT = 64;
 const GAP = 4;
@@ -11,6 +12,10 @@ function keyClasses(state, i, binding) {
   const { ui, keymap } = state;
   const cls = ['key', `kind-${bindingLabel(binding).kind}`];
   if (ui.mode === 'layers' && ui.key === i) cls.push('selected');
+  if (ui.mode === 'behaviors') {
+    const label = keymap.behaviors?.[ui.behavior]?.label;
+    if (label && parseBinding(binding).behavior === label) cls.push('combo-on');
+  }
   if (ui.mode === 'combos') {
     const combo = keymap.combos[ui.combo];
     if (combo?.keyPositions.includes(i)) cls.push('combo-on');

@@ -3,6 +3,7 @@
 import { parseDts, findNodes, hasCompatible } from '../dts/parse.js';
 import { requiredIncludes, addIncludes } from './includes.js';
 import { diagramComment } from './diagram.js';
+import { behaviorEdits, containerLines } from './behaviors-write.js';
 
 const IND = '    ';
 
@@ -102,12 +103,23 @@ function indentOf(text, pos) {
 const nodeHeader = (node) => node.labels.map((l) => `${l}: `).join('') + node.name;
 
 export function allBindings(keymap) {
-  return [...keymap.layers.flatMap((l) => l.bindings), ...keymap.combos.map((c) => c.binding)];
+  return [
+    ...keymap.layers.flatMap((l) => l.bindings),
+    ...keymap.combos.map((c) => c.binding),
+    ...(keymap.behaviors ?? []).flatMap((b) => b.bindings),
+  ];
+}
+
+function newContainers(behaviors) {
+  return ['behaviors', 'macros']
+    .map((name) => [name, behaviors.filter((b) => (b.kind === 'macro') === (name === 'macros'))])
+    .filter(([, items]) => items.length)
+    .map(([name, items]) => containerLines(name, items));
 }
 
 function generate(keymap, opts) {
   const includes = requiredIncludes(allBindings(keymap)).map((inc) => `#include <${inc}>`);
-  const nodes = [];
+  const nodes = newContainers(keymap.behaviors ?? []).map((lines) => indentLines(lines, IND));
   if (keymap.combos.length) nodes.push(indentLines(combosLines(keymap.combos), IND));
   nodes.push(indentLines(keymapLines(keymap, opts), IND));
   const text = [
@@ -133,13 +145,14 @@ function splice(keymap, opts) {
   const comboNode = findNodes(root, (n) => hasCompatible(n, 'zmk,combos'))[0];
   const kmInd = indentOf(text, kmNode.start);
   let kmText = indentLines(keymapLines(keymap, opts, nodeHeader(kmNode)), kmInd);
-  const edits = [];
+  const { edits, prefix } = behaviorEdits(text, root, keymap.behaviors ?? []);
   if (comboNode) {
     const ind = indentOf(text, comboNode.start);
     edits.push({ start: comboNode.start, end: comboNode.end, text: indentLines(combosLines(keymap.combos, nodeHeader(comboNode)), ind) });
   } else if (keymap.combos.length) {
     kmText = indentLines(combosLines(keymap.combos), kmInd) + '\n\n' + kmInd + kmText;
   }
+  for (const lines of prefix.reverse()) kmText = indentLines(lines, kmInd) + '\n\n' + kmInd + kmText;
   edits.push({ start: kmNode.start, end: kmNode.end, text: kmText });
   edits.sort((a, b) => b.start - a.start);
   let out = text;

@@ -7,7 +7,7 @@ export function initialState() {
     layouts: [],
     layoutIndex: 0,
     keymap: null,
-    ui: { mode: 'layers', layer: 0, key: null, combo: null, diagrams: true },
+    ui: { mode: 'layers', layer: 0, key: null, combo: null, behavior: null, diagrams: true },
   };
 }
 
@@ -30,11 +30,13 @@ export function keyCount(state) {
 export function normalizeUi(state) {
   const layers = state.keymap?.layers.length ?? 0;
   const combos = state.keymap?.combos.length ?? 0;
+  const behaviors = state.keymap?.behaviors?.length ?? 0;
   const keys = keyCount(state);
   const ui = { ...state.ui };
   ui.layer = Math.min(Math.max(0, ui.layer), Math.max(0, layers - 1));
   if (ui.key !== null && ui.key >= keys) ui.key = null;
   if (ui.combo !== null && ui.combo >= combos) ui.combo = null;
+  if (ui.behavior != null && ui.behavior >= behaviors) ui.behavior = null;
   const same = Object.keys(ui).every((k) => ui[k] === state.ui[k]);
   return same ? state : { ...state, ui };
 }
@@ -58,7 +60,7 @@ export function deserialize(json) {
       ...initialState(),
       layouts: data.layouts,
       layoutIndex: data.layoutIndex ?? 0,
-      keymap: data.keymap ?? null,
+      keymap: data.keymap ? { behaviors: [], ...data.keymap } : null,
       fileName: data.fileName ?? null,
     };
   } catch {

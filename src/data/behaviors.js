@@ -45,6 +45,6 @@ const BY_NAME = Object.fromEntries(BEHAVIORS.map((b) => [b.name, b]));
 export function behaviorDef(name, customBehaviors = []) {
   if (BY_NAME[name]) return BY_NAME[name];
   const custom = customBehaviors.find((b) => b.label === name);
-  if (custom) return { name, label: `${name} (custom)`, params: Array(custom.cells).fill('raw'), custom: true };
+  if (custom) return { name, label: `${name} (custom)`, params: custom.params ?? Array(custom.cells).fill('raw'), custom: true };
   return null;
 }

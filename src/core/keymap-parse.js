@@ -2,6 +2,7 @@
 import { parseDts, findNodes, getProp, propCells, propString, hasCompatible } from '../dts/parse.js';
 import { evalExpr } from '../dts/expr.js';
 import { splitBindings, bindingsPerLine, splitParams } from './bindings.js';
+import { parseBehaviors, behaviorKind } from './behaviors-parse.js';
 
 const LAYER_PROPS = new Set(['bindings', 'display-name', 'label']);
 const COMBO_PROPS = new Set(['bindings', 'key-positions', 'timeout-ms', 'layers', 'require-prior-idle-ms', 'slow-release']);
@@ -48,9 +49,10 @@ function parseCombo(node, text) {
   };
 }
 
-function isBehavior(node) {
+// Behaviors that are not editable here (tap-dance, sticky variants, …): listed by label only.
+function isOtherBehavior(node) {
   const compat = propString(node, 'compatible') ?? '';
-  return compat.startsWith('zmk,behavior') && node.labels.length > 0;
+  return compat.startsWith('zmk,behavior') && node.labels.length > 0 && !behaviorKind(node);
 }
 
 export function parseKeymap(text) {
@@ -63,7 +65,8 @@ export function parseKeymap(text) {
   return {
     layers,
     combos: comboNode ? comboNode.children.map((n) => parseCombo(n, text)) : [],
-    customBehaviors: findNodes(root, isBehavior).map((n) => ({
+    behaviors: parseBehaviors(root, text),
+    customBehaviors: findNodes(root, isOtherBehavior).map((n) => ({
       label: n.labels[0],
       cells: intList(propCells(n, '#binding-cells'))[0] ?? 0,
     })),

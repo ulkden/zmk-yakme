@@ -1,5 +1,6 @@
 // User intents mapped to store updates. Components call these instead of the store.
 import * as ops from '../core/keymap-ops.js';
+import * as bops from '../core/behavior-ops.js';
 import { applyKeycode } from '../core/binding-edit.js';
 import { applyImport } from '../core/import.js';
 import { gridLayout } from '../core/layout-ops.js';
@@ -63,7 +64,7 @@ export function createActions(store, { savePref = () => {}, notify = () => {} } 
     // Palette click: fill the keycode of the selected key or combo.
     pickKeycode(code) {
       const s = get();
-      const custom = s.keymap?.customBehaviors ?? [];
+      const custom = bops.allCustomBehaviors(s.keymap);
       if (s.ui.mode === 'combos' && s.ui.combo !== null) {
         const combo = s.keymap.combos[s.ui.combo];
         return actions.updateCombo({ binding: applyKeycode(combo.binding, code, custom) });
@@ -106,6 +107,22 @@ export function createActions(store, { savePref = () => {}, notify = () => {} } 
       if (idx === null) return;
       editKeymap((km) => ops.removeCombo(km, idx));
       setUi({ combo: null });
+    },
+
+    selectBehavior: (behavior) => setUi({ behavior, mode: 'behaviors' }),
+    addBehavior(kind) {
+      editKeymap((km) => bops.addBehavior(km, kind));
+      actions.selectBehavior(get().keymap.behaviors.length - 1);
+    },
+    updateBehavior(patch) {
+      const idx = get().ui.behavior;
+      if (idx != null) editKeymap((km) => bops.updateBehavior(km, idx, patch));
+    },
+    removeBehavior() {
+      const idx = get().ui.behavior;
+      if (idx == null) return;
+      editKeymap((km) => bops.removeBehavior(km, idx));
+      setUi({ behavior: null });
     },
 
     importResult(result, fileName) {

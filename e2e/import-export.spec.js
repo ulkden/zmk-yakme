@@ -126,4 +126,8 @@ test('screenshots for visual review', async ({ page }, info) => {
   await page.getByRole('button', { name: 'Export…' }).click();
   await page.locator('dialog pre.preview').evaluate((el) => (el.scrollTop = el.scrollHeight * 0.25));
   await page.screenshot({ path: info.outputPath('06-export.png') });
+  await page.getByRole('button', { name: 'Close' }).click();
+  await page.getByRole('button', { name: /^Behaviors/ }).click();
+  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  await page.screenshot({ path: info.outputPath('07-behaviors.png') });
 });

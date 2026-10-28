@@ -38,7 +38,8 @@ export function mountPalette(el, store, actions) {
   replace(el, h('div.palette-head', {}, search), groupsEl, datalist);
   renderGroups();
 
-  const syncVisibility = () => el.classList.toggle('hidden', !store.get().keymap);
+  // Nothing in the palette applies to behavior definitions, so it is hidden on that tab.
+  const syncVisibility = () => el.classList.toggle('hidden', !store.get().keymap || store.get().ui.mode === 'behaviors');
   store.subscribe(syncVisibility);
   syncVisibility();
 }

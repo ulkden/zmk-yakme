@@ -11,3 +11,4 @@ import './binding-edit.test.js';
 import './actions.test.js';
 import './import-sources.test.js';
 import './diagram.test.js';
+import './behaviors.test.js';

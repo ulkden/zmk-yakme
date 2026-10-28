@@ -62,11 +62,11 @@ describe('parseKeymap', () => {
     assert.deepEqual(c.extra, ['hold-trigger = <1>;']);
   });
 
-  test('lists custom behaviors and macros by label', () => {
+  test('reads editable behaviors and macros', () => {
     const km = parseKeymap(FULL_KEYMAP);
-    assert.deepEqual(km.customBehaviors, [
-      { label: 'hm', cells: 2 },
-      { label: 'hello', cells: 0 },
+    assert.deepEqual(km.behaviors.map((b) => [b.kind, b.label]), [
+      ['hold-tap', 'hm'],
+      ['macro', 'hello'],
     ]);
   });
 

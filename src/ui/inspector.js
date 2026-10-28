@@ -2,9 +2,12 @@
 import { h, replace, renderKeepingFocus, frameScheduler } from './dom.js';
 import { bindingEditor } from './binding-editor.js';
 import { bindingLabel } from '../core/labels.js';
+import { allCustomBehaviors } from '../core/behavior-ops.js';
+import { behaviorsPanel } from './behaviors-panel.js';
+import { numberField } from './fields.js';
 
 function ctxOf(state) {
-  return { layers: state.keymap.layers, customBehaviors: state.keymap.customBehaviors ?? [] };
+  return { layers: state.keymap.layers, customBehaviors: allCustomBehaviors(state.keymap) };
 }
 
 function keyPanel(state, actions) {
@@ -65,22 +68,6 @@ function layerChips(combo, layers, actions) {
   );
 }
 
-function msField(label, name, value, placeholder, onChange) {
-  return h(
-    'label.field',
-    {},
-    h('span', {}, label),
-    h('input', {
-      type: 'number',
-      name,
-      min: 0,
-      value: value ?? '',
-      placeholder,
-      onchange: (e) => onChange(e.target.value === '' ? null : Number(e.target.value)),
-    }),
-  );
-}
-
 function comboEditor(state, actions) {
   const combo = state.keymap.combos[state.ui.combo];
   if (!combo) return h('p.muted', {}, 'Select a combo, or press "+ New combo" and then click keys to add them.');
@@ -90,8 +77,8 @@ function comboEditor(state, actions) {
     h('p.muted', {}, 'Click keys on the keyboard to add or remove them.'),
     h('label.field', {}, h('span', {}, 'Name'), h('input', { type: 'text', name: 'combo-name', value: combo.name, spellcheck: false, onchange: (e) => actions.updateCombo({ name: e.target.value.trim() || combo.name }) })),
     bindingEditor(combo.binding, ctxOf(state), (binding) => actions.updateCombo({ binding })),
-    msField('Timeout ms', 'combo-timeout', combo.timeout, 'default (50)', (timeout) => actions.updateCombo({ timeout })),
-    msField('Prior idle ms', 'combo-idle', combo.requirePriorIdle, 'off', (requirePriorIdle) => actions.updateCombo({ requirePriorIdle })),
+    numberField('Timeout ms', 'combo-timeout', combo.timeout, 'default (50)', (timeout) => actions.updateCombo({ timeout })),
+    numberField('Prior idle ms', 'combo-idle', combo.requirePriorIdle, 'off', (requirePriorIdle) => actions.updateCombo({ requirePriorIdle })),
     h(
       'label.check.field-check',
       { title: 'Release the combo only when all of its keys are released' },
@@ -109,8 +96,11 @@ export function mountInspector(el, store, actions) {
     const state = store.get();
     if (!state.keymap) return replace(el);
     if (state.ui.mode === 'combos') replace(el, h('h3', {}, 'Combos'), comboList(state, actions), comboEditor(state, actions));
+    else if (state.ui.mode === 'behaviors') replace(el, behaviorsPanel(state, actions));
     else replace(el, keyPanel(state, actions));
   };
-  store.subscribe(frameScheduler(() => renderKeepingFocus(el, render)));
+  const schedule = frameScheduler(() => renderKeepingFocus(el, render));
+  actions.refreshInspector = schedule;
+  store.subscribe(schedule);
   render();
 }

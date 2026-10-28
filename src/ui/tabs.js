@@ -54,6 +54,7 @@ export function mountTabs(el, store, actions) {
         ? h('button.icon.layer-edit', { class: ui.layerMenu ? 'active' : '', title: 'Layer settings', onclick: actions.toggleLayerMenu }, '✎')
         : null,
       h('button.tab.combos', { class: ui.mode === 'combos' ? 'active' : '', onclick: () => actions.setMode('combos') }, `Combos (${keymap.combos.length})`),
+      h('button.tab', { class: ui.mode === 'behaviors' ? 'active' : '', onclick: () => actions.setMode('behaviors') }, `Behaviors (${keymap.behaviors?.length ?? 0})`),
     );
     syncPopover(slot, state, actions, cache);
   };
