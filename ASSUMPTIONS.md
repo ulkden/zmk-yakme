@@ -86,5 +86,8 @@ Decisions made while building unattended. Each one can be changed. Review and te
 23. 🛠 **Decided (to implement):** Exported layers are padded to the layout's key count. The file name
     defaults to the imported keymap's name (or `keymap.keymap`), and it is **shown and editable in the
     export notice / preview**. The edited name is remembered with the project.
-24. Keymaps can also be imported from a URL. `github.com/.../blob/...` links are rewritten to
-    `raw.githubusercontent.com` so the browser can fetch them (CORS).
+24. 🛠 **Decided (to implement):** Single-file URL import stays (`blob` links are rewritten to `raw`).
+    **New: whole-repo import.** Paste a GitHub repo URL (optionally with `/tree/<branch>/<path>`). The
+    app lists the `.keymap`, `.dtsi`, `.overlay` and `.json` files through the public GitHub API (git trees
+    endpoint, no auth), preselects the likely keymap and physical-layout files, and imports the ones you
+    check. Caveats: unauthenticated API calls are limited to 60 per hour per IP, and only public repos work.
