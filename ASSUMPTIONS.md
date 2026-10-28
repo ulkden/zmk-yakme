@@ -5,7 +5,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
 ## Environment
 1. ✅ **Resolved:** Tooling is Node LTS (via nvm) plus Playwright. `npm test` runs 82 unit tests and
    `npm run test:e2e` runs 16 browser tests. All pass.
-2. No build step and no dependencies: plain ES modules so the repo can be served as-is from
+2. ✅ **Confirmed:** No build step and no dependencies: plain ES modules so the repo can be served as-is from
    GitHub Pages. ES modules need http(s), so for local use run `python3 -m http.server` (opening `index.html` as a file won't work).
 
 ## Scope / interpretation
