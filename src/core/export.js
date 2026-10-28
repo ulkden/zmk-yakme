@@ -3,6 +3,14 @@ import { activeLayout } from './state.js';
 import { rowsFromLayout } from './layout-ops.js';
 import { writeKeymapDetailed } from './keymap-write.js';
 
+// Row lengths for formatting: the imported keymap's own line breaks when they still fit
+// the layout, otherwise rows derived from the key positions.
+export function exportRows(keymap, keys) {
+  const hints = keymap.rowHints ?? [];
+  const total = hints.reduce((a, b) => a + b, 0);
+  return hints.length && total === keys.length ? hints : rowsFromLayout(keys);
+}
+
 // Returns { text, addedIncludes }. options: extra writer options (e.g. { diagrams }).
 export function exportKeymapDetailed(state, options = {}) {
   if (!state.keymap) return { text: '', addedIncludes: [] };
@@ -10,7 +18,7 @@ export function exportKeymapDetailed(state, options = {}) {
   if (!layout) return writeKeymapDetailed(state.keymap, options);
   return writeKeymapDetailed(state.keymap, {
     ...options,
-    rows: rowsFromLayout(layout.keys),
+    rows: exportRows(state.keymap, layout.keys),
     keyCount: layout.keys.length,
     keys: layout.keys,
   });

@@ -8,18 +8,16 @@ export function gridLayout(rowLengths, name = 'Grid') {
   return { name, keys };
 }
 
-// Group keys (in order) into rows: a new row starts when y moves by >= 0.5u or x goes backwards.
+// Group keys (in order) into rows. A new row starts when x moves left by more than half a
+// key, or y jumps by 1.5u or more. Column stagger within a row (common on splits) does not
+// start a row, which a plain y-based rule got wrong on boards like the Lily58 or Ferris.
 export function rowsFromLayout(keys) {
   const rows = [];
-  let rowY = null;
-  let prevX = -Infinity;
+  let prev = null;
   for (const key of keys) {
-    if (rowY === null || Math.abs(key.y - rowY) >= 0.5 || key.x < prevX) {
-      rows.push(0);
-      rowY = key.y;
-    }
+    if (!prev || key.x < prev.x - 0.5 || Math.abs(key.y - prev.y) >= 1.5) rows.push(0);
     rows[rows.length - 1]++;
-    prevX = key.x;
+    prev = key;
   }
   return rows;
 }

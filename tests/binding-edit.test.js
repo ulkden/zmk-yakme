@@ -1,7 +1,7 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { switchBehavior, applyKeycode, setParam } from '../src/core/binding-edit.js';
-import { exportKeymap, exportFileName, projectFileName, toRawUrl } from '../src/core/export.js';
+import { exportKeymap, exportFileName, projectFileName, toRawUrl, exportRows } from '../src/core/export.js';
 import { parseKeymap } from '../src/core/keymap-parse.js';
 import { exampleState } from '../src/data/example.js';
 
@@ -36,6 +36,13 @@ describe('export', () => {
     assert.equal(km.layers.length, 3);
     assert.deepEqual(km.rowHints, [12, 12, 12, 6]);
     assert.equal(km.combos[0].binding, '&kp ESC');
+  });
+
+  test('exportRows prefers the source line breaks when they fit the layout', () => {
+    const keys = Array.from({ length: 4 }, (_, i) => ({ x: i, y: 0, w: 1, h: 1, r: 0, rx: 0, ry: 0 }));
+    assert.deepEqual(exportRows({ rowHints: [1, 3] }, keys), [1, 3]);
+    assert.deepEqual(exportRows({ rowHints: [2, 3] }, keys), [4]);
+    assert.deepEqual(exportRows({}, keys), [4]);
   });
 
   test('exportFileName derives from the imported file', () => {

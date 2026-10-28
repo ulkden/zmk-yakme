@@ -61,13 +61,15 @@ describe('layout ops', () => {
     assert.deepEqual(gridLayout([2, 1]).keys, [k(0, 0), k(1, 0), k(0, 1)]);
   });
 
-  test('rowsFromLayout groups keys by row', () => {
-    const keys = [k(0, 0), k(1, 0.2), k(5, 0), k(0, 1), k(1, 1), k(3, 2.1)];
-    assert.deepEqual(rowsFromLayout(keys), [3, 2, 1]);
+  test('rowsFromLayout ignores column stagger within a row', () => {
+    const keys = [k(0, 0.6), k(1, 0.1), k(2, 0), k(3, 0.7), k(0, 1.6), k(1, 1.1)];
+    assert.deepEqual(rowsFromLayout(keys), [4, 2]);
   });
 
-  test('rowsFromLayout starts a new row when x goes backwards', () => {
+  test('rowsFromLayout starts a new row when x moves left or y jumps', () => {
     assert.deepEqual(rowsFromLayout([k(0, 0), k(1, 0), k(0, 0.3)]), [2, 1]);
+    assert.deepEqual(rowsFromLayout([k(0, 0), k(1, 0), k(2, 2)]), [2, 1]);
+    assert.deepEqual(rowsFromLayout([k(0, 0), k(1, 0), k(0.8, 0)]), [3]);
   });
 
   test('layoutBounds accounts for size and rotation', () => {
