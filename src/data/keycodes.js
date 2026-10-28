@@ -1,0 +1,78 @@
+// A curated subset of ZMK keycodes (dt-bindings/zmk/keys.h) for the palette and labels.
+
+const seq = (codes, label = (c) => c) => codes.map((code) => ({ code, label: label(code) }));
+const pairs = (list) => list.map(([code, label]) => ({ code, label }));
+const range = (n, f) => Array.from({ length: n }, (_, i) => f(i));
+
+export const KEY_GROUPS = [
+  { name: 'Letters', keys: seq('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')) },
+  { name: 'Numbers', keys: seq(range(10, (i) => `N${(i + 1) % 10}`), (c) => c.slice(1)) },
+  {
+    name: 'Modifiers',
+    keys: pairs([
+      ['LSHIFT', '⇧'], ['LCTRL', 'Ctrl'], ['LALT', 'Alt'], ['LGUI', 'Gui'],
+      ['RSHIFT', 'R⇧'], ['RCTRL', 'RCtrl'], ['RALT', 'RAlt'], ['RGUI', 'RGui'],
+    ]),
+  },
+  {
+    name: 'Editing',
+    keys: pairs([
+      ['ESC', 'Esc'], ['TAB', '⇥'], ['SPACE', '␣'], ['RET', '⏎'], ['BSPC', '⌫'], ['DEL', 'Del'],
+      ['CAPS', 'Caps'], ['INS', 'Ins'], ['K_APP', 'Menu'], ['PSCRN', 'PrtSc'],
+    ]),
+  },
+  {
+    name: 'Navigation',
+    keys: pairs([
+      ['LEFT', '←'], ['DOWN', '↓'], ['UP', '↑'], ['RIGHT', '→'],
+      ['HOME', 'Home'], ['END', 'End'], ['PG_UP', 'PgUp'], ['PG_DN', 'PgDn'],
+    ]),
+  },
+  {
+    name: 'Symbols',
+    keys: pairs([
+      ['MINUS', '-'], ['EQUAL', '='], ['LBKT', '['], ['RBKT', ']'], ['BSLH', '\\'], ['SEMI', ';'],
+      ['SQT', "'"], ['GRAVE', '`'], ['COMMA', ','], ['DOT', '.'], ['FSLH', '/'],
+      ['EXCL', '!'], ['AT', '@'], ['HASH', '#'], ['DLLR', '$'], ['PRCNT', '%'], ['CARET', '^'],
+      ['AMPS', '&'], ['STAR', '*'], ['LPAR', '('], ['RPAR', ')'], ['UNDER', '_'], ['PLUS', '+'],
+      ['LBRC', '{'], ['RBRC', '}'], ['PIPE', '|'], ['COLON', ':'], ['DQT', '"'], ['TILDE', '~'],
+      ['LT', '<'], ['GT', '>'], ['QMARK', '?'],
+    ]),
+  },
+  { name: 'Function', keys: seq(range(24, (i) => `F${i + 1}`)) },
+  {
+    name: 'Media',
+    keys: pairs([
+      ['C_VOL_UP', 'Vol+'], ['C_VOL_DN', 'Vol−'], ['C_MUTE', 'Mute'], ['C_PP', '⏯'],
+      ['C_NEXT', '⏭'], ['C_PREV', '⏮'], ['C_BRI_UP', 'Bri+'], ['C_BRI_DN', 'Bri−'],
+    ]),
+  },
+  {
+    name: 'Keypad',
+    keys: [
+      ...seq(range(10, (i) => `KP_N${i}`), (c) => `kp${c.slice(4)}`),
+      ...pairs([['KP_PLUS', 'kp+'], ['KP_MINUS', 'kp−'], ['KP_MULTIPLY', 'kp*'], ['KP_DIVIDE', 'kp/'], ['KP_ENTER', 'kp⏎'], ['KP_DOT', 'kp.']]),
+    ],
+  },
+];
+
+export const MODIFIERS = ['LSHIFT', 'LCTRL', 'LALT', 'LGUI', 'RSHIFT', 'RCTRL', 'RALT', 'RGUI'];
+
+export const ALIASES = {
+  ENTER: 'RET', RETURN: 'RET', SPC: 'SPACE', BACKSPACE: 'BSPC', ESCAPE: 'ESC', DELETE: 'DEL',
+  LSHFT: 'LSHIFT', LEFT_SHIFT: 'LSHIFT', RSHFT: 'RSHIFT', RIGHT_SHIFT: 'RSHIFT',
+  LCTL: 'LCTRL', LEFT_CONTROL: 'LCTRL', RCTL: 'RCTRL', RIGHT_CONTROL: 'RCTRL',
+  LEFT_ALT: 'LALT', RIGHT_ALT: 'RALT', LEFT_GUI: 'LGUI', RIGHT_GUI: 'RGUI', LCMD: 'LGUI', RCMD: 'RGUI', LWIN: 'LGUI', RWIN: 'RGUI',
+  LEFT_ARROW: 'LEFT', RIGHT_ARROW: 'RIGHT', UP_ARROW: 'UP', DOWN_ARROW: 'DOWN',
+  PAGE_UP: 'PG_UP', PAGE_DOWN: 'PG_DN', CAPSLOCK: 'CAPS', CLCK: 'CAPS', INSERT: 'INS',
+  LBRACKET: 'LBKT', RBRACKET: 'RBKT', BACKSLASH: 'BSLH', SEMICOLON: 'SEMI', APOS: 'SQT', SINGLE_QUOTE: 'SQT',
+  SLASH: 'FSLH', PERIOD: 'DOT', EQL: 'EQUAL', EXCLAMATION: 'EXCL', POUND: 'HASH', DOLLAR: 'DLLR',
+  PERCENT: 'PRCNT', AMPERSAND: 'AMPS', ASTERISK: 'STAR', LPRN: 'LPAR', RPRN: 'RPAR', UNDERSCORE: 'UNDER',
+  LBRACE: 'LBRC', RBRACE: 'RBRC', DOUBLE_QUOTES: 'DQT', QUESTION: 'QMARK', LESS_THAN: 'LT', GREATER_THAN: 'GT',
+  PRINTSCREEN: 'PSCRN', C_VOLUME_UP: 'C_VOL_UP', C_VOLUME_DOWN: 'C_VOL_DN', C_PLAY_PAUSE: 'C_PP',
+  ...Object.fromEntries(range(10, (i) => [`NUMBER_${i}`, `N${i}`])),
+};
+
+export const LABELS = Object.fromEntries(KEY_GROUPS.flatMap((g) => g.keys.map((k) => [k.code, k.label])));
+
+export const ALL_CODES = KEY_GROUPS.flatMap((g) => g.keys.map((k) => k.code));
