@@ -3,12 +3,8 @@
 Decisions made while building unattended. Each one can be changed. Review and tell me which to revisit.
 
 ## Environment
-1. **No Node.js on this machine.** Installing one (via `uvx nodejs-wheel`) was blocked by the
-   permission classifier, so **tests have not been executed yet**. Tests use `node:test`; run them
-   with `npm test` (Node ≥ 21) or by serving the repo and opening `tests/index.html` (an import map
-   swaps in small browser shims for `node:test` / `node:assert/strict`). What *was* checked: every
-   module's named imports resolve to real exports, and brackets/strings balance across all JS files
-   (static scripts). Logic was desk-checked against the tests by hand. **Expect a few small fixes on the first real run.**
+1. ✅ **Resolved:** Tooling is Node LTS (via nvm) plus Playwright. `npm test` runs 82 unit tests and
+   `npm run test:e2e` runs 16 browser tests. All pass.
 2. No build step and no dependencies: plain ES modules so the repo can be served as-is from
    GitHub Pages. ES modules need http(s), so for local use run `python3 -m http.server` (opening `index.html` as a file won't work).
 
