@@ -39,7 +39,8 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
   testable in Node.
 - **Never lose user data.** Export regenerates only what was edited and preserves everything else in
   an imported file. Saved data (autosave, `.zmk-project.json`) is a public format: change it only
-  with a version bump and a tested migration.
+  with a `FORMAT_VERSION` bump, a migration and a new fixture in `tests/fixtures/saved/` (see
+  `src/core/project-format.js`). Never edit existing fixtures or migrations.
 
 ## Code style
 

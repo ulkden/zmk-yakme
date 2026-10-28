@@ -46,6 +46,7 @@ function exampleKeymap() {
       { id: 'raise_layer', name: 'Raise', bindings: raise, extra: [] },
     ],
     combos: [{ name: 'combo_esc', keyPositions: [1, 2], binding: '&kp ESC', timeout: 50, layers: [], extra: [] }],
+    behaviors: [],
     customBehaviors: [],
     rowHints: [12, 12, 12, 6],
     source: null,

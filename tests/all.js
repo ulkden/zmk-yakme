@@ -13,3 +13,4 @@ import './import-sources.test.js';
 import './diagram.test.js';
 import './behaviors.test.js';
 import './stamp.test.js';
+import './project-format.test.js';

@@ -8,6 +8,7 @@ export function emptyKeymap(keyCount, name = 'Base') {
   return {
     layers: [{ id: 'default_layer', name, bindings: Array(keyCount).fill('&none'), extra: [] }],
     combos: [],
+    behaviors: [],
     customBehaviors: [],
     rowHints: [],
     source: null,

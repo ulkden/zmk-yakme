@@ -1,6 +1,8 @@
 // Application state shape, derived values and persistence helpers.
 
-export const APP_ID = 'zmk-keymap-editor';
+import { APP_ID, FORMAT_VERSION, upgrade } from './project-format.js';
+
+export { APP_ID };
 
 export function initialState() {
   return {
@@ -44,7 +46,7 @@ export function normalizeUi(state) {
 export function serialize(state) {
   return JSON.stringify({
     app: APP_ID,
-    version: 1,
+    version: FORMAT_VERSION,
     layouts: state.layouts,
     layoutIndex: state.layoutIndex,
     keymap: state.keymap,
@@ -52,18 +54,29 @@ export function serialize(state) {
   });
 }
 
-export function deserialize(json) {
+// Parse and upgrade a saved document. Returns { state } or { kind, error } (see upgrade()).
+export function readProject(json) {
+  let data;
   try {
-    const data = typeof json === 'string' ? JSON.parse(json) : json;
-    if (data?.app !== APP_ID || !Array.isArray(data.layouts)) return null;
-    return {
-      ...initialState(),
-      layouts: data.layouts,
-      layoutIndex: data.layoutIndex ?? 0,
-      keymap: data.keymap ? { behaviors: [], ...data.keymap } : null,
-      fileName: data.fileName ?? null,
-    };
+    data = typeof json === 'string' ? JSON.parse(json) : json;
   } catch {
-    return null;
+    return { kind: 'not-project', error: 'Not valid JSON' };
   }
+  const result = upgrade(data);
+  if (!result.doc) return result;
+  const { doc } = result;
+  const layoutIndex = Number.isInteger(doc.layoutIndex) ? doc.layoutIndex : 0;
+  return {
+    state: {
+      ...initialState(),
+      layouts: doc.layouts,
+      layoutIndex,
+      keymap: doc.keymap ?? null,
+      fileName: doc.fileName ?? null,
+    },
+  };
+}
+
+export function deserialize(json) {
+  return readProject(json).state ?? null;
 }

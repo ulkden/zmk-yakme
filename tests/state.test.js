@@ -39,7 +39,8 @@ describe('store', () => {
 
 describe('state helpers', () => {
   test('serialize / deserialize round trip', () => {
-    const s = { ...initialState(), layouts: [{ name: 'x', keys: [] }], keymap: { layers: [] } };
+    const km = { layers: [{ name: 'Base', bindings: ['&kp A'], extra: [] }], combos: [], behaviors: [] };
+    const s = { ...initialState(), layouts: [{ name: 'x', keys: [] }], keymap: km };
     const back = deserialize(serialize(s));
     assert.deepEqual(back.layouts, s.layouts);
     assert.equal(deserialize('{"nope":1}'), null);

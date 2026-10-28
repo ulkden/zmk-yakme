@@ -1,8 +1,12 @@
 // Browser storage: the autosaved document and small per-user preferences.
-import { serialize, deserialize, initialState, isDirty } from '../core/state.js';
+import { serialize, readProject, initialState, isDirty } from '../core/state.js';
 
 const DOC_KEY = 'zmk-keymap-editor:v1';
 const PREFS_KEY = 'zmk-keymap-editor:prefs';
+const BACKUP_KEY = 'zmk-keymap-editor:v1:unreadable';
+
+// Set when the saved document came from a newer app version: nothing may overwrite or delete it.
+let protectSaved = false;
 
 export function loadPrefs() {
   try {
@@ -29,6 +33,7 @@ export function clearPrefs() {
 }
 
 export function clearDocument() {
+  if (protectSaved) return;
   try {
     localStorage.removeItem(DOC_KEY);
   } catch {
@@ -36,21 +41,46 @@ export function clearDocument() {
   }
 }
 
-export function loadDocument() {
+const NEWER_NOTICE =
+  'Your autosaved work was saved by a newer version of zmk-yakme, so this version cannot open it. ' +
+  'Reload the page to get the latest version. Until then, autosave is paused so that work is not overwritten.';
+const UNREADABLE_NOTICE =
+  'Your autosaved work could not be read, so the editor started fresh. A copy of the unreadable data was kept ' +
+  `in this browser's storage under "${BACKUP_KEY}".`;
+
+function readRaw(key) {
   try {
-    const raw = localStorage.getItem(DOC_KEY);
-    const saved = raw && deserialize(raw);
-    if (!saved) return initialState();
-    const { dirty } = JSON.parse(raw);
-    return { ...saved, cleanKeymap: dirty ? null : saved.keymap };
+    return localStorage.getItem(key);
   } catch {
-    return initialState();
+    return null;
   }
+}
+
+// Returns { state, notice? }. notice explains a saved document that could not be opened.
+export function loadDocument() {
+  const raw = readRaw(DOC_KEY);
+  if (!raw) return { state: initialState() };
+  const result = readProject(raw);
+  if (result.state) {
+    const dirty = !!JSON.parse(raw).dirty;
+    return { state: { ...result.state, cleanKeymap: dirty ? null : result.state.keymap } };
+  }
+  if (result.kind === 'newer') {
+    protectSaved = true;
+    return { state: initialState(), notice: NEWER_NOTICE };
+  }
+  try {
+    localStorage.setItem(BACKUP_KEY, raw);
+  } catch {
+    // storage unavailable: the notice still explains what happened
+  }
+  return { state: initialState(), notice: `${UNREADABLE_NOTICE} (${result.error})` };
 }
 
 const WATCHED = ['keymap', 'layouts', 'layoutIndex', 'fileName', 'cleanKeymap'];
 
 function saveNow(s) {
+  if (protectSaved) return;
   if (!s.keymap && !s.layouts.length) return clearDocument();
   try {
     const data = JSON.parse(serialize(s));
