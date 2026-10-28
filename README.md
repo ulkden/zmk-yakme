@@ -35,6 +35,16 @@ npm run test:e2e:all              # Chromium, Firefox and WebKit (as CI does)
 
 CI runs all of the above on every pull request; `main` only accepts changes through a PR with green checks.
 
+**Function length:** keep functions under 100 lines. Exceeding that is allowed only when splitting the
+function would genuinely make the code worse, and the exception must say why, inline:
+
+```js
+// eslint-disable-next-line max-lines-per-function -- <why splitting would hurt readability>
+```
+
+Lint fails on long functions without such a comment, on exceptions without a reason, and on exceptions that are
+no longer needed.
+
 ## Deploy
 
 Enable GitHub Pages for the repository root (branch `main`, folder `/`). No build needed.
