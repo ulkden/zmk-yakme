@@ -35,11 +35,26 @@ describe('behavior parsing', () => {
   test('reads hold-taps and macros as editable behaviors', () => {
     const km = parseKeymap(FULL_KEYMAP);
     assert.deepEqual(fields(km.behaviors[0]), {
-      kind: 'hold-tap', label: 'hm', name: 'homerow_mods', displayName: null, bindings: ['&kp', '&kp'],
-      flavor: null, tappingTerm: 200, quickTap: null, priorIdle: null, extra: [],
+      kind: 'hold-tap',
+      label: 'hm',
+      name: 'homerow_mods',
+      displayName: null,
+      bindings: ['&kp', '&kp'],
+      flavor: null,
+      tappingTerm: 200,
+      quickTap: null,
+      priorIdle: null,
+      extra: [],
     });
     assert.deepEqual(fields(km.behaviors[1]), {
-      kind: 'macro', label: 'hello', name: 'hello', displayName: null, bindings: ['&kp H', '&kp I'], waitMs: null, tapMs: null, extra: [],
+      kind: 'macro',
+      label: 'hello',
+      name: 'hello',
+      displayName: null,
+      bindings: ['&kp H', '&kp I'],
+      waitMs: null,
+      tapMs: null,
+      extra: [],
     });
     assert.deepEqual(km.customBehaviors, []);
   });
@@ -63,7 +78,10 @@ describe('behavior writing', () => {
   test('edited behaviors are regenerated in place', () => {
     const km = bops.updateBehavior(parseKeymap(FULL_KEYMAP), 0, { tappingTerm: 175, flavor: 'balanced' });
     const out = writeKeymap(km);
-    assert.match(out, /hm: homerow_mods \{\n {12}compatible = "zmk,behavior-hold-tap";\n {12}#binding-cells = <2>;\n {12}flavor = "balanced";\n {12}tapping-term-ms = <175>;\n {12}bindings = <&kp>, <&kp>;\n {8}\};/);
+    assert.match(
+      out,
+      /hm: homerow_mods \{\n {12}compatible = "zmk,behavior-hold-tap";\n {12}#binding-cells = <2>;\n {12}flavor = "balanced";\n {12}tapping-term-ms = <175>;\n {12}bindings = <&kp>, <&kp>;\n {8}\};/,
+    );
     assert.deepEqual(fields(parseKeymap(out).behaviors[0]), fields(km.behaviors[0]));
   });
 
@@ -72,7 +90,10 @@ describe('behavior writing', () => {
     km = bops.addBehavior(km, 'mod-morph');
     km = bops.addBehavior(km, 'macro');
     const re = parseKeymap(writeKeymap(km));
-    assert.deepEqual(re.behaviors.map((b) => b.label), ['hm', 'mm', 'hello', 'macro']);
+    assert.deepEqual(
+      re.behaviors.map((b) => b.label),
+      ['hm', 'mm', 'hello', 'macro'],
+    );
     assert.equal((writeKeymap(km).match(/behaviors \{/g) ?? []).length, 1);
   });
 
@@ -82,7 +103,10 @@ describe('behavior writing', () => {
     assert.match(out, /behaviors \{\n\s+ht: ht \{/);
     assert.match(out, /macros \{\n\s+macro: macro \{/);
     assert.ok(out.indexOf('behaviors {') < out.indexOf('keymap {'));
-    assert.deepEqual(parseKeymap(out).behaviors.map((b) => b.kind), ['hold-tap', 'macro']);
+    assert.deepEqual(
+      parseKeymap(out).behaviors.map((b) => b.kind),
+      ['hold-tap', 'macro'],
+    );
   });
 
   test('deleted behaviors are removed and references become &none', () => {
@@ -94,7 +118,15 @@ describe('behavior writing', () => {
   });
 
   test('a generated file includes behaviors', () => {
-    const km = bops.addBehavior({ layers: [{ name: 'Base', bindings: ['&ht LSHIFT A'], extra: [] }], combos: [], customBehaviors: [], source: null }, 'hold-tap');
+    const km = bops.addBehavior(
+      {
+        layers: [{ name: 'Base', bindings: ['&ht LSHIFT A'], extra: [] }],
+        combos: [],
+        customBehaviors: [],
+        source: null,
+      },
+      'hold-tap',
+    );
     const re = parseKeymap(writeKeymap(km));
     assert.equal(re.behaviors[0].label, 'ht');
   });
@@ -110,7 +142,10 @@ describe('behavior ops', () => {
   test('labels stay unique', () => {
     let km = bops.addBehavior(parseKeymap(FULL_KEYMAP), 'hold-tap');
     km = bops.addBehavior(km, 'hold-tap');
-    assert.deepEqual(km.behaviors.slice(2).map((b) => b.label), ['ht', 'ht_2']);
+    assert.deepEqual(
+      km.behaviors.slice(2).map((b) => b.label),
+      ['ht', 'ht_2'],
+    );
     km = bops.updateBehavior(km, 2, { label: 'hm' });
     assert.equal(km.behaviors[2].label, 'hm_2');
   });
@@ -119,7 +154,13 @@ describe('behavior ops', () => {
     const km = parseKeymap(FULL_KEYMAP);
     assert.equal(bops.countBehaviorUses(km, 'hm'), 1);
     const custom = bops.allCustomBehaviors(km);
-    assert.deepEqual(custom.map((c) => [c.label, c.cells]), [['hm', 2], ['hello', 0]]);
+    assert.deepEqual(
+      custom.map((c) => [c.label, c.cells]),
+      [
+        ['hm', 2],
+        ['hello', 0],
+      ],
+    );
     assert.deepEqual(behaviorDef('hm', custom).params, ['keycode', 'keycode']);
   });
 });

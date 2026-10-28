@@ -45,14 +45,23 @@ describe('combineResults', () => {
       { name: 'corne.keymap', result: keymap('b') },
     ]);
     assert.equal(only.name, 'corne.keymap');
-    assert.deepEqual(only.result.layouts.map((l) => l.name), ['5 Column', '6 Column']);
+    assert.deepEqual(
+      only.result.layouts.map((l) => l.name),
+      ['5 Column', '6 Column'],
+    );
     assert.deepEqual(only.result.keymap, { id: 'b' });
   });
 
   test('keeps projects separate', () => {
     const project = { layouts: [], keymap: null, project: { p: 1 }, errors: [] };
-    const out = combineResults([{ name: 'x.json', result: project }, { name: 'l.dtsi', result: layout('L') }]);
-    assert.deepEqual(out.map((e) => e.name), ['l.dtsi', 'x.json']);
+    const out = combineResults([
+      { name: 'x.json', result: project },
+      { name: 'l.dtsi', result: layout('L') },
+    ]);
+    assert.deepEqual(
+      out.map((e) => e.name),
+      ['l.dtsi', 'x.json'],
+    );
   });
 });
 
@@ -66,13 +75,34 @@ describe('helper macro keymaps', () => {
 
 describe('GitHub URLs', () => {
   test('parseGithubUrl recognizes repos, trees, blobs and raw links', () => {
-    assert.deepEqual(parseGithubUrl('https://github.com/me/zmk-config'), { kind: 'repo', owner: 'me', repo: 'zmk-config', ref: null, path: '' });
-    assert.deepEqual(parseGithubUrl('https://github.com/me/zmk-config.git/'), { kind: 'repo', owner: 'me', repo: 'zmk-config', ref: null, path: '' });
-    assert.deepEqual(parseGithubUrl('https://github.com/me/r/tree/main/boards/x'), { kind: 'repo', owner: 'me', repo: 'r', ref: 'main', path: 'boards/x' });
+    assert.deepEqual(parseGithubUrl('https://github.com/me/zmk-config'), {
+      kind: 'repo',
+      owner: 'me',
+      repo: 'zmk-config',
+      ref: null,
+      path: '',
+    });
+    assert.deepEqual(parseGithubUrl('https://github.com/me/zmk-config.git/'), {
+      kind: 'repo',
+      owner: 'me',
+      repo: 'zmk-config',
+      ref: null,
+      path: '',
+    });
+    assert.deepEqual(parseGithubUrl('https://github.com/me/r/tree/main/boards/x'), {
+      kind: 'repo',
+      owner: 'me',
+      repo: 'r',
+      ref: 'main',
+      path: 'boards/x',
+    });
     assert.equal(parseGithubUrl('https://github.com/me/r/blob/main/config/a.keymap').kind, 'file');
     assert.equal(parseGithubUrl('https://raw.githubusercontent.com/me/r/main/a.keymap').kind, 'file');
     assert.equal(parseGithubUrl('https://example.com/a.keymap'), null);
-    assert.equal(rawUrl({ owner: 'o', repo: 'r', ref: 'main', path: 'a/b.keymap' }), 'https://raw.githubusercontent.com/o/r/main/a/b.keymap');
+    assert.equal(
+      rawUrl({ owner: 'o', repo: 'r', ref: 'main', path: 'a/b.keymap' }),
+      'https://raw.githubusercontent.com/o/r/main/a/b.keymap',
+    );
   });
 
   const tree = [
@@ -91,11 +121,14 @@ describe('GitHub URLs', () => {
       { path: 'boards/shields/elvn/elvn-layouts.dtsi', kind: 'layout', selected: true },
       { path: 'boards/shields/elvn/elvn.overlay', kind: 'layout', selected: false },
     ]);
-    assert.deepEqual(repoFiles(tree, 'boards/shields/elvn').map((f) => [f.path.split('/').pop(), f.selected]), [
-      ['elvn.keymap', true],
-      ['elvn-layouts.dtsi', true],
-      ['elvn.overlay', false],
-    ]);
+    assert.deepEqual(
+      repoFiles(tree, 'boards/shields/elvn').map((f) => [f.path.split('/').pop(), f.selected]),
+      [
+        ['elvn.keymap', true],
+        ['elvn-layouts.dtsi', true],
+        ['elvn.overlay', false],
+      ],
+    );
   });
 
   test('importOrder puts keymaps last', () => {

@@ -32,7 +32,21 @@ export const BEHAVIORS = [
 export const OPTIONS = {
   bt: ['BT_CLR', 'BT_SEL', 'BT_CLR_ALL', 'BT_NXT', 'BT_PRV', 'BT_DISC'],
   out: ['OUT_USB', 'OUT_BLE', 'OUT_TOG'],
-  rgb: ['RGB_TOG', 'RGB_ON', 'RGB_OFF', 'RGB_HUI', 'RGB_HUD', 'RGB_SAI', 'RGB_SAD', 'RGB_BRI', 'RGB_BRD', 'RGB_SPI', 'RGB_SPD', 'RGB_EFF', 'RGB_EFR'],
+  rgb: [
+    'RGB_TOG',
+    'RGB_ON',
+    'RGB_OFF',
+    'RGB_HUI',
+    'RGB_HUD',
+    'RGB_SAI',
+    'RGB_SAD',
+    'RGB_BRI',
+    'RGB_BRD',
+    'RGB_SPI',
+    'RGB_SPD',
+    'RGB_EFF',
+    'RGB_EFR',
+  ],
   ext_power: ['EP_ON', 'EP_OFF', 'EP_TOG'],
   mouse: ['LCLK', 'RCLK', 'MCLK', 'MB4', 'MB5'],
   mmv: ['MOVE_UP', 'MOVE_DOWN', 'MOVE_LEFT', 'MOVE_RIGHT'],
@@ -45,6 +59,7 @@ const BY_NAME = Object.fromEntries(BEHAVIORS.map((b) => [b.name, b]));
 export function behaviorDef(name, customBehaviors = []) {
   if (BY_NAME[name]) return BY_NAME[name];
   const custom = customBehaviors.find((b) => b.label === name);
-  if (custom) return { name, label: `${name} (custom)`, params: custom.params ?? Array(custom.cells).fill('raw'), custom: true };
+  if (custom)
+    return { name, label: `${name} (custom)`, params: custom.params ?? Array(custom.cells).fill('raw'), custom: true };
   return null;
 }

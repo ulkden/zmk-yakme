@@ -39,13 +39,14 @@ function kindFields(kind, node) {
       priorIdle: optionalInt(node, 'require-prior-idle-ms'),
     };
   }
-  if (kind === 'mod-morph') return { mods: modList(propCells(node, 'mods')), keepMods: modList(propCells(node, 'keep-mods')) };
+  if (kind === 'mod-morph')
+    return { mods: modList(propCells(node, 'mods')), keepMods: modList(propCells(node, 'keep-mods')) };
   return { waitMs: optionalInt(node, 'wait-ms'), tapMs: optionalInt(node, 'tap-ms') };
 }
 
 export function behaviorKind(node) {
   const compat = propString(node, 'compatible');
-  return node.labels.length ? KINDS[compat] ?? null : null;
+  return node.labels.length ? (KINDS[compat] ?? null) : null;
 }
 
 function parseBehavior(node, text) {

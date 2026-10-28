@@ -10,7 +10,11 @@ export function mountWelcome(el, store, actions, dialogs) {
         'div.welcome',
         {},
         h('h1', {}, 'ZMK Keymap Editor'),
-        h('p.muted', {}, 'Import a physical layout and/or an existing keymap, edit layers and combos, then download a .keymap for your ZMK config.'),
+        h(
+          'p.muted',
+          {},
+          'Import a physical layout and/or an existing keymap, edit layers and combos, then download a .keymap for your ZMK config.',
+        ),
         h(
           'div.welcome-actions',
           {},

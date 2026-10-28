@@ -38,7 +38,16 @@ describe('parseKeymap', () => {
   test('reads combos', () => {
     const km = parseKeymap(FULL_KEYMAP);
     assert.deepEqual(km.combos, [
-      { name: 'combo_esc', keyPositions: [0, 1], binding: '&kp ESC', timeout: 50, layers: [], requirePriorIdle: null, slowRelease: false, extra: [] },
+      {
+        name: 'combo_esc',
+        keyPositions: [0, 1],
+        binding: '&kp ESC',
+        timeout: 50,
+        layers: [],
+        requirePriorIdle: null,
+        slowRelease: false,
+        extra: [],
+      },
       {
         name: 'combo_tab',
         keyPositions: [2, 3],
@@ -64,10 +73,13 @@ describe('parseKeymap', () => {
 
   test('reads editable behaviors and macros', () => {
     const km = parseKeymap(FULL_KEYMAP);
-    assert.deepEqual(km.behaviors.map((b) => [b.kind, b.label]), [
-      ['hold-tap', 'hm'],
-      ['macro', 'hello'],
-    ]);
+    assert.deepEqual(
+      km.behaviors.map((b) => [b.kind, b.label]),
+      [
+        ['hold-tap', 'hm'],
+        ['macro', 'hello'],
+      ],
+    );
   });
 
   test('stores the source text', () => {

@@ -26,12 +26,33 @@ export function mountStatus(el, store, actions) {
           )
         : h('span', {}, layout?.name ?? 'No layout');
     const warnBtn = warnings.length
-      ? h('button.warn', { onclick: () => ((open = !open), render()) }, `⚠ ${warnings.length} warning${warnings.length > 1 ? 's' : ''}`)
+      ? h(
+          'button.warn',
+          { onclick: () => ((open = !open), render()) },
+          `⚠ ${warnings.length} warning${warnings.length > 1 ? 's' : ''}`,
+        )
       : h('span.ok', {}, '✓ No issues');
     replace(
       el,
-      h('div.status-row', {}, layoutPart, h('span.muted', {}, `${keyCount(s)} keys · ${s.keymap.layers.length} layers · ${s.keymap.combos.length} combos`), h('span.grow'), warnBtn),
-      open && warnings.length ? h('ul.warnings', {}, warnings.map((w) => warningItem(w, actions))) : null,
+      h(
+        'div.status-row',
+        {},
+        layoutPart,
+        h(
+          'span.muted',
+          {},
+          `${keyCount(s)} keys · ${s.keymap.layers.length} layers · ${s.keymap.combos.length} combos`,
+        ),
+        h('span.grow'),
+        warnBtn,
+      ),
+      open && warnings.length
+        ? h(
+            'ul.warnings',
+            {},
+            warnings.map((w) => warningItem(w, actions)),
+          )
+        : null,
     );
   };
   store.subscribe(render);

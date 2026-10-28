@@ -41,7 +41,8 @@ function importJson(text) {
   return result;
 }
 
-const HELPER_MACROS = /\bZMK_(LAYER|BASE_LAYER|COMBO|HOLD_TAP|MOD_MORPH|MACRO|BEHAVIOR|TAP_DANCE|CONDITIONAL_LAYER)\s*\(/;
+const HELPER_MACROS =
+  /\bZMK_(LAYER|BASE_LAYER|COMBO|HOLD_TAP|MOD_MORPH|MACRO|BEHAVIOR|TAP_DANCE|CONDITIONAL_LAYER)\s*\(/;
 
 export function importText(text) {
   const trimmed = String(text ?? '').trim();
@@ -50,7 +51,9 @@ export function importText(text) {
   if (result.layouts.length || result.keymap) return result;
   if (HELPER_MACROS.test(text)) {
     result.errorKind = 'helper-macros';
-    result.errors.push('This keymap is written with ZMK helper macros (ZMK_LAYER, ZMK_COMBO, …), which are not supported yet.');
+    result.errors.push(
+      'This keymap is written with ZMK helper macros (ZMK_LAYER, ZMK_COMBO, …), which are not supported yet.',
+    );
   } else {
     result.errors.push('No physical layout or keymap found in this file');
   }

@@ -38,7 +38,10 @@ describe('layer diagrams', () => {
     const withDiagrams = exportKeymap(s, { diagrams: true });
     assert.doesNotMatch(plain, /\/\/ Base/);
     assert.match(withDiagrams, /\/\/ Base\n\s+\/\/ +⇥ +Q +W/);
-    assert.deepEqual(parseKeymap(withDiagrams).layers.map((l) => l.bindings), s.keymap.layers.map((l) => l.bindings));
+    assert.deepEqual(
+      parseKeymap(withDiagrams).layers.map((l) => l.bindings),
+      s.keymap.layers.map((l) => l.bindings),
+    );
     const again = parseKeymap(withDiagrams);
     assert.equal((writeKeymap(again, { diagrams: true, rows: [12, 12, 12, 6] }).match(/\/\/ Base/g) ?? []).length, 1);
   });

@@ -14,7 +14,16 @@ function keyPanel(state, actions) {
   const { ui, keymap } = state;
   const layer = keymap.layers[ui.layer];
   if (ui.key === null) {
-    return h('div.empty-hint', {}, h('p', {}, 'Select a key to edit it.'), h('p.muted', {}, 'Tip: arrow keys move between keys, typing a letter or digit assigns it, Delete clears, Ctrl+Z undoes.'));
+    return h(
+      'div.empty-hint',
+      {},
+      h('p', {}, 'Select a key to edit it.'),
+      h(
+        'p.muted',
+        {},
+        'Tip: arrow keys move between keys, typing a letter or digit assigns it, Delete clears, Ctrl+Z undoes.',
+      ),
+    );
   }
   const binding = layer.bindings[ui.key] ?? (ui.layer === 0 ? '&none' : '&trans');
   return h(
@@ -31,7 +40,12 @@ function keyPanel(state, actions) {
     h(
       'label.check',
       {},
-      h('input', { type: 'checkbox', name: 'advance', checked: !!ui.advance, onchange: (e) => actions.setAdvance(e.target.checked) }),
+      h('input', {
+        type: 'checkbox',
+        name: 'advance',
+        checked: !!ui.advance,
+        onchange: (e) => actions.setAdvance(e.target.checked),
+      }),
       ' Advance to next key after picking a keycode',
     ),
   );
@@ -64,7 +78,9 @@ function layerChips(combo, layers, actions) {
   return h(
     'div.chips',
     {},
-    layers.map((l, i) => h('button.chip', { class: combo.layers.includes(i) ? 'on' : '', onclick: () => toggle(i) }, l.name)),
+    layers.map((l, i) =>
+      h('button.chip', { class: combo.layers.includes(i) ? 'on' : '', onclick: () => toggle(i) }, l.name),
+    ),
   );
 }
 
@@ -75,14 +91,34 @@ function comboEditor(state, actions) {
     'div.combo-editor',
     {},
     h('p.muted', {}, 'Click keys on the keyboard to add or remove them.'),
-    h('label.field', {}, h('span', {}, 'Name'), h('input', { type: 'text', name: 'combo-name', value: combo.name, spellcheck: false, onchange: (e) => actions.updateCombo({ name: e.target.value.trim() || combo.name }) })),
+    h(
+      'label.field',
+      {},
+      h('span', {}, 'Name'),
+      h('input', {
+        type: 'text',
+        name: 'combo-name',
+        value: combo.name,
+        spellcheck: false,
+        onchange: (e) => actions.updateCombo({ name: e.target.value.trim() || combo.name }),
+      }),
+    ),
     bindingEditor(combo.binding, ctxOf(state), (binding) => actions.updateCombo({ binding })),
-    numberField('Timeout ms', 'combo-timeout', combo.timeout, 'default (50)', (timeout) => actions.updateCombo({ timeout })),
-    numberField('Prior idle ms', 'combo-idle', combo.requirePriorIdle, 'off', (requirePriorIdle) => actions.updateCombo({ requirePriorIdle })),
+    numberField('Timeout ms', 'combo-timeout', combo.timeout, 'default (50)', (timeout) =>
+      actions.updateCombo({ timeout }),
+    ),
+    numberField('Prior idle ms', 'combo-idle', combo.requirePriorIdle, 'off', (requirePriorIdle) =>
+      actions.updateCombo({ requirePriorIdle }),
+    ),
     h(
       'label.check.field-check',
       { title: 'Release the combo only when all of its keys are released' },
-      h('input', { type: 'checkbox', name: 'combo-slow', checked: !!combo.slowRelease, onchange: (e) => actions.updateCombo({ slowRelease: e.target.checked }) }),
+      h('input', {
+        type: 'checkbox',
+        name: 'combo-slow',
+        checked: !!combo.slowRelease,
+        onchange: (e) => actions.updateCombo({ slowRelease: e.target.checked }),
+      }),
       ' Slow release',
     ),
     h('div.field', {}, h('span', {}, 'Layers'), layerChips(combo, state.keymap.layers, actions)),
@@ -95,7 +131,8 @@ export function mountInspector(el, store, actions) {
   const render = () => {
     const state = store.get();
     if (!state.keymap) return replace(el);
-    if (state.ui.mode === 'combos') replace(el, h('h3', {}, 'Combos'), comboList(state, actions), comboEditor(state, actions));
+    if (state.ui.mode === 'combos')
+      replace(el, h('h3', {}, 'Combos'), comboList(state, actions), comboEditor(state, actions));
     else if (state.ui.mode === 'behaviors') replace(el, behaviorsPanel(state, actions));
     else replace(el, keyPanel(state, actions));
   };

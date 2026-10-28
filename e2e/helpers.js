@@ -8,7 +8,8 @@ export const test = base.extend({
     // Network status lines ("Failed to load resource") are logged by the browser itself,
     // e.g. for mocked 404s; script errors still fail the test.
     page.on('console', (msg) => {
-      if (msg.type() === 'error' && !msg.text().startsWith('Failed to load resource')) errors.push(`console: ${msg.text()}`);
+      if (msg.type() === 'error' && !msg.text().startsWith('Failed to load resource'))
+        errors.push(`console: ${msg.text()}`);
     });
     await page.goto('/');
     await page.evaluate(() => localStorage.clear());
@@ -29,5 +30,8 @@ export async function loadExample(page) {
 }
 
 export async function pick(page, label) {
-  await page.locator('.palette .pk', { hasText: new RegExp(`^${label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`) }).first().click();
+  await page
+    .locator('.palette .pk', { hasText: new RegExp(`^${label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`) })
+    .first()
+    .click();
 }

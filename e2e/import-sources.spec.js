@@ -33,7 +33,9 @@ test('import from a GitHub repository lists and imports selected files', async (
       { type: 'blob', path: 'boards/shields/elvn/elvn.overlay' },
     ],
   };
-  await page.route('https://api.github.com/repos/me/zmk-config', (r) => r.fulfill({ json: { default_branch: 'main' } }));
+  await page.route('https://api.github.com/repos/me/zmk-config', (r) =>
+    r.fulfill({ json: { default_branch: 'main' } }),
+  );
   await page.route('https://api.github.com/repos/me/zmk-config/git/trees/**', (r) => r.fulfill({ json: tree }));
   await page.route('https://raw.githubusercontent.com/me/zmk-config/main/**', (r) => {
     const body = r.request().url().endsWith('.keymap') ? ELVN_KEYMAP : ELVN_LAYOUT;

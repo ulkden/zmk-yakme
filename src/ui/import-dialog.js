@@ -15,8 +15,15 @@ async function fetchText(url) {
 
 export function openImport(store, actions) {
   const msg = h('p.dialog-msg');
-  const text = h('textarea', { placeholder: '…or paste a .keymap, .dtsi/.overlay, QMK info.json or KLE JSON here', spellcheck: false });
-  const url = h('input', { type: 'url', name: 'import-url', placeholder: '…or a URL: a file link, or a GitHub repo to browse its files' });
+  const text = h('textarea', {
+    placeholder: '…or paste a .keymap, .dtsi/.overlay, QMK info.json or KLE JSON here',
+    spellcheck: false,
+  });
+  const url = h('input', {
+    type: 'url',
+    name: 'import-url',
+    placeholder: '…or a URL: a file link, or a GitHub repo to browse its files',
+  });
   const repoPanel = h('div.repo-panel');
   const fileInput = h('input', {
     type: 'file',
@@ -47,7 +54,11 @@ export function openImport(store, actions) {
   const body = h(
     'div.import-body',
     {},
-    h('p.muted', {}, 'Physical layouts: ZMK .dtsi/.overlay (e.g. from zmk-layout-helper), QMK info.json, KLE JSON. Keymaps: ZMK .keymap. Saved projects (.json) too. The type is detected automatically; files can also be dropped anywhere.'),
+    h(
+      'p.muted',
+      {},
+      'Physical layouts: ZMK .dtsi/.overlay (e.g. from zmk-layout-helper), QMK info.json, KLE JSON. Keymaps: ZMK .keymap. Saved projects (.json) too. The type is detected automatically; files can also be dropped anywhere.',
+    ),
     h('button.primary.big', { onclick: () => fileInput.click() }, 'Choose files…'),
     fileInput,
     text,
@@ -55,5 +66,8 @@ export function openImport(store, actions) {
     repoPanel,
     msg,
   );
-  const dlg = dialog('Import', body, [h('button', { onclick: () => dlg.close() }, 'Cancel'), h('button.primary', { onclick: run }, 'Import')]);
+  const dlg = dialog('Import', body, [
+    h('button', { onclick: () => dlg.close() }, 'Cancel'),
+    h('button.primary', { onclick: run }, 'Import'),
+  ]);
 }

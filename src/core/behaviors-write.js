@@ -3,7 +3,11 @@ import { findNodes } from '../dts/parse.js';
 import { behaviorKind, fingerprint } from './behaviors-parse.js';
 
 const IND = '    ';
-const COMPAT = { 'hold-tap': 'zmk,behavior-hold-tap', 'mod-morph': 'zmk,behavior-mod-morph', macro: 'zmk,behavior-macro' };
+const COMPAT = {
+  'hold-tap': 'zmk,behavior-hold-tap',
+  'mod-morph': 'zmk,behavior-mod-morph',
+  macro: 'zmk,behavior-macro',
+};
 const quote = (s) => `"${String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 const intProp = (name, v) => (v != null ? [`${name} = <${v}>;`] : []);
 const mods = (list) => `<(${list.join('|')})>`;
@@ -60,7 +64,11 @@ const containerFor = (b) => (b.kind === 'macro' ? 'macros' : 'behaviors');
 
 // Wraps new behaviors in a container node (`behaviors { ... };`).
 export function containerLines(name, behaviors) {
-  return [`${name} {`, ...behaviors.flatMap((b, i) => [...(i ? [''] : []), ...behaviorLines(b).map((l) => IND + l)]), '};'];
+  return [
+    `${name} {`,
+    ...behaviors.flatMap((b, i) => [...(i ? [''] : []), ...behaviorLines(b).map((l) => IND + l)]),
+    '};',
+  ];
 }
 
 // Returns { edits: [{ start, end, text }], prefix: [lines] } where prefix holds containers
@@ -78,7 +86,8 @@ export function behaviorEdits(text, root, behaviors) {
       continue;
     }
     kept.add(node);
-    if (fingerprint(b) !== b.orig) edits.push({ start: node.start, end: node.end, text: indentLines(behaviorLines(b), indentOf(text, node.start)) });
+    if (fingerprint(b) !== b.orig)
+      edits.push({ start: node.start, end: node.end, text: indentLines(behaviorLines(b), indentOf(text, node.start)) });
   }
   for (const node of nodes) if (!kept.has(node)) edits.push({ ...lineRange(text, node), text: '' });
   const prefix = [];
@@ -92,7 +101,10 @@ export function behaviorEdits(text, root, behaviors) {
     }
     const closeLine = text.lastIndexOf('\n', container.bodyEnd - 1) + 1;
     const ind = indentOf(text, container.start) + IND;
-    const body = items.map((b) => indentLines(behaviorLines(b), ind)).map((t) => `\n${ind}${t}\n`).join('');
+    const body = items
+      .map((b) => indentLines(behaviorLines(b), ind))
+      .map((t) => `\n${ind}${t}\n`)
+      .join('');
     edits.push({ start: closeLine, end: closeLine, text: body });
   }
   return { edits, prefix };

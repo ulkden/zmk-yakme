@@ -8,7 +8,11 @@ import { isDirty } from '../core/state.js';
 // Ask before replacing a keymap that has changes not yet exported or saved.
 export async function confirmReplace(store) {
   if (!isDirty(store.get())) return true;
-  return askConfirm('Replace current keymap?', 'Your keymap has changes that have not been exported or saved as a project. Replacing it can be undone with Ctrl+Z until you reload.', 'Replace');
+  return askConfirm(
+    'Replace current keymap?',
+    'Your keymap has changes that have not been exported or saved as a project. Replacing it can be undone with Ctrl+Z until you reload.',
+    'Replace',
+  );
 }
 
 const replacesKeymap = (result) => !!(result.keymap || result.project);
@@ -18,7 +22,11 @@ export async function applyResult(result, name, store, actions) {
   if (replacesKeymap(result) && !(await confirmReplace(store))) return false;
   actions.importResult(result, name);
   const n = result.layouts.length;
-  const parts = [n && (n > 1 ? `${n} layouts` : 'layout'), result.keymap && 'keymap', result.project && 'project'].filter(Boolean);
+  const parts = [
+    n && (n > 1 ? `${n} layouts` : 'layout'),
+    result.keymap && 'keymap',
+    result.project && 'project',
+  ].filter(Boolean);
   toast(`Imported ${parts.join(' + ')}${name ? ` from ${name}` : ''}`);
   return true;
 }
@@ -28,7 +36,13 @@ export function errorContent(result) {
   if (result.errorKind !== 'helper-macros') return [result.errors[0]];
   return [
     h('span', {}, result.errors[0]),
-    h('span.small.muted.issue-hint', {}, 'Want this supported? ', h('a', { href: ISSUES_URL, target: '_blank', rel: 'noopener' }, 'Open an issue on GitHub'), '.'),
+    h(
+      'span.small.muted.issue-hint',
+      {},
+      'Want this supported? ',
+      h('a', { href: ISSUES_URL, target: '_blank', rel: 'noopener' }, 'Open an issue on GitHub'),
+      '.',
+    ),
   ];
 }
 

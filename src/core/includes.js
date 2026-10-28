@@ -37,7 +37,7 @@ export function addIncludes(text, includes) {
   const lines = added.map((inc) => `#include <${inc}>`).join('\n');
   const re = /^[ \t]*#include[^\n]*\n/gm;
   let lastEnd = -1;
-  for (let m; (m = re.exec(text)); ) lastEnd = m.index + m[0].length;
+  for (let m; (m = re.exec(text));) lastEnd = m.index + m[0].length;
   if (lastEnd < 0) return { text: `${lines}\n\n${text}`, added };
   return { text: text.slice(0, lastEnd) + lines + '\n' + text.slice(lastEnd), added };
 }

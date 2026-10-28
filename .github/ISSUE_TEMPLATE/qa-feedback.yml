@@ -1,12 +1,24 @@
 name: QA feedback
 description: A bug, rough edge or suggestion found while using the editor
-labels: ["feedback"]
+labels: ['feedback']
 body:
   - type: dropdown
     id: area
     attributes:
       label: Area
-      options: [Getting started, Importing, Editing keys, Layers, Combos, Behaviors, Checking your work, Exporting, Saving your work, Other]
+      options:
+        [
+          Getting started,
+          Importing,
+          Editing keys,
+          Layers,
+          Combos,
+          Behaviors,
+          Checking your work,
+          Exporting,
+          Saving your work,
+          Other,
+        ]
     validations:
       required: true
   - type: dropdown

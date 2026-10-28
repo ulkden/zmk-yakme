@@ -64,6 +64,18 @@ export function mountKeyboard(el, store, actions) {
     replace(el, board);
   };
   store.subscribe(render);
-  new ResizeObserver(render).observe(el);
+  // Re-render only when the available width changes, and outside the observer callback:
+  // rendering changes the board's height, which would otherwise re-trigger the observer
+  // (WebKit reports that loop as an error).
+  let width = el.clientWidth;
+  let frame = 0;
+  new ResizeObserver(() => {
+    if (el.clientWidth === width || frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      width = el.clientWidth;
+      render();
+    });
+  }).observe(el);
   render();
 }

@@ -4,7 +4,10 @@ const EXT = /\.(keymap|dtsi|overlay|json)$/i;
 
 // Returns { kind: 'file' | 'repo', owner, repo, ref, path } or null for non-GitHub URLs.
 export function parseGithubUrl(url) {
-  const u = String(url ?? '').trim().replace(/\/+$/, '').replace(/\.git$/, '');
+  const u = String(url ?? '')
+    .trim()
+    .replace(/\/+$/, '')
+    .replace(/\.git$/, '');
   let m = /^https?:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/.exec(u);
   if (m) return { kind: 'file', owner: m[1], repo: m[2], ref: m[3], path: m[4] };
   m = /^https?:\/\/github\.com\/([^/]+)\/([^/]+)(?:\/(blob|tree)\/([^/]+)(?:\/(.*))?)?$/.exec(u);
@@ -13,7 +16,8 @@ export function parseGithubUrl(url) {
   return { kind: mode === 'blob' ? 'file' : 'repo', owner, repo, ref, path };
 }
 
-export const rawUrl = ({ owner, repo, ref, path }) => `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${path}`;
+export const rawUrl = ({ owner, repo, ref, path }) =>
+  `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${path}`;
 
 function isLayoutCandidate(path) {
   const name = path.split('/').pop().toLowerCase();
@@ -29,16 +33,26 @@ export function repoFiles(tree, base = '') {
   const keymaps = files.filter((f) => f.kind === 'keymap');
   const preferred = keymaps.filter((f) => f.path.startsWith('config/'));
   const pickKeymap = (preferred.length ? preferred : keymaps)[0]?.path;
-  return files.map((f) => ({ ...f, selected: f.path === pickKeymap || (f.kind === 'layout' && isLayoutCandidate(f.path)) }));
+  return files.map((f) => ({
+    ...f,
+    selected: f.path === pickKeymap || (f.kind === 'layout' && isLayoutCandidate(f.path)),
+  }));
 }
 
 // Layouts first, so a keymap imported afterwards keeps the real layout instead of a grid.
-export const importOrder = (paths) => [...paths].sort((a, b) => (a.endsWith('.keymap') ? 1 : 0) - (b.endsWith('.keymap') ? 1 : 0));
+export const importOrder = (paths) =>
+  [...paths].sort((a, b) => (a.endsWith('.keymap') ? 1 : 0) - (b.endsWith('.keymap') ? 1 : 0));
 
 async function getJson(fetchFn, url) {
   const res = await fetchFn(url, { headers: { Accept: 'application/vnd.github+json' } });
-  if (res.status === 403 || res.status === 429) throw new Error('GitHub API rate limit reached (60 requests/hour without sign-in). Try again later.');
-  if (!res.ok) throw new Error(res.status === 404 ? 'Repository or branch not found (only public repos are supported)' : `GitHub API error ${res.status}`);
+  if (res.status === 403 || res.status === 429)
+    throw new Error('GitHub API rate limit reached (60 requests/hour without sign-in). Try again later.');
+  if (!res.ok)
+    throw new Error(
+      res.status === 404
+        ? 'Repository or branch not found (only public repos are supported)'
+        : `GitHub API error ${res.status}`,
+    );
   return res.json();
 }
 

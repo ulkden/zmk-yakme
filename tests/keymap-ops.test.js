@@ -35,7 +35,10 @@ describe('keymap ops', () => {
 
   test('removeLayer remaps numeric references', () => {
     const after = ops.removeLayer(km(), 1);
-    assert.deepEqual(after.layers.map((l) => l.id), ['a', 'c']);
+    assert.deepEqual(
+      after.layers.map((l) => l.id),
+      ['a', 'c'],
+    );
     assert.deepEqual(after.layers[0].bindings, ['&kp A', '&trans', '&lt 1 SPACE']);
     assert.deepEqual(after.layers[1].bindings, ['&trans', '&trans', '&trans']);
     assert.equal(after.combos[0].binding, '&mo 1');
@@ -49,7 +52,10 @@ describe('keymap ops', () => {
 
   test('moveLayer reorders and remaps', () => {
     const after = ops.moveLayer(km(), 2, 0);
-    assert.deepEqual(after.layers.map((l) => l.id), ['c', 'a', 'b']);
+    assert.deepEqual(
+      after.layers.map((l) => l.id),
+      ['c', 'a', 'b'],
+    );
     assert.deepEqual(after.layers[1].bindings, ['&kp A', '&mo 2', '&lt 0 SPACE']);
     assert.deepEqual(after.layers[2].bindings, ['&trans', '&to 1', '&mo NAV']);
     assert.deepEqual(after.layers[0].bindings, ['&tog 2', '&trans', '&trans']);
@@ -70,12 +76,18 @@ describe('keymap ops', () => {
     k = ops.updateCombo(k, 1, { binding: '&kp ESC', timeout: 30 });
     assert.equal(k.combos[1].binding, '&kp ESC');
     k = ops.removeCombo(k, 0);
-    assert.deepEqual(k.combos.map((c) => c.name), ['combo_2']);
+    assert.deepEqual(
+      k.combos.map((c) => c.name),
+      ['combo_2'],
+    );
   });
 
   test('trimLayers and symbolicLayerRefs', () => {
     const t = ops.trimLayers(km(), 2);
-    assert.deepEqual(t.layers.map((l) => l.bindings.length), [2, 2, 2]);
+    assert.deepEqual(
+      t.layers.map((l) => l.bindings.length),
+      [2, 2, 2],
+    );
     assert.deepEqual(ops.symbolicLayerRefs(km()), ['NAV']);
   });
 

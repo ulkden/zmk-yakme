@@ -7,7 +7,10 @@ import { writeKeymapDetailed } from '../src/core/keymap-write.js';
 import { FULL_KEYMAP } from './fixtures/full-keymap.js';
 import { ELVN_KEYMAP } from './fixtures/elvn.js';
 
-const strip = (km) => ({ layers: km.layers.map(({ name, bindings, extra }) => ({ name, bindings, extra })), combos: km.combos });
+const strip = (km) => ({
+  layers: km.layers.map(({ name, bindings, extra }) => ({ name, bindings, extra })),
+  combos: km.combos,
+});
 
 describe('formatRows', () => {
   test('aligns columns and splits by row lengths', () => {
@@ -51,8 +54,26 @@ describe('writeKeymap', () => {
   test('inserts a combos node when the source has none', () => {
     const km = parseKeymap(ELVN_KEYMAP);
     km.combos = [
-      { name: 'c1', keyPositions: [0, 1], binding: '&kp TAB', timeout: 40, layers: [], requirePriorIdle: null, slowRelease: false, extra: [] },
-      { name: 'c2', keyPositions: [2, 'POS_X'], binding: '&kp Q', timeout: null, layers: [1], requirePriorIdle: 120, slowRelease: true, extra: [] },
+      {
+        name: 'c1',
+        keyPositions: [0, 1],
+        binding: '&kp TAB',
+        timeout: 40,
+        layers: [],
+        requirePriorIdle: null,
+        slowRelease: false,
+        extra: [],
+      },
+      {
+        name: 'c2',
+        keyPositions: [2, 'POS_X'],
+        binding: '&kp Q',
+        timeout: null,
+        layers: [1],
+        requirePriorIdle: 120,
+        slowRelease: true,
+        extra: [],
+      },
     ];
     const re = parseKeymap(writeKeymap(km));
     assert.deepEqual(re.combos, km.combos);
@@ -76,7 +97,12 @@ describe('writeKeymap', () => {
   });
 
   test('generates a complete file without a source', () => {
-    const km = { layers: [{ name: 'Base', bindings: ['&kp A', '&out OUT_USB'], extra: [] }], combos: [], customBehaviors: [], source: null };
+    const km = {
+      layers: [{ name: 'Base', bindings: ['&kp A', '&out OUT_USB'], extra: [] }],
+      combos: [],
+      customBehaviors: [],
+      source: null,
+    };
     const out = writeKeymap(km);
     assert.match(out, /#include <behaviors.dtsi>/);
     assert.match(out, /#include <dt-bindings\/zmk\/keys.h>/);
@@ -98,7 +124,10 @@ describe('includes', () => {
   test('ensureIncludes inserts after the last include only when missing', () => {
     const src = '#include <behaviors.dtsi>\n#include <dt-bindings/zmk/keys.h>\n\n/ { };\n';
     const out = ensureIncludes(src, ['behaviors.dtsi', 'dt-bindings/zmk/bt.h']);
-    assert.equal(out, '#include <behaviors.dtsi>\n#include <dt-bindings/zmk/keys.h>\n#include <dt-bindings/zmk/bt.h>\n\n/ { };\n');
+    assert.equal(
+      out,
+      '#include <behaviors.dtsi>\n#include <dt-bindings/zmk/keys.h>\n#include <dt-bindings/zmk/bt.h>\n\n/ { };\n',
+    );
     assert.equal(ensureIncludes(out, ['dt-bindings/zmk/bt.h']), out);
   });
 

@@ -23,7 +23,14 @@ export function textField(label, name, value, onChange, { mono = false, placehol
     'label.field',
     {},
     h('span', {}, label),
-    h(mono ? 'input.mono' : 'input', { type: 'text', name, value: value ?? '', placeholder, spellcheck: false, onchange: (e) => onChange(e.target.value.trim()) }),
+    h(mono ? 'input.mono' : 'input', {
+      type: 'text',
+      name,
+      value: value ?? '',
+      placeholder,
+      spellcheck: false,
+      onchange: (e) => onChange(e.target.value.trim()),
+    }),
   );
 }
 
@@ -33,12 +40,23 @@ export function selectField(label, name, value, options, onChange) {
     'label.field',
     {},
     h('span', {}, label),
-    h('select', { name, onchange: (e) => onChange(e.target.value || null) }, h('option', { value: '', selected: value == null }, '— default —'), opts.map((o) => h('option', { value: o, selected: o === value }, o))),
+    h(
+      'select',
+      { name, onchange: (e) => onChange(e.target.value || null) },
+      h('option', { value: '', selected: value == null }, '— default —'),
+      opts.map((o) => h('option', { value: o, selected: o === value }, o)),
+    ),
   );
 }
 
 // Toggle chips for a multi-select; onChange receives the new list.
 export function chips(items, selected, labelOf, onChange) {
   const toggle = (item) => onChange(selected.includes(item) ? selected.filter((x) => x !== item) : [...selected, item]);
-  return h('div.chips', {}, items.map((item) => h('button.chip', { class: selected.includes(item) ? 'on' : '', onclick: () => toggle(item) }, labelOf(item))));
+  return h(
+    'div.chips',
+    {},
+    items.map((item) =>
+      h('button.chip', { class: selected.includes(item) ? 'on' : '', onclick: () => toggle(item) }, labelOf(item)),
+    ),
+  );
 }
