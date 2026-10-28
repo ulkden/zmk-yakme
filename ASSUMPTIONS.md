@@ -29,10 +29,12 @@ Decisions made while building unattended. Each one can be changed. Review and te
    display name for new layers (`nav_layer`), and every layer gets a `display-name`. In addition, the
    **node name is shown as its own editable field** in the layer actions, sanitized to a valid
    devicetree name and kept unique.
-8. 🔍 **To investigate:** Bindings currently export one row per physical row (new row when `y` changes by
-   ≥ 0.5u or `x` goes backwards), with columns padded. Plan: import several popular split and
-   single-board ZMK keyboards from GitHub (layouts + keymaps), check how they look in the editor and
-   in the exported text, then pick a more refined approach based on what looks wrong.
+8. 🔍 **Investigated (decision pending):** 10 boards from the ZMK repo (Corne, Lily58, Sofle, Kyria,
+   Ferris, Reviung41, Planck, 60% ANSI, BDN9) were imported through the UI. All import cleanly and render
+   correctly (stagger, rotated thumbs, wide keys). **Fixed:** row detection split column-staggered rows
+   (5 of 9 boards); rows now break when x moves left or y jumps ≥ 1.5u, and an imported keymap's own line
+   breaks are kept when they fit. **Open:** bindings alignment style and diagram width (see the
+   walkthrough options).
 9. ✅ **Implemented:** Short layers are padded on export (`&none` on layer 0, `&trans`
    elsewhere), and extra bindings are kept and shown as a warning. In addition, the warning gets a
    one-click **"Trim extra bindings"** action (undoable).
@@ -43,6 +45,8 @@ Decisions made while building unattended. Each one can be changed. Review and te
 11. ✅ **Kept for now (TODO: re-evaluate):** When a file has several physical layouts, the first is used
     and a selector appears in the status bar. **TODO:** try this with a real open-source board that ships
     multiple layouts (e.g. 5- and 6-column variants) during the #8 investigation, then make a final call.
+    **Findings:** Kyria (two layouts in one file) gets the selector as designed. Corne ships its 5- and
+    6-column layouts as *separate files*; importing both together keeps only the last one.
 12. ✅ **Implemented:** KLE import keeps geometry (x, y, w, h, r, rx, ry). The secondary
     rectangle (w2/h2/x2/y2) is still ignored. **New:** when no keymap is loaded, KLE legends become the
     starting base-layer bindings: a legend that matches a keycode or label (e.g. `Q`, `Esc`, `⇧`, `1`)
