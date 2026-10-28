@@ -28,12 +28,14 @@ keymap, or both. Files can also be dropped anywhere on the page.
 | Action                 | Clicks                                             |
 |------------------------|----------------------------------------------------|
 | Import a file          | Import → choose file → pick in OS dialog (or drag & drop: 0) |
-| Set a key to a keycode | key → palette keycode (2)                          |
+| Set a key to a keycode | key → palette keycode (2), or key + type a letter (1) |
 | Set a key behavior     | key → behavior select → option (3)                 |
 | Add layer              | + (1)                                              |
-| Rename / move / delete layer | layer tab → action (2)                       |
-| Add combo              | Combos tab → key(s) (2+, first key creates combo)  |
-| Export                 | Download (1) / Copy (1)                            |
+| Layer settings         | ✎ → field or action (2); delete needs 1 more to confirm (3) |
+| Add combo              | Combos tab → + New combo → key(s) (3)              |
+| Add custom behavior    | Behaviors tab → + Hold-tap/Mod-morph/Macro (2)     |
+| Export                 | Export… → Download (2)                             |
+| Save project           | Save project (1)                                   |
 
 ## Architecture
 
@@ -55,11 +57,13 @@ state = {
   layoutIndex: 0,
   keymap: {
     layers: [{ id, name, bindings: ['&kp A', ...], extra: [rawProp] }],
-    combos: [{ id, name, keyPositions, binding, timeout, layers, extra }],
-    customBehaviors: [{ label, cells }],
+    combos: [{ name, keyPositions, binding, timeout, layers, requirePriorIdle, slowRelease, extra }],
+    behaviors: [{ kind: 'hold-tap'|'mod-morph'|'macro', label, name, bindings, …kind fields, extra, orig, origLabel }],
+    customBehaviors: [{ label, cells }],   // other behaviors in the file (not editable)
     rowHints: [n, ...],          // binding count per source line (layout fallback)
     source: 'original text' | null,
   },
-  ui: { mode: 'layers' | 'combos', layer, key, combo },
+  fileName, cleanKeymap,          // export name; keymap as of the last import/export/save
+  ui: { mode: 'layers' | 'combos' | 'behaviors', layer, key, combo, behavior, layerMenu, advance, diagrams },
 }
 ```

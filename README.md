@@ -6,8 +6,8 @@ A static, client-side editor for [ZMK](https://zmk.dev) keymaps. It combines wha
 
 1. **Import a physical layout**: ZMK `.dtsi`/`.overlay` (`zmk,physical-layout`), QMK `info.json`, or KLE JSON.
 2. **Import an existing keymap**: any ZMK `.keymap`.
-3. **Edit** layers, key bindings and combos, with undo/redo.
-4. **Export** a `.keymap` file. Content outside the `keymap`/`combos` nodes is preserved.
+3. **Edit** layers, key bindings, combos and custom behaviors (hold-tap, mod-morph, macro), with undo/redo.
+4. **Export** a `.keymap` file. Content you didn't change is preserved.
 
 There is no build step and there are no dependencies. Everything runs in the browser, and work is autosaved to localStorage.
 
@@ -23,8 +23,10 @@ python3 -m http.server 8080      # or: npm run serve
 ## Tests
 
 ```sh
-npm test                          # Node >= 21 (uses node:test, no installs needed)
-# or open http://localhost:8080/tests/ in a browser
+npm test                          # unit tests (node:test, no installs needed)
+npm install && npx playwright install chromium
+npm run test:e2e                  # browser tests (Playwright, starts its own server)
+# unit tests also run in a browser: http://localhost:8080/tests/
 ```
 
 ## Deploy
@@ -35,13 +37,15 @@ Enable GitHub Pages for the repository root (branch `main`, folder `/`). No buil
 
 | Do this | How |
 |---|---|
-| Import | **Import** → *Choose files…*, or drop files anywhere. One file can hold both a layout and a keymap. |
-| Edit a key | Click the key, then click a keycode in the palette, or choose a behavior in the side panel. |
+| Import | **Import** → *Choose files…*, paste text, or paste a URL. A GitHub repo URL lists its files so you can pick which to import. You can also drop files anywhere. |
+| Edit a key | Click the key, then click a keycode in the palette, choose a behavior in the side panel, or just type a letter or digit. |
 | Clear a key | Select it and press <kbd>Delete</kbd>, or use *Transparent* / *None*. |
-| Move between keys | <kbd>←</kbd> / <kbd>→</kbd> |
-| Layers | `+` adds a layer. ✎ ‹ › ✕ rename, move or delete the active layer. Layer references are renumbered automatically. |
-| Combos | Open the **Combos** tab and click keys (the first click creates a combo). Set the binding, timeout and layers in the side panel. |
-| Export | **Download .keymap**, **Copy**, or **Preview** |
+| Move between keys | Arrow keys (they follow the physical layout) |
+| Layers | `+` adds a layer. ✎ (or double-click the active tab) opens layer settings: display name, node name, move, delete. |
+| Combos | **Combos** tab → **+ New combo**, then click keys. Set the binding, timeout, prior-idle, slow-release and layers in the side panel. |
+| Behaviors | **Behaviors** tab → add a hold-tap, mod-morph or macro, then pick it from the Behavior list when editing a key. |
+| Export | **Export…** → set the file name, choose whether to add layer diagrams, then **Download** or **Copy**. |
+| Back up work | **Save project** / **Open project** (JSON). Work also autosaves in the browser. |
 | Undo / redo | <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> |
 
 See [docs/DESIGN.md](docs/DESIGN.md) for the functional design and [ASSUMPTIONS.md](ASSUMPTIONS.md) for open decisions.
