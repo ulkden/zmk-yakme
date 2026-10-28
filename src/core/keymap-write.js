@@ -8,7 +8,7 @@ import { behaviorEdits, containerLines } from './behaviors-write.js';
 const IND = '    ';
 
 export function sanitizeId(name, prefix) {
-  let id = String(name ?? '')
+  const id = String(name ?? '')
     .toLowerCase()
     .replace(/[^a-z0-9_]+/g, '_')
     .replace(/^_+|_+$/g, '');

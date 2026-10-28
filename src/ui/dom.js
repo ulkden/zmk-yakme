@@ -80,4 +80,4 @@ export function frameScheduler(fn) {
 }
 
 // Single non-alphanumeric symbols (⇧ ⏎ ⌫ …) come from fallback fonts and render small.
-export const isGlyph = (text) => [...String(text)].length === 1 && /[^\w\s]/u.test(text) && /[^\x00-\x7f]/.test(text);
+export const isGlyph = (text) => [...String(text)].length === 1 && /[^\w\s]/u.test(text) && /\P{ASCII}/u.test(text);
