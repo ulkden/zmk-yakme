@@ -20,6 +20,8 @@ npm run check             # lint + format check + unit tests
 npm run test:e2e          # browser tests, Chromium (starts its own server)
 npm run test:e2e:all      # Chromium, Firefox and WebKit, as CI does
 npm run format            # Prettier
+npm run build             # deployable site in _site/ (version-stamped URLs)
+npm run test:site         # build + smoke-test the built site
 npm run serve             # http://localhost:8080
 ```
 
@@ -87,6 +89,10 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
 - `main` is protected: changes land only by **squash merge** of a PR with green CI. Never push to `main`.
 - Commit in small steps. Messages: imperative subject, a body explaining *why*. AI-assisted commits
   carry a `Co-Authored-By:` trailer.
+- Formatting-only or mechanical changes (reformatting, renames) go in their **own PR**, so the squash
+  commit can be listed in `.git-blame-ignore-revs` without hiding real changes.
+- Merges to `main` deploy to GitHub Pages automatically. Keep `scripts/build-site.mjs` and its smoke
+  test working, and never rely on files that aren't copied into `_site/`.
 - PR descriptions cover what changed, why, how it was verified, and any settings changed outside the code.
 - Merging is the maintainer's call. Don't merge PRs or change repository settings without being asked.
 - Keep docs in step with the code in the same PR: README cheatsheet, `docs/DESIGN.md`, `docs/QA.md`.

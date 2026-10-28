@@ -5,7 +5,7 @@ import prettier from 'eslint-config-prettier';
 import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
 
 export default [
-  { ignores: ['node_modules/', 'test-results/', 'playwright-report/'] },
+  { ignores: ['node_modules/', 'test-results/', 'playwright-report/', '_site/'] },
   js.configs.recommended,
   comments.recommended,
   {
@@ -28,7 +28,7 @@ export default [
     },
   },
   {
-    files: ['tests/**', 'e2e/**', '*.config.js'],
+    files: ['tests/**', 'e2e/**', 'scripts/**', '*.config.js'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
   {

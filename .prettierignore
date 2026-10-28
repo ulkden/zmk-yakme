@@ -4,3 +4,4 @@ playwright-report/
 fonts/
 package-lock.json
 *.md
+_site/

@@ -47,7 +47,12 @@ no longer needed.
 
 ## Deploy
 
-Enable GitHub Pages for the repository root (branch `main`, folder `/`). No build needed.
+**Live:** https://ulkden.github.io/zmk-yakme/
+
+Every merge to `main` runs the full CI suite and then publishes to GitHub Pages
+(`.github/workflows/deploy.yml`). `npm run build` assembles the site in `_site/`: only the app files,
+with a version stamp (`?v=<version>+<commit>`) on every module, stylesheet and font URL, so browsers
+don't mix cached old files with new ones after a deploy. `npm run test:site` builds and smoke-tests it.
 
 ## Usage cheatsheet
 
