@@ -14,7 +14,8 @@
     "check": "npm run lint && npm run format:check && npm test",
     "serve": "python3 -m http.server 8080",
     "build": "node scripts/build-site.mjs _site",
-    "test:site": "npm run build && SITE_DIR=_site playwright test --grep @smoke --project=chromium"
+    "test:site": "npm run build && SITE_DIR=_site playwright test --grep @smoke --project=chromium",
+    "zmk-drift": "node scripts/zmk-drift.mjs"
   },
   "license": "MIT",
   "devDependencies": {

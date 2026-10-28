@@ -22,6 +22,7 @@ npm run test:e2e:all      # Chromium, Firefox and WebKit, as CI does
 npm run format            # Prettier
 npm run build             # deployable site in _site/ (version-stamped URLs)
 npm run test:site         # build + smoke-test the built site
+npm run zmk-drift -- DIR  # check the editor against a ZMK checkout (monthly in CI)
 npm run serve             # http://localhost:8080
 ```
 
@@ -61,7 +62,11 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
 - A flaky test is a bug report. Find the root cause (it has found real bugs here, such as Safari not
   committing on Enter); never "fix" flakiness by adding retries or sleeps.
 - Verify ZMK-related changes against real ZMK files (zmkfirmware/zmk layouts and keymaps), not only
-  hand-written fixtures.
+  hand-written fixtures. Pinned boards live in `tests/fixtures/zmk/` (copied unchanged, MIT, with
+  their ZMK paths); never edit them, re-pin them as described in their README.
+- A `zmk-drift` issue means ZMK's `main` has moved on: fix the editor with tests first, then re-pin
+  the fixtures to the checked commit. Built-in behaviors the editor deliberately leaves as raw
+  bindings are listed in `NOT_EDITABLE` in `scripts/zmk-drift.mjs`.
 - Never claim something works without running it. Report failures and skipped steps plainly.
 
 ## UX rules

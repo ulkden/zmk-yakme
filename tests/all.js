@@ -14,3 +14,4 @@ import './diagram.test.js';
 import './behaviors.test.js';
 import './stamp.test.js';
 import './project-format.test.js';
+import './zmk-boards.test.js';
