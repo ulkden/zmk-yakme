@@ -1,0 +1,14 @@
+# Sections for GitHub's generated release notes, by pull request label.
+# Label each PR when merging; unlabelled PRs land in "Other changes".
+changelog:
+  categories:
+    - title: New features
+      labels: [enhancement]
+    - title: Fixes
+      labels: [bug]
+    - title: Documentation
+      labels: [documentation]
+    - title: Dependencies
+      labels: [dependencies]
+    - title: Other changes
+      labels: ['*']

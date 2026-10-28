@@ -109,6 +109,18 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
 - Spending stays at zero: public repo, standard GitHub-hosted runners, free GitHub features only.
   No GitHub Copilot or AI review features.
 
+## Releases
+
+- Versions are SemVer: **patch** for fixes, **minor** for new features, **major** if files saved or
+  exported by an older version would stop working as before (avoid this).
+- Label every PR for the release notes (`.github/release.yml`): `enhancement`, `bug`,
+  `documentation` or `dependencies`; anything else is listed under "Other changes".
+- User-facing PRs add a line under `## [Unreleased]` in `CHANGELOG.md`, written for users.
+- To release: a PR bumps `version` in `package.json` and `VERSION` in `src/data/project.js` (a test
+  keeps them equal) and turns `[Unreleased]` into a dated section. After it merges, run
+  `gh release create vX.Y.Z --target main --title vX.Y.Z --generate-notes`. The version link in the
+  app opens that release, so publish it straight after the deploy. Releasing is the maintainer's call.
+
 ## Decisions and ambiguity
 
 - When something is ambiguous and the maintainer isn't available, make the most reasonable assumption,
