@@ -35,6 +35,12 @@ npm run test:e2e:all              # Chromium, Firefox and WebKit (as CI does)
 
 CI runs all of the above on every pull request; `main` only accepts changes through a PR with green checks.
 
+**Real ZMK files:** the unit tests import, export and re-import nine real boards from ZMK, pinned in
+`tests/fixtures/zmk/`. Once a month, `.github/workflows/zmk-drift.yml` runs the same checks against
+ZMK's latest `main` and also sweeps every keymap, physical layout and built-in behavior there. If ZMK
+has changed in a way the editor doesn't handle, it opens an issue labelled `zmk-drift` (or comments on the
+open one). Run it locally with `npm run zmk-drift -- <path-to-zmk-checkout>`.
+
 **Function length:** keep functions under 100 lines. Exceeding that is allowed only when splitting the
 function would genuinely make the code worse, and the exception must say why, inline:
 
