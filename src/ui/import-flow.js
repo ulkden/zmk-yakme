@@ -1,6 +1,7 @@
 // Applying imports with a guard against silently replacing unexported work.
-import { toast } from './dom.js';
-import { askConfirm } from './modal.js';
+import { h, toast } from './dom.js';
+import { askConfirm, dialog } from './modal.js';
+import { ISSUES_URL } from '../data/project.js';
 import { importText } from '../core/import.js';
 import { isDirty } from '../core/state.js';
 
@@ -21,15 +22,42 @@ export async function applyResult(result, name, store, actions) {
   return true;
 }
 
+// Message (and, for unsupported helper macros, a link to request the feature).
+export function errorContent(result) {
+  if (result.errorKind !== 'helper-macros') return [result.errors[0]];
+  return [
+    h('span', {}, result.errors[0]),
+    h('span.small.muted.issue-hint', {}, 'Want this supported? ', h('a', { href: ISSUES_URL, target: '_blank', rel: 'noopener' }, 'Open an issue on GitHub'), '.'),
+  ];
+}
+
+export function reportImportError(result, name) {
+  if (result.errorKind !== 'helper-macros') return toast(`${name ? `${name}: ` : ''}${result.errors[0]}`, 'error');
+  const dlg = dialog(`Can't import ${name || 'this file'}`, h('div.error-body', {}, errorContent(result)), [
+    h('button.primary', { onclick: () => dlg.close() }, 'OK'),
+  ]);
+}
+
 export async function importFiles(files, store, actions) {
   let ok = 0;
   for (const file of files) {
     const result = importText(await file.text());
     if (result.errors.length) {
-      toast(`${file.name}: ${result.errors[0]}`, 'error');
+      reportImportError(result, file.name);
       continue;
     }
     if (await applyResult(result, file.name, store, actions)) ok++;
+  }
+  return ok;
+}
+
+// Import already-fetched texts ([{ name, text }]) in order; returns how many were applied.
+export async function importTexts(entries, store, actions) {
+  let ok = 0;
+  for (const { name, text } of entries) {
+    const result = importText(text);
+    if (result.errors.length) reportImportError(result, name);
+    else if (await applyResult(result, name, store, actions)) ok++;
   }
   return ok;
 }

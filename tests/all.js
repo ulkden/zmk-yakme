@@ -9,3 +9,4 @@ import './state.test.js';
 import './labels.test.js';
 import './binding-edit.test.js';
 import './actions.test.js';
+import './import-sources.test.js';

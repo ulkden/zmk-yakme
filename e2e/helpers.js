@@ -5,7 +5,11 @@ export const test = base.extend({
   page: async ({ page }, use) => {
     const errors = [];
     page.on('pageerror', (err) => errors.push(`pageerror: ${err.message}`));
-    page.on('console', (msg) => msg.type() === 'error' && errors.push(`console: ${msg.text()}`));
+    // Network status lines ("Failed to load resource") are logged by the browser itself,
+    // e.g. for mocked 404s; script errors still fail the test.
+    page.on('console', (msg) => {
+      if (msg.type() === 'error' && !msg.text().startsWith('Failed to load resource')) errors.push(`console: ${msg.text()}`);
+    });
     await page.goto('/');
     await page.evaluate(() => localStorage.clear());
     await page.reload();

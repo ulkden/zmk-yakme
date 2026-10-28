@@ -3,7 +3,9 @@ import { h, replace } from './dom.js';
 import { dialog } from './modal.js';
 import { importText } from '../core/import.js';
 import { toRawUrl } from '../core/export.js';
-import { importFiles, applyResult } from './import-flow.js';
+import { parseGithubUrl } from '../core/github.js';
+import { importFiles, applyResult, errorContent } from './import-flow.js';
+import { showRepoPicker } from './repo-picker.js';
 
 async function fetchText(url) {
   const res = await fetch(toRawUrl(url));
@@ -14,7 +16,8 @@ async function fetchText(url) {
 export function openImport(store, actions) {
   const msg = h('p.dialog-msg');
   const text = h('textarea', { placeholder: '…or paste a .keymap, .dtsi/.overlay, QMK info.json or KLE JSON here', spellcheck: false });
-  const url = h('input', { type: 'url', placeholder: '…or a URL (GitHub links work)' });
+  const url = h('input', { type: 'url', name: 'import-url', placeholder: '…or a URL: a file link, or a GitHub repo to browse its files' });
+  const repoPanel = h('div.repo-panel');
   const fileInput = h('input', {
     type: 'file',
     multiple: true,
@@ -28,6 +31,8 @@ export function openImport(store, actions) {
     let src = text.value;
     let name = '';
     if (!src.trim() && url.value.trim()) {
+      const info = parseGithubUrl(url.value);
+      if (info?.kind === 'repo') return showRepoPicker(repoPanel, info, store, actions, () => dlg.close());
       try {
         src = await fetchText(url.value);
         name = url.value.split('/').pop();
@@ -36,7 +41,7 @@ export function openImport(store, actions) {
       }
     }
     const result = importText(src);
-    if (result.errors.length) return replace(msg, result.errors[0]);
+    if (result.errors.length) return replace(msg, ...errorContent(result));
     if (await applyResult(result, name, store, actions)) dlg.close();
   };
   const body = h(
@@ -47,6 +52,7 @@ export function openImport(store, actions) {
     fileInput,
     text,
     url,
+    repoPanel,
     msg,
   );
   const dlg = dialog('Import', body, [h('button', { onclick: () => dlg.close() }, 'Cancel'), h('button.primary', { onclick: run }, 'Import')]);

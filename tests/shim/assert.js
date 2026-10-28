@@ -43,5 +43,15 @@ assert.throws = (fn, m) => {
   fail(m || 'Expected function to throw', 'no throw', 'throw');
 };
 
+assert.rejects = async (promise, re, m) => {
+  try {
+    await (typeof promise === 'function' ? promise() : promise);
+  } catch (err) {
+    if (re instanceof RegExp && !re.test(err.message)) fail(m, err.message, String(re));
+    return;
+  }
+  fail(m || 'Expected promise to reject', 'resolved', 'rejection');
+};
+
 export default assert;
 export const strict = assert;

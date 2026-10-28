@@ -37,12 +37,14 @@ function applyProps(cur, item, first) {
 export function parseKleLayout(data, name = 'KLE layout') {
   const cur = { x: 0, y: 0, w: 1, h: 1, r: 0, rx: 0, ry: 0, clusterX: 0, clusterY: 0 };
   const keys = [];
+  const legends = [];
   const rows = data.some(Array.isArray) ? data : [data];
   for (const row of rows) {
     if (!Array.isArray(row)) continue; // metadata object
     row.forEach((item, idx) => {
       if (typeof item === 'string') {
         keys.push({ x: cur.x, y: cur.y, w: cur.w, h: cur.h, r: cur.r, rx: cur.rx, ry: cur.ry });
+        legends.push(item);
         cur.x += cur.w;
         cur.w = 1;
         cur.h = 1;
@@ -53,5 +55,5 @@ export function parseKleLayout(data, name = 'KLE layout') {
     cur.y += 1;
     cur.x = cur.rx;
   }
-  return { name, keys };
+  return { name, keys, legends };
 }

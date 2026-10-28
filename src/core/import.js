@@ -5,6 +5,7 @@ import { gridLayout } from './layout-ops.js';
 import { parseKeymap } from './keymap-parse.js';
 import { emptyKeymap } from './keymap-ops.js';
 import { deserialize, keyCount } from './state.js';
+import { legendToBinding } from './legends.js';
 
 // KLE "raw data" is JSON-like but has unquoted keys and no outer brackets.
 export function looseJson(text) {
@@ -40,12 +41,28 @@ function importJson(text) {
   return result;
 }
 
+const HELPER_MACROS = /\bZMK_(LAYER|BASE_LAYER|COMBO|HOLD_TAP|MOD_MORPH|MACRO|BEHAVIOR|TAP_DANCE|CONDITIONAL_LAYER)\s*\(/;
+
 export function importText(text) {
   const trimmed = String(text ?? '').trim();
   if (trimmed.startsWith('{') || trimmed.startsWith('[')) return importJson(trimmed);
   const result = { layouts: parseDtsLayouts(text), keymap: parseKeymap(text), project: null, errors: [] };
-  if (!result.layouts.length && !result.keymap) result.errors.push('No physical layout or keymap found in this file');
+  if (result.layouts.length || result.keymap) return result;
+  if (HELPER_MACROS.test(text)) {
+    result.errorKind = 'helper-macros';
+    result.errors.push('This keymap is written with ZMK helper macros (ZMK_LAYER, ZMK_COMBO, …), which are not supported yet.');
+  } else {
+    result.errors.push('No physical layout or keymap found in this file');
+  }
   return result;
+}
+
+// Base layer from KLE legends, when the layout carries them.
+function seededKeymap(layout, count) {
+  const km = emptyKeymap(count);
+  if (!layout?.legends?.length) return km;
+  const bindings = layout.legends.map(legendToBinding);
+  return { ...km, layers: [{ ...km.layers[0], bindings }] };
 }
 
 function inferLayout(keymap) {
@@ -70,6 +87,6 @@ export function applyImport(state, result) {
     }
   }
   const next = { ...state, layouts, layoutIndex, keymap, ui: { ...state.ui, layer: 0, key: null, combo: null } };
-  if (!next.keymap && layouts.length) next.keymap = emptyKeymap(keyCount(next));
+  if (!next.keymap && layouts.length) next.keymap = seededKeymap(layouts[layoutIndex], keyCount(next));
   return next;
 }

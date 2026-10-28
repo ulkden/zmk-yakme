@@ -42,7 +42,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
 11. ✅ **Kept for now (TODO: re-evaluate):** When a file has several physical layouts, the first is used
     and a selector appears in the status bar. **TODO:** try this with a real open-source board that ships
     multiple layouts (e.g. 5- and 6-column variants) during the #8 investigation, then make a final call.
-12. 🛠 **Decided (to implement):** KLE import keeps geometry (x, y, w, h, r, rx, ry). The secondary
+12. ✅ **Implemented:** KLE import keeps geometry (x, y, w, h, r, rx, ry). The secondary
     rectangle (w2/h2/x2/y2) is still ignored. **New:** when no keymap is loaded, KLE legends become the
     starting base-layer bindings: a legend that matches a keycode or label (e.g. `Q`, `Esc`, `⇧`, `1`)
     becomes `&kp CODE`, and anything else becomes `&none`. For multi-legend keys, the main (top-left or
@@ -68,11 +68,12 @@ Decisions made while building unattended. Each one can be changed. Review and te
 18. ✅ **Implemented:** Pointing behaviors (`&mkp/&mmv/&msc`) add
     `dt-bindings/zmk/pointing.h`, **unless the file already includes `dt-bindings/zmk/mouse.h`** (older
     ZMK), in which case nothing is added.
-19. 🛠 **Decided (to implement):** Keymaps written with helper macros (`ZMK_LAYER`, `ZMK_COMBO`,
+19. ✅ **Implemented:** Keymaps written with helper macros (`ZMK_LAYER`, `ZMK_COMBO`,
     `ZMK_HOLD_TAP`, …, from zmk-helpers / zmk-nodefree-config) are still not parsed, but they are **detected,
     and a clear message explains they aren't supported yet**. Below it, in small text, the message links to the
     project's GitHub issues page to request the feature. **Open item:** the repo has no GitHub remote yet,
-    so the issues URL is a placeholder (one constant) until it's published.
+    so the issues URL is a placeholder until it's published:
+    set `REPO_URL` in `src/data/project.js`.
 20. ✅ **Implemented:** "Advance to next key after picking a keycode" stays **off by default**,
     and **the choice is remembered** across reloads (localStorage preference, separate from the document).
 21. ✅ **Implemented:** Replace `prompt()`/`confirm()` with a **layer settings popover**: ✎ (or
@@ -86,7 +87,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
 23. ✅ **Implemented:** Exported layers are padded to the layout's key count. The file name
     defaults to the imported keymap's name (or `keymap.keymap`), and it is **shown and editable in the
     export notice / preview**. The edited name is remembered with the project.
-24. 🛠 **Decided (to implement):** Single-file URL import stays (`blob` links are rewritten to `raw`).
+24. ✅ **Implemented:** Single-file URL import stays (`blob` links are rewritten to `raw`).
     **New: whole-repo import.** Paste a GitHub repo URL (optionally with `/tree/<branch>/<path>`). The
     app lists the `.keymap`, `.dtsi`, `.overlay` and `.json` files through the public GitHub API (git trees
     endpoint, no auth), preselects the likely keymap and physical-layout files, and imports the ones you
