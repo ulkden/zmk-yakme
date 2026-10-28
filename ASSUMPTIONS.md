@@ -13,7 +13,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
    hold-tap, mod-morph and macros. Plan: a "Behaviors" tab next to Combos that lists the behaviors
    defined in the file, with add/edit/delete in the side panel. Generated nodes go in
    `behaviors { }` / `macros { }`, and other behavior types are still preserved verbatim.
-4. Code from the referenced projects was **not copied**. Everything is a from-scratch
+4. ✅ **Resolved:** MIT `LICENSE` added and both projects credited in the README. Code from the referenced projects was **not copied**. Everything is a from-scratch
    reimplementation, which avoids license questions. The zmk-layout-helper's import formats
    (QMK info.json, KLE JSON, ZMK dtsi) are supported as layout inputs.
 5. Export preserves the imported file's text and regenerates only the `keymap` and `combos`

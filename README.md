@@ -45,3 +45,9 @@ Enable GitHub Pages for the repository root (branch `main`, folder `/`). No buil
 | Undo / redo | <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> |
 
 See [docs/DESIGN.md](docs/DESIGN.md) for the functional design and [ASSUMPTIONS.md](ASSUMPTIONS.md) for open decisions.
+
+## Credits & license
+
+Inspired by [keymap-editor](https://github.com/nickcoutsos/keymap-editor) by Nick Coutsos and
+[zmk-layout-helper](https://zmk-layout-helper.netlify.app/). No code was copied from either project.
+This project is released under the [MIT License](LICENSE).
