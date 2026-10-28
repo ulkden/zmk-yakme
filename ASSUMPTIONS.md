@@ -55,7 +55,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
     selected. **"+ New combo" is the only way to create one**, and it selects the new combo. Then key clicks
     add or remove keys from the selected combo. With no combo selected, the panel hints at
     "+ New combo".
-15. Clicking a palette keycode fills the *last keycode parameter* of the current behavior
+15. ✅ **Confirmed:** Clicking a palette keycode fills the *last keycode parameter* of the current behavior
     (e.g. the tap key of `&mt`/`&lt`). Behaviors without a keycode param are replaced with `&kp X`.
 16. State autosaves to `localStorage`. "New" and imports replace the current state (undoable).
 17. Dark mode only, system font stack, no web fonts (works offline).
