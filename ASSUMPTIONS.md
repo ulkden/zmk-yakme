@@ -35,9 +35,10 @@ Decisions made while building unattended. Each one can be changed. Review and te
 9. 🛠 **Decided (to implement):** Short layers are padded on export (`&none` on layer 0, `&trans`
    elsewhere), and extra bindings are kept and shown as a warning. In addition, the warning gets a
    one-click **"Trim extra bindings"** action (undoable).
-10. Deleting/moving layers remaps **numeric** layer params in `&mo &lt &to &tog &sl` and combo
-    `layers`. Symbolic params (e.g. `&mo NAV` with a `#define`) are left untouched. References to a
-    deleted layer become `&trans`.
+10. 🛠 **Decided (to implement):** Deleting or moving layers renumbers **numeric** params in
+    `&mo &lt &to &tog &sl` and combo `layers`, and references to a deleted layer become `&trans`.
+    Symbolic params (e.g. `&mo NAV` with a `#define`) are left untouched, **but a warning is shown after a
+    move/delete when symbolic layer references exist**, so the user can check their `#define`s.
 11. When a file has several physical layouts, the first is used and a selector appears in the
     status bar.
 12. KLE parsing covers geometry (x, y, w, h, r, rx, ry) only. Legends and the secondary
