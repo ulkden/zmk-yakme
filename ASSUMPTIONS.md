@@ -78,7 +78,11 @@ Decisions made while building unattended. Each one can be changed. Review and te
 21. 🛠 **Decided (to implement):** Replace `prompt()`/`confirm()` with a **layer settings popover**: ✎ (or
     double-clicking the active tab) opens a small panel under the tab with display name, node name
     (see #7), move left/right and delete. Delete confirms inline in the same panel.
-22. Delete/Backspace on a selected key sets `&none` on layer 0 and `&trans` on other layers.
+22. 🛠 **Decided (to implement):** Delete/Backspace clears the selected key (`&none` on layer 0, `&trans`
+    elsewhere), and Esc deselects. **New:** arrow keys (←↑→↓) move to the **physically nearest key in that
+    direction** (using key centers, rotation included) instead of by index. **Type-to-assign:** with a key
+    selected and focus on the page, typing a letter or digit assigns `&kp X` and advances to the next key
+    (always, regardless of the auto-advance setting). Modifier combos such as Ctrl+Z still go to shortcuts.
 23. Exported layer bindings are padded to the layout's key count. The exported file name follows the
     imported keymap's file name, or `keymap.keymap`.
 24. Keymaps can also be imported from a URL. `github.com/.../blob/...` links are rewritten to
