@@ -20,7 +20,8 @@ test('import a keymap file, then its physical layout', async ({ page }) => {
   await importFiles(page, [file('elvn-layouts.dtsi', ELVN_LAYOUT)]);
   await expect(keys(page)).toHaveCount(4);
   await expect(page.locator('#status')).toContainText('Default Layout');
-  await expect(page.locator('#status')).toContainText('7 binding(s) beyond');
+  await page.locator('#status button.warn').click();
+  await expect(page.locator('#status .warnings')).toContainText('7 binding(s) beyond');
 });
 
 test('paste import detects keymap with combos and custom behaviors', async ({ page }) => {
