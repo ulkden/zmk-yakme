@@ -69,7 +69,10 @@ function layerLines(layer, id, idx, opts, layers) {
 
 export function keymapLines(keymap, opts = {}, header = 'keymap') {
   const ids = layerIds(keymap.layers);
-  const body = keymap.layers.flatMap((layer, idx) => ['', ...layerLines(layer, ids[idx], idx, opts, keymap.layers).map((l) => IND + l)]);
+  const body = keymap.layers.flatMap((layer, idx) => [
+    '',
+    ...layerLines(layer, ids[idx], idx, opts, keymap.layers).map((l) => IND + l),
+  ]);
   return [`${header} {`, `${IND}compatible = "zmk,keymap";`, ...body, '};'];
 }
 
@@ -88,7 +91,10 @@ function comboLines(combo, id) {
 }
 
 export function combosLines(combos, header = 'combos') {
-  const ids = uniqueIds(combos.map((c) => ({ name: c.name })), 'combo');
+  const ids = uniqueIds(
+    combos.map((c) => ({ name: c.name })),
+    'combo',
+  );
   const body = combos.flatMap((c, i) => ['', ...comboLines(c, ids[i]).map((l) => IND + l)]);
   return [`${header} {`, `${IND}compatible = "zmk,combos";`, ...body, '};'];
 }
@@ -148,7 +154,11 @@ function splice(keymap, opts) {
   const { edits, prefix } = behaviorEdits(text, root, keymap.behaviors ?? []);
   if (comboNode) {
     const ind = indentOf(text, comboNode.start);
-    edits.push({ start: comboNode.start, end: comboNode.end, text: indentLines(combosLines(keymap.combos, nodeHeader(comboNode)), ind) });
+    edits.push({
+      start: comboNode.start,
+      end: comboNode.end,
+      text: indentLines(combosLines(keymap.combos, nodeHeader(comboNode)), ind),
+    });
   } else if (keymap.combos.length) {
     kmText = indentLines(combosLines(keymap.combos), kmInd) + '\n\n' + kmInd + kmText;
   }

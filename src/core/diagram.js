@@ -47,5 +47,8 @@ export function diagramComment(layer, layers, keys, rows) {
   const geometry = keys?.length ? keys : gridLayout(fallbackRows).keys;
   if (!geometry.length) return [];
   const diagramRows = rows?.length && rows.reduce((a, b) => a + b, 0) === geometry.length ? rows : undefined;
-  return [`// ${layer.name}`, ...layerDiagram(layer.bindings, layers, geometry, diagramRows).map((l) => (l ? `// ${l}` : '//'))];
+  return [
+    `// ${layer.name}`,
+    ...layerDiagram(layer.bindings, layers, geometry, diagramRows).map((l) => (l ? `// ${l}` : '//')),
+  ];
 }

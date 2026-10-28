@@ -27,7 +27,8 @@ export async function showRepoPicker(panel, info, store, actions, done) {
   } catch (err) {
     return replace(panel, h('p.dialog-msg', {}, err.message));
   }
-  if (!listing.files.length) return replace(panel, h('p.dialog-msg', {}, 'No .keymap, .dtsi, .overlay or .json files found here.'));
+  if (!listing.files.length)
+    return replace(panel, h('p.dialog-msg', {}, 'No .keymap, .dtsi, .overlay or .json files found here.'));
   const list = h('div.repo-list', {}, listing.files.map(fileRow));
   const msg = h('p.dialog-msg');
   const run = async () => {
@@ -44,7 +45,11 @@ export async function showRepoPicker(panel, info, store, actions, done) {
   };
   replace(
     panel,
-    h('p.muted.small', {}, `${info.owner}/${info.repo} @ ${listing.ref}${listing.truncated ? ' (listing truncated by GitHub)' : ''}. Likely files are preselected.`),
+    h(
+      'p.muted.small',
+      {},
+      `${info.owner}/${info.repo} @ ${listing.ref}${listing.truncated ? ' (listing truncated by GitHub)' : ''}. Likely files are preselected.`,
+    ),
     list,
     h('div.repo-actions', {}, h('button.primary', { onclick: run }, 'Import selected'), msg),
   );

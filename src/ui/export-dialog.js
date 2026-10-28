@@ -6,7 +6,14 @@ import { exportKeymapDetailed, exportFileName } from '../core/export.js';
 function notices(state, addedIncludes, actions, rerender) {
   const items = [];
   if (addedIncludes.length) {
-    items.push(h('li', {}, 'These includes will be added: ', addedIncludes.map((i) => h('code', {}, `<${i}>`, ' '))));
+    items.push(
+      h(
+        'li',
+        {},
+        'These includes will be added: ',
+        addedIncludes.map((i) => h('code', {}, `<${i}>`, ' ')),
+      ),
+    );
   }
   const diagrams = state.ui.diagrams !== false;
   items.push(
@@ -16,11 +23,20 @@ function notices(state, addedIncludes, actions, rerender) {
       h(
         'label.check',
         {},
-        h('input', { type: 'checkbox', name: 'diagrams', checked: diagrams, onchange: (e) => (actions.setDiagrams(e.target.checked), rerender()) }),
+        h('input', {
+          type: 'checkbox',
+          name: 'diagrams',
+          checked: diagrams,
+          onchange: (e) => (actions.setDiagrams(e.target.checked), rerender()),
+        }),
         ' Generate a layer diagram comment above each layer',
       ),
       diagrams
-        ? h('span.small.notice-detail', {}, 'Comments inside the keymap and combos sections are replaced by the generated diagrams.')
+        ? h(
+            'span.small.notice-detail',
+            {},
+            'Comments inside the keymap and combos sections are replaced by the generated diagrams.',
+          )
         : h('span.small.notice-detail', {}, 'No comments are written inside the keymap and combos sections.'),
     ),
   );

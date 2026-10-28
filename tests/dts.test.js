@@ -71,7 +71,10 @@ describe('parseDts', () => {
     const root = parseDts(FULL_KEYMAP);
     const keymaps = findNodes(root, (n) => propString(n, 'compatible') === 'zmk,keymap');
     assert.equal(keymaps.length, 1);
-    assert.deepEqual(keymaps[0].children.map((c) => c.name), ['default_layer', 'lower_layer']);
+    assert.deepEqual(
+      keymaps[0].children.map((c) => c.name),
+      ['default_layer', 'lower_layer'],
+    );
     const base = keymaps[0].children[0];
     assert.match(propCells(base, 'bindings'), /&hm LSHIFT A/);
     const hm = findNodes(root, (n) => n.labels.includes('hm'))[0];
@@ -80,7 +83,10 @@ describe('parseDts', () => {
 
   test('skips macro statements without breaking following nodes', () => {
     const root = parseDts('/ { ZMK_LAYER(x, &kp A) after { a = <1>; }; };');
-    assert.deepEqual(root.children[0].children.map((c) => c.name), ['after']);
+    assert.deepEqual(
+      root.children[0].children.map((c) => c.name),
+      ['after'],
+    );
   });
 });
 

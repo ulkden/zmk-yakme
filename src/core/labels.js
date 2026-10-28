@@ -12,7 +12,7 @@ export function keyLabel(code = '') {
 }
 
 function layerLabel(param, layers) {
-  return /^\d+$/.test(param ?? '') && layers[Number(param)] ? layers[Number(param)].name : param ?? '?';
+  return /^\d+$/.test(param ?? '') && layers[Number(param)] ? layers[Number(param)].name : (param ?? '?');
 }
 
 // Custom hold-taps read like &mt / &lt: tap on top of the hold (modifier or layer).
@@ -28,7 +28,11 @@ function customLabel(def, params, layers) {
 export function bindingLabel(binding, layers = [], customBehaviors = []) {
   const { behavior, params } = parseBinding(binding);
   const [a, b] = params;
-  const custom = customLabel(customBehaviors.find((c) => c.label === behavior), params, layers);
+  const custom = customLabel(
+    customBehaviors.find((c) => c.label === behavior),
+    params,
+    layers,
+  );
   if (custom) return custom;
   switch (behavior) {
     case 'kp':

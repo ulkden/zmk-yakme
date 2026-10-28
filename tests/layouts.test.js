@@ -25,7 +25,10 @@ describe('parseDtsLayouts', () => {
 
   test('returns every layout in the file', () => {
     const two = ELVN_LAYOUT + ELVN_LAYOUT.replace(/default_layout/g, 'alt').replace('Default Layout', 'Alt');
-    assert.deepEqual(parseDtsLayouts(two).map((l) => l.name), ['Default Layout', 'Alt']);
+    assert.deepEqual(
+      parseDtsLayouts(two).map((l) => l.name),
+      ['Default Layout', 'Alt'],
+    );
   });
 });
 
@@ -33,7 +36,12 @@ describe('parseQmkLayouts', () => {
   test('reads each named layout with defaults', () => {
     const info = {
       layouts: {
-        LAYOUT_split: { layout: [{ x: 0, y: 0 }, { x: 1.5, y: 0.25, w: 2, r: 10, rx: 1, ry: 1, matrix: [0, 1] }] },
+        LAYOUT_split: {
+          layout: [
+            { x: 0, y: 0 },
+            { x: 1.5, y: 0.25, w: 2, r: 10, rx: 1, ry: 1, matrix: [0, 1] },
+          ],
+        },
       },
     };
     const [layout] = parseQmkLayouts(info);
@@ -44,7 +52,12 @@ describe('parseQmkLayouts', () => {
 
 describe('parseKleLayout', () => {
   test('follows KLE positioning rules', () => {
-    const kle = [{ name: 'meta' }, ['Q', { w: 1.5 }, 'W', 'E'], [{ x: 0.5 }, 'A'], [{ r: 15, rx: 4, ry: 1, y: -0.5, x: 1 }, 'T']];
+    const kle = [
+      { name: 'meta' },
+      ['Q', { w: 1.5 }, 'W', 'E'],
+      [{ x: 0.5 }, 'A'],
+      [{ r: 15, rx: 4, ry: 1, y: -0.5, x: 1 }, 'T'],
+    ];
     const layout = parseKleLayout(kle);
     assert.deepEqual(layout.keys, [
       k(0, 0),

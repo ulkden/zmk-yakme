@@ -44,23 +44,41 @@ export function mountTabs(el, store, actions) {
   el.append(bar, slot);
   const render = () => {
     const state = store.get();
-    if (!state.keymap) return replace(bar), replace(slot);
+    if (!state.keymap) return (replace(bar), replace(slot));
     const { ui, keymap } = state;
     if (!ui.layerMenu) resetLayerPopover();
     replace(
       bar,
-      h('div.tab-list', {}, keymap.layers.map((l, i) => layerTab(state, l, i, actions)), h('button.tab.add', { title: 'Add layer', onclick: actions.addLayer }, '+')),
+      h(
+        'div.tab-list',
+        {},
+        keymap.layers.map((l, i) => layerTab(state, l, i, actions)),
+        h('button.tab.add', { title: 'Add layer', onclick: actions.addLayer }, '+'),
+      ),
       ui.mode === 'layers'
-        ? h('button.icon.layer-edit', { class: ui.layerMenu ? 'active' : '', title: 'Layer settings', onclick: actions.toggleLayerMenu }, '✎')
+        ? h(
+            'button.icon.layer-edit',
+            { class: ui.layerMenu ? 'active' : '', title: 'Layer settings', onclick: actions.toggleLayerMenu },
+            '✎',
+          )
         : null,
-      h('button.tab.combos', { class: ui.mode === 'combos' ? 'active' : '', onclick: () => actions.setMode('combos') }, `Combos (${keymap.combos.length})`),
-      h('button.tab', { class: ui.mode === 'behaviors' ? 'active' : '', onclick: () => actions.setMode('behaviors') }, `Behaviors (${keymap.behaviors?.length ?? 0})`),
+      h(
+        'button.tab.combos',
+        { class: ui.mode === 'combos' ? 'active' : '', onclick: () => actions.setMode('combos') },
+        `Combos (${keymap.combos.length})`,
+      ),
+      h(
+        'button.tab',
+        { class: ui.mode === 'behaviors' ? 'active' : '', onclick: () => actions.setMode('behaviors') },
+        `Behaviors (${keymap.behaviors?.length ?? 0})`,
+      ),
     );
     syncPopover(slot, state, actions, cache);
   };
   actions.refreshLayerMenu = render;
   document.addEventListener('click', (e) => {
-    if (store.get().ui.layerMenu && !e.target.closest('.layer-popover, .layer-edit, .tab.active')) actions.closeLayerMenu();
+    if (store.get().ui.layerMenu && !e.target.closest('.layer-popover, .layer-edit, .tab.active'))
+      actions.closeLayerMenu();
   });
   store.subscribe(render);
   render();

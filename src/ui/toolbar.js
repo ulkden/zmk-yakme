@@ -31,7 +31,11 @@ function projectButtons(store, actions) {
 export function mountToolbar(el, store, actions, dialogs) {
   const undo = h('button.icon', { onclick: actions.undo, title: 'Undo (Ctrl+Z)' }, '↶');
   const redo = h('button.icon', { onclick: actions.redo, title: 'Redo (Ctrl+Shift+Z)' }, '↷');
-  const exportBtn = h('button.primary', { onclick: dialogs.openExport, title: 'Preview, copy or download the .keymap' }, 'Export…');
+  const exportBtn = h(
+    'button.primary',
+    { onclick: dialogs.openExport, title: 'Preview, copy or download the .keymap' },
+    'Export…',
+  );
   const project = projectButtons(store, actions);
   const close = h('button', { onclick: dialogs.openClose, title: 'Close the keymap and start fresh' }, 'Close keymap');
   replace(

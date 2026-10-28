@@ -63,7 +63,11 @@ function keyActions({ get, editKeymap, actions }) {
 function layerActions({ get, setUi, editKeymap, notify, actions }) {
   const warnSymbolicRefs = () => {
     const refs = ops.symbolicLayerRefs(get().keymap);
-    if (refs.length) notify(`Layer numbers changed. Check the #defines for ${refs.join(', ')}; named references aren't renumbered.`, 'warn');
+    if (refs.length)
+      notify(
+        `Layer numbers changed. Check the #defines for ${refs.join(', ')}; named references aren't renumbered.`,
+        'warn',
+      );
   };
   return {
     selectLayer: (layer) => setUi({ layer, mode: 'layers', ...(get().ui.layer !== layer ? { layerMenu: false } : {}) }),
@@ -117,10 +121,20 @@ function collectionActions({ get, setUi, editKeymap }, { uiKey, mode, list, add,
 
 function comboAndBehaviorActions(ctx) {
   const combos = collectionActions(ctx, {
-    uiKey: 'combo', mode: 'combos', list: (km) => km.combos, add: (km) => ops.addCombo(km), update: ops.updateCombo, remove: ops.removeCombo,
+    uiKey: 'combo',
+    mode: 'combos',
+    list: (km) => km.combos,
+    add: (km) => ops.addCombo(km),
+    update: ops.updateCombo,
+    remove: ops.removeCombo,
   });
   const behaviors = collectionActions(ctx, {
-    uiKey: 'behavior', mode: 'behaviors', list: (km) => km.behaviors, add: bops.addBehavior, update: bops.updateBehavior, remove: bops.removeBehavior,
+    uiKey: 'behavior',
+    mode: 'behaviors',
+    list: (km) => km.behaviors,
+    add: bops.addBehavior,
+    update: bops.updateBehavior,
+    remove: bops.removeBehavior,
   });
   return {
     selectCombo: combos.select,
@@ -175,11 +189,21 @@ function documentActions({ store, clearStorage }) {
 export function createActions(store, { savePref = () => {}, notify = () => {}, clearStorage = () => {} } = {}) {
   const get = store.get;
   const setUi = (patch) =>
-    store.update((s) => (Object.keys(patch).every((k) => s.ui[k] === patch[k]) ? s : { ...s, ui: { ...s.ui, ...patch } }), {
-      history: false,
-    });
+    store.update(
+      (s) => (Object.keys(patch).every((k) => s.ui[k] === patch[k]) ? s : { ...s, ui: { ...s.ui, ...patch } }),
+      {
+        history: false,
+      },
+    );
   const editKeymap = (fn) => store.update((s) => (s.keymap ? { ...s, keymap: fn(s.keymap, s) } : s));
   const actions = {};
   const ctx = { store, get, setUi, editKeymap, savePref, notify, clearStorage, actions };
-  return Object.assign(actions, uiActions(ctx), keyActions(ctx), layerActions(ctx), comboAndBehaviorActions(ctx), documentActions(ctx));
+  return Object.assign(
+    actions,
+    uiActions(ctx),
+    keyActions(ctx),
+    layerActions(ctx),
+    comboAndBehaviorActions(ctx),
+    documentActions(ctx),
+  );
 }

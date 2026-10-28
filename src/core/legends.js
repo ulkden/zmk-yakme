@@ -2,18 +2,56 @@
 import { LABELS, ALIASES, ALL_CODES } from '../data/keycodes.js';
 
 const WORDS = {
-  tab: 'TAB', enter: 'RET', return: 'RET', space: 'SPACE', spacebar: 'SPACE', backspace: 'BSPC', bksp: 'BSPC',
-  shift: 'LSHIFT', lshift: 'LSHIFT', rshift: 'RSHIFT', ctrl: 'LCTRL', control: 'LCTRL', alt: 'LALT', option: 'LALT',
-  opt: 'LALT', win: 'LGUI', cmd: 'LGUI', command: 'LGUI', super: 'LGUI', gui: 'LGUI', meta: 'LGUI', caps: 'CAPS',
-  'caps lock': 'CAPS', esc: 'ESC', escape: 'ESC', del: 'DEL', delete: 'DEL', ins: 'INS', insert: 'INS',
-  home: 'HOME', end: 'END', pgup: 'PG_UP', 'page up': 'PG_UP', pgdn: 'PG_DN', 'page down': 'PG_DN',
-  menu: 'K_APP', app: 'K_APP', prtsc: 'PSCRN', 'print screen': 'PSCRN', 'prt sc': 'PSCRN',
+  tab: 'TAB',
+  enter: 'RET',
+  return: 'RET',
+  space: 'SPACE',
+  spacebar: 'SPACE',
+  backspace: 'BSPC',
+  bksp: 'BSPC',
+  shift: 'LSHIFT',
+  lshift: 'LSHIFT',
+  rshift: 'RSHIFT',
+  ctrl: 'LCTRL',
+  control: 'LCTRL',
+  alt: 'LALT',
+  option: 'LALT',
+  opt: 'LALT',
+  win: 'LGUI',
+  cmd: 'LGUI',
+  command: 'LGUI',
+  super: 'LGUI',
+  gui: 'LGUI',
+  meta: 'LGUI',
+  caps: 'CAPS',
+  'caps lock': 'CAPS',
+  esc: 'ESC',
+  escape: 'ESC',
+  del: 'DEL',
+  delete: 'DEL',
+  ins: 'INS',
+  insert: 'INS',
+  home: 'HOME',
+  end: 'END',
+  pgup: 'PG_UP',
+  'page up': 'PG_UP',
+  pgdn: 'PG_DN',
+  'page down': 'PG_DN',
+  menu: 'K_APP',
+  app: 'K_APP',
+  prtsc: 'PSCRN',
+  'print screen': 'PSCRN',
+  'prt sc': 'PSCRN',
 };
 
 const BY_LABEL = {};
 for (const [code, label] of Object.entries(LABELS)) BY_LABEL[label.toLowerCase()] ??= code;
 
-const clean = (s) => String(s ?? '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+const clean = (s) =>
+  String(s ?? '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
 export function legendToCode(legend) {
   const text = clean(legend);

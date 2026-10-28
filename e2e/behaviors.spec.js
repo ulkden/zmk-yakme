@@ -36,7 +36,9 @@ test('create a hold-tap, use it on a key, and export it', async ({ page }) => {
   await expect(key(page, 13)).toHaveClass(/combo-on/);
 
   const text = await exportText(page);
-  expect(text).toMatch(/hm: hm \{\s+compatible = "zmk,behavior-hold-tap";\s+#binding-cells = <2>;\s+flavor = "tap-preferred";\s+tapping-term-ms = <180>;\s+bindings = <&kp>, <&kp>;/);
+  expect(text).toMatch(
+    /hm: hm \{\s+compatible = "zmk,behavior-hold-tap";\s+#binding-cells = <2>;\s+flavor = "tap-preferred";\s+tapping-term-ms = <180>;\s+bindings = <&kp>, <&kp>;/,
+  );
   expect(text).toContain('&hm LSHIFT A');
 });
 

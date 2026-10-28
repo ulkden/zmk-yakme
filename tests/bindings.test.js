@@ -1,12 +1,6 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  splitParams,
-  splitBindings,
-  bindingsPerLine,
-  parseBinding,
-  formatBinding,
-} from '../src/core/bindings.js';
+import { splitParams, splitBindings, bindingsPerLine, parseBinding, formatBinding } from '../src/core/bindings.js';
 
 describe('splitParams', () => {
   test('splits on whitespace outside parentheses and strips it inside', () => {

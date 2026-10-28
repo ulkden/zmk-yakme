@@ -5,7 +5,14 @@ import { splitBindings, bindingsPerLine, splitParams } from './bindings.js';
 import { parseBehaviors, behaviorKind } from './behaviors-parse.js';
 
 const LAYER_PROPS = new Set(['bindings', 'display-name', 'label']);
-const COMBO_PROPS = new Set(['bindings', 'key-positions', 'timeout-ms', 'layers', 'require-prior-idle-ms', 'slow-release']);
+const COMBO_PROPS = new Set([
+  'bindings',
+  'key-positions',
+  'timeout-ms',
+  'layers',
+  'require-prior-idle-ms',
+  'slow-release',
+]);
 
 function extraProps(node, handled, text) {
   return node.props.filter((p) => !handled.has(p.name)).map((p) => text.slice(p.start, p.end).trim());
@@ -25,7 +32,7 @@ function positionList(cells) {
   });
 }
 
-const optionalInt = (node, name) => (getProp(node, name) ? intList(propCells(node, name))[0] ?? null : null);
+const optionalInt = (node, name) => (getProp(node, name) ? (intList(propCells(node, name))[0] ?? null) : null);
 
 function parseLayer(node, text) {
   return {

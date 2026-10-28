@@ -35,7 +35,10 @@ export function addLayer(km, keyCount, name) {
 }
 
 export function renameLayer(km, idx, name) {
-  return withLayers(km, km.layers.map((l, i) => (i === idx ? { ...l, name } : l)));
+  return withLayers(
+    km,
+    km.layers.map((l, i) => (i === idx ? { ...l, name } : l)),
+  );
 }
 
 // Set a layer's devicetree node name: sanitized, and made unique among the other layers.
@@ -44,7 +47,10 @@ export function setLayerId(km, idx, raw) {
   const base = sanitizeId(raw, 'layer');
   let id = base;
   for (let n = 2; others.has(id); n++) id = `${base}_${n}`;
-  return withLayers(km, km.layers.map((l, i) => (i === idx ? { ...l, id } : l)));
+  return withLayers(
+    km,
+    km.layers.map((l, i) => (i === idx ? { ...l, id } : l)),
+  );
 }
 
 // Rewrite numeric layer references; mapIdx(old) returns the new index or null (removed).
@@ -68,7 +74,10 @@ export function remapLayerRefs(km, mapIdx) {
 
 // Drop bindings beyond the layout's key count.
 export function trimLayers(km, keyCount) {
-  return withLayers(km, km.layers.map((l) => (l.bindings.length > keyCount ? { ...l, bindings: l.bindings.slice(0, keyCount) } : l)));
+  return withLayers(
+    km,
+    km.layers.map((l) => (l.bindings.length > keyCount ? { ...l, bindings: l.bindings.slice(0, keyCount) } : l)),
+  );
 }
 
 // Non-numeric layer params (e.g. `&mo NAV`) that renumbering cannot update.
@@ -86,7 +95,10 @@ export function symbolicLayerRefs(km) {
 export function removeLayer(km, idx) {
   if (km.layers.length <= 1) return km;
   const remapped = remapLayerRefs(km, (i) => (i === idx ? null : i > idx ? i - 1 : i));
-  return withLayers(remapped, remapped.layers.filter((_, i) => i !== idx));
+  return withLayers(
+    remapped,
+    remapped.layers.filter((_, i) => i !== idx),
+  );
 }
 
 export function moveLayer(km, from, to) {
@@ -94,7 +106,10 @@ export function moveLayer(km, from, to) {
   const order = km.layers.map((_, i) => i);
   order.splice(to, 0, order.splice(from, 1)[0]);
   const remapped = remapLayerRefs(km, (i) => order.indexOf(i));
-  return withLayers(remapped, order.map((i) => remapped.layers[i]));
+  return withLayers(
+    remapped,
+    order.map((i) => remapped.layers[i]),
+  );
 }
 
 function uniqueComboName(km) {
@@ -119,11 +134,17 @@ export function addCombo(km, keyPositions = []) {
 }
 
 export function updateCombo(km, idx, patch) {
-  return withCombos(km, km.combos.map((c, i) => (i === idx ? { ...c, ...patch } : c)));
+  return withCombos(
+    km,
+    km.combos.map((c, i) => (i === idx ? { ...c, ...patch } : c)),
+  );
 }
 
 export function removeCombo(km, idx) {
-  return withCombos(km, km.combos.filter((_, i) => i !== idx));
+  return withCombos(
+    km,
+    km.combos.filter((_, i) => i !== idx),
+  );
 }
 
 export function toggleComboKey(km, idx, pos) {

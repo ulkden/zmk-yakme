@@ -3,13 +3,29 @@ import { parseBinding, formatBinding } from './bindings.js';
 import { sanitizeId } from './keymap-write.js';
 
 const DEFAULTS = {
-  'hold-tap': { label: 'ht', bindings: ['&kp', '&kp'], flavor: 'balanced', tappingTerm: 200, quickTap: null, priorIdle: null },
+  'hold-tap': {
+    label: 'ht',
+    bindings: ['&kp', '&kp'],
+    flavor: 'balanced',
+    tappingTerm: 200,
+    quickTap: null,
+    priorIdle: null,
+  },
   'mod-morph': { label: 'mm', bindings: ['&kp COMMA', '&kp SEMI'], mods: ['MOD_LSFT', 'MOD_RSFT'], keepMods: [] },
   macro: { label: 'macro', bindings: ['&macro_tap', '&kp A'], waitMs: null, tapMs: null },
 };
 
 export const FLAVORS = ['balanced', 'hold-preferred', 'tap-preferred', 'tap-unless-interrupted'];
-export const MOD_FLAGS = ['MOD_LSFT', 'MOD_LCTL', 'MOD_LALT', 'MOD_LGUI', 'MOD_RSFT', 'MOD_RCTL', 'MOD_RALT', 'MOD_RGUI'];
+export const MOD_FLAGS = [
+  'MOD_LSFT',
+  'MOD_LCTL',
+  'MOD_LALT',
+  'MOD_LGUI',
+  'MOD_RSFT',
+  'MOD_RCTL',
+  'MOD_RALT',
+  'MOD_RGUI',
+];
 
 const behaviors = (km) => km.behaviors ?? [];
 
@@ -41,7 +57,11 @@ export function renameBehaviorRefs(km, from, to) {
 }
 
 export function countBehaviorUses(km, label) {
-  const all = [...km.layers.flatMap((l) => l.bindings), ...km.combos.map((c) => c.binding), ...behaviors(km).flatMap((b) => b.bindings)];
+  const all = [
+    ...km.layers.flatMap((l) => l.bindings),
+    ...km.combos.map((c) => c.binding),
+    ...behaviors(km).flatMap((b) => b.bindings),
+  ];
   return all.filter((b) => parseBinding(b).behavior === label).length;
 }
 
@@ -63,7 +83,10 @@ export function updateBehavior(km, idx, patch) {
     out = renameBehaviorRefs(km, current.label, label);
   }
   // Take bindings from `out` so a self-reference renamed above is kept.
-  return { ...out, behaviors: behaviors(out).map((b, i) => (i === idx ? { ...next, bindings: patch.bindings ?? b.bindings } : b)) };
+  return {
+    ...out,
+    behaviors: behaviors(out).map((b, i) => (i === idx ? { ...next, bindings: patch.bindings ?? b.bindings } : b)),
+  };
 }
 
 export function removeBehavior(km, idx) {
@@ -76,14 +99,21 @@ export function removeBehavior(km, idx) {
 // Parameter types for the binding editor, inferred from what the behavior wraps.
 function paramTypes(b) {
   if (b.kind !== 'hold-tap') return [];
-  return b.bindings.slice(0, 2).map((x) => (['&mo', '&to', '&tog', '&sl'].includes(x.trim()) ? 'layer' : x.trim() === '&kp' ? 'keycode' : 'raw'));
+  return b.bindings
+    .slice(0, 2)
+    .map((x) => (['&mo', '&to', '&tog', '&sl'].includes(x.trim()) ? 'layer' : x.trim() === '&kp' ? 'keycode' : 'raw'));
 }
 
 // Custom behaviors for pickers: editable ones first, then any others found in the file.
 export function allCustomBehaviors(km) {
   if (!km) return [];
   return [
-    ...behaviors(km).map((b) => ({ label: b.label, cells: b.kind === 'hold-tap' ? 2 : 0, params: paramTypes(b), kind: b.kind })),
+    ...behaviors(km).map((b) => ({
+      label: b.label,
+      cells: b.kind === 'hold-tap' ? 2 : 0,
+      params: paramTypes(b),
+      kind: b.kind,
+    })),
     ...(km.customBehaviors ?? []),
   ];
 }

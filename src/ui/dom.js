@@ -51,7 +51,6 @@ export function toast(message, kind = 'info') {
   toastTimer = setTimeout(() => (el.className = ''), 2600);
 }
 
-
 // Re-render `el` while keeping focus (and caret) on the field with the same `name`.
 // Pair with requestAnimationFrame so a blur→change→focus sequence has finished first.
 export function renderKeepingFocus(el, render) {

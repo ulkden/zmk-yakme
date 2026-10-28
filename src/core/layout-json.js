@@ -3,7 +3,15 @@
 const num = (v, d) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
 
 function normKey(k) {
-  return { x: num(k.x, 0), y: num(k.y, 0), w: num(k.w, 1), h: num(k.h, 1), r: num(k.r, 0), rx: num(k.rx, 0), ry: num(k.ry, 0) };
+  return {
+    x: num(k.x, 0),
+    y: num(k.y, 0),
+    w: num(k.w, 1),
+    h: num(k.h, 1),
+    r: num(k.r, 0),
+    rx: num(k.rx, 0),
+    ry: num(k.ry, 0),
+  };
 }
 
 export function parseQmkLayouts(info) {

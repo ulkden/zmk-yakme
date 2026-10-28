@@ -7,7 +7,11 @@ export function openNew(store, actions) {
   const hasLayout = store.get().layouts.length > 0;
   const rows = h('input', { type: 'text', value: '12, 12, 12, 6', spellcheck: false });
   const layers = h('input', { type: 'number', value: 3, min: 1, max: 32 });
-  const parseRows = () => rows.value.split(/[,\s]+/).map(Number).filter((n) => Number.isInteger(n) && n > 0);
+  const parseRows = () =>
+    rows.value
+      .split(/[,\s]+/)
+      .map(Number)
+      .filter((n) => Number.isInteger(n) && n > 0);
   const guarded = (fn) => async () => {
     if (!(await confirmReplace(store))) return;
     fn();

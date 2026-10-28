@@ -6,7 +6,11 @@ let confirming = false;
 
 function deleteRow(layer, i, total, actions) {
   if (!confirming) {
-    return h('button.danger', { disabled: total <= 1, onclick: () => ((confirming = true), actions.refreshLayerMenu()) }, 'Delete layer');
+    return h(
+      'button.danger',
+      { disabled: total <= 1, onclick: () => ((confirming = true), actions.refreshLayerMenu()) },
+      'Delete layer',
+    );
   }
   return h(
     'div.confirm-row',
@@ -25,18 +29,34 @@ export function layerPopover(state, actions) {
   return h(
     'div.layer-popover',
     { role: 'dialog', 'aria-label': 'Layer settings' },
-    h('div.popover-head', {}, h('strong', {}, `Layer ${i}`), h('button.icon', { title: 'Close', onclick: actions.closeLayerMenu }, '✕')),
+    h(
+      'div.popover-head',
+      {},
+      h('strong', {}, `Layer ${i}`),
+      h('button.icon', { title: 'Close', onclick: actions.closeLayerMenu }, '✕'),
+    ),
     h(
       'label.field',
       {},
       h('span', {}, 'Display name'),
-      h('input', { name: 'layer-name', type: 'text', value: layer.name, onchange: (e) => e.target.value.trim() && actions.renameLayer(i, e.target.value.trim()) }),
+      h('input', {
+        name: 'layer-name',
+        type: 'text',
+        value: layer.name,
+        onchange: (e) => e.target.value.trim() && actions.renameLayer(i, e.target.value.trim()),
+      }),
     ),
     h(
       'label.field',
       {},
       h('span', {}, 'Node name'),
-      h('input.mono', { name: 'layer-id', type: 'text', value: nodeId, spellcheck: false, onchange: (e) => (e.target.value = actions.setLayerId(i, e.target.value)) }),
+      h('input.mono', {
+        name: 'layer-id',
+        type: 'text',
+        value: nodeId,
+        spellcheck: false,
+        onchange: (e) => (e.target.value = actions.setLayerId(i, e.target.value)),
+      }),
     ),
     h('p.muted.small', {}, 'The node name is used in the .keymap file; the display name is shown in ZMK Studio.'),
     h(

@@ -58,7 +58,11 @@ describe('state helpers', () => {
   });
 
   test('normalizeUi clamps selections', () => {
-    const s = { ...initialState(), keymap: { layers: [{ bindings: ['&a'] }], combos: [] }, ui: { mode: 'layers', layer: 5, key: 9, combo: 2 } };
+    const s = {
+      ...initialState(),
+      keymap: { layers: [{ bindings: ['&a'] }], combos: [] },
+      ui: { mode: 'layers', layer: 5, key: 9, combo: 2 },
+    };
     assert.deepEqual(normalizeUi(s).ui, { mode: 'layers', layer: 0, key: null, combo: null });
     assert.equal(keyCount(s), 1);
   });
@@ -87,7 +91,15 @@ describe('import', () => {
   });
 
   test('picks the layout whose key count matches the keymap', () => {
-    const two = { layouts: [{ name: 'small', keys: [{}, {}] }, { name: 'big', keys: Array(11).fill({}) }], keymap: null, project: null, errors: [] };
+    const two = {
+      layouts: [
+        { name: 'small', keys: [{}, {}] },
+        { name: 'big', keys: Array(11).fill({}) },
+      ],
+      keymap: null,
+      project: null,
+      errors: [],
+    };
     const s = applyImport(applyImport(initialState(), importText(ELVN_KEYMAP)), two);
     assert.equal(s.layoutIndex, 1);
   });
