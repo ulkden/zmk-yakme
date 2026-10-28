@@ -1,5 +1,8 @@
 import { defineConfig } from '@playwright/test';
 
+// SITE_DIR serves a built site (e.g. _site from scripts/build-site.mjs) instead of the source tree.
+const siteDir = process.env.SITE_DIR ?? '.';
+
 export default defineConfig({
   testDir: 'e2e',
   fullyParallel: true,
@@ -11,9 +14,9 @@ export default defineConfig({
     acceptDownloads: true,
   },
   webServer: {
-    command: 'python3 -m http.server 4173 --bind 127.0.0.1',
+    command: `python3 -m http.server 4173 --bind 127.0.0.1 --directory ${siteDir}`,
     url: 'http://127.0.0.1:4173',
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
     stdout: 'ignore',
     stderr: 'ignore',
   },

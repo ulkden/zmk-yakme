@@ -1,11 +1,10 @@
-# Lint, unit tests and browser tests on every pull request and on main.
+# Lint, unit tests and browser tests on every pull request. On main, deploy.yml calls this
+# workflow before publishing, so every deployed commit has passed the same checks.
 # Third-party actions are pinned to commit SHAs (Dependabot keeps them current).
 name: CI
 
 on:
   pull_request:
-  push:
-    branches: [main]
   workflow_call:
 
 permissions:
@@ -48,6 +47,11 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps ${{ matrix.browser }}
       - run: npx playwright test --project=${{ matrix.browser }}
+      - name: Build the site and smoke-test it
+        if: matrix.browser == 'chromium'
+        run: |
+          node scripts/build-site.mjs _site
+          SITE_DIR=_site npx playwright test --grep @smoke --project=chromium
       - name: Upload report on failure
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
