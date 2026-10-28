@@ -6,7 +6,11 @@
   "description": "Client-side ZMK keymap editor: import a physical layout and keymap, edit layers and combos, export a .keymap file.",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "serve": "python3 -m http.server 8080"
+    "serve": "python3 -m http.server 8080",
+    "test:e2e": "playwright test"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
 }
