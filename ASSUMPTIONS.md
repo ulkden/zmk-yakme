@@ -24,8 +24,10 @@ Decisions made while building unattended. Each one can be changed. Review and te
 6. 🛠 **Decided (to implement):** Missing `#include`s for used behaviors (`bt.h`, `outputs.h`, `rgb.h`,
    `ext_power.h`, `pointing.h`) are still added automatically after the last existing `#include`
    (existing ones are never removed), **and the export notice lists which includes were added**.
-7. Layer node names are kept from the source. New layers get a sanitized node name
-   (`layer_name`), and every layer gets a `display-name`.
+7. 🛠 **Decided (to implement):** Node names stay stable by default: kept from the source, or made from the
+   display name for new layers (`nav_layer`), and every layer gets a `display-name`. In addition, the
+   **node name is shown as its own editable field** in the layer actions, sanitized to a valid
+   devicetree name and kept unique.
 8. Bindings are formatted one row per physical row: a new row starts when a key's `y` changes by
    ≥ 0.5u or `x` goes backwards. Columns are padded for alignment.
 9. If a layer has fewer bindings than the layout has keys, it is padded with `&trans` (`&none` on
