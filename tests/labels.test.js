@@ -24,6 +24,16 @@ describe('labels', () => {
   });
 });
 
+describe('custom hold-tap labels', () => {
+  test('read like mod-tap / layer-tap', () => {
+    const layers = [{ name: 'Base' }, { name: 'Nav' }];
+    const custom = [{ label: 'hm', kind: 'hold-tap', params: ['keycode', 'keycode'] }, { label: 'lth', kind: 'hold-tap', params: ['layer', 'keycode'] }];
+    assert.deepEqual(bindingLabel('&hm LALT S', layers, custom), { tap: 'S', hold: 'Alt', kind: 'hold' });
+    assert.deepEqual(bindingLabel('&lth 1 SPACE', layers, custom), { tap: '␣', hold: 'Nav', kind: 'layer' });
+    assert.deepEqual(bindingLabel('&hm LALT S', layers), { tap: 'Alt S', hold: 'hm', kind: 'other' });
+  });
+});
+
 describe('behaviorDef', () => {
   test('finds built-in and custom behaviors', () => {
     assert.equal(behaviorDef('mt').params.length, 2);

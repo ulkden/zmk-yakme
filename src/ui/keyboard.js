@@ -4,13 +4,14 @@ import { activeLayout } from '../core/state.js';
 import { layoutBounds } from '../core/layout-ops.js';
 import { bindingLabel } from '../core/labels.js';
 import { parseBinding } from '../core/bindings.js';
+import { allCustomBehaviors } from '../core/behavior-ops.js';
 
 const MAX_UNIT = 64;
 const GAP = 4;
 
-function keyClasses(state, i, binding) {
+function keyClasses(state, i, binding, kind) {
   const { ui, keymap } = state;
-  const cls = ['key', `kind-${bindingLabel(binding).kind}`];
+  const cls = ['key', `kind-${kind}`];
   if (ui.mode === 'layers' && ui.key === i) cls.push('selected');
   if (ui.mode === 'behaviors') {
     const label = keymap.behaviors?.[ui.behavior]?.label;
@@ -27,7 +28,7 @@ function keyClasses(state, i, binding) {
 function renderKey(state, key, i, unit, origin, onClick) {
   const layerIdx = state.ui.mode === 'combos' ? 0 : state.ui.layer;
   const binding = state.keymap.layers[layerIdx]?.bindings[i] ?? '';
-  const label = bindingLabel(binding, state.keymap.layers);
+  const label = bindingLabel(binding, state.keymap.layers, allCustomBehaviors(state.keymap));
   const style = {
     left: `${(key.x - origin.x) * unit}px`,
     top: `${(key.y - origin.y) * unit}px`,
@@ -39,7 +40,7 @@ function renderKey(state, key, i, unit, origin, onClick) {
     style.transformOrigin = `${(key.rx - key.x) * unit}px ${(key.ry - key.y) * unit}px`;
   }
   return h(
-    'button.' + keyClasses(state, i, binding).replace(/ /g, '.'),
+    'button.' + keyClasses(state, i, binding, label.kind).replace(/ /g, '.'),
     { style, title: `#${i}  ${binding || '(no binding)'}`, onclick: () => onClick(i) },
     h('span.hold', {}, label.hold),
     h('span.tap', { class: isGlyph(label.tap) ? 'glyph' : '' }, label.tap),

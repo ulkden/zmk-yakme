@@ -15,10 +15,21 @@ function layerLabel(param, layers) {
   return /^\d+$/.test(param ?? '') && layers[Number(param)] ? layers[Number(param)].name : param ?? '?';
 }
 
+// Custom hold-taps read like &mt / &lt: tap on top of the hold (modifier or layer).
+function customLabel(def, params, layers) {
+  if (def?.kind !== 'hold-tap' || params.length < 2) return null;
+  const [a, b] = params;
+  const holdLabel = def.params?.[0] === 'layer' ? layerLabel(a, layers) : keyLabel(a);
+  return { tap: keyLabel(b), hold: holdLabel, kind: def.params?.[0] === 'layer' ? 'layer' : 'hold' };
+}
+
 // Returns { tap, hold, kind } where kind is a CSS-friendly category.
-export function bindingLabel(binding, layers = []) {
+// customBehaviors (optional) lets custom hold-taps be labelled like &mt.
+export function bindingLabel(binding, layers = [], customBehaviors = []) {
   const { behavior, params } = parseBinding(binding);
   const [a, b] = params;
+  const custom = customLabel(customBehaviors.find((c) => c.label === behavior), params, layers);
+  if (custom) return custom;
   switch (behavior) {
     case 'kp':
     case 'kt':
