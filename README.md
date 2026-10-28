@@ -50,4 +50,5 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the functional design and [ASSUMPTIONS.
 
 Inspired by [keymap-editor](https://github.com/nickcoutsos/keymap-editor) by Nick Coutsos and
 [zmk-layout-helper](https://zmk-layout-helper.netlify.app/). No code was copied from either project.
-This project is released under the [MIT License](LICENSE).
+This project is released under the [MIT License](LICENSE). The bundled JetBrains Mono font is under the
+[SIL Open Font License 1.1](fonts/OFL.txt).

@@ -1,5 +1,5 @@
 // Keycode palette: click a keycode to assign it to the selected key or combo.
-import { h, replace } from './dom.js';
+import { h, replace, isGlyph } from './dom.js';
 import { KEY_GROUPS } from '../data/keycodes.js';
 
 function matches(key, q) {
@@ -28,7 +28,7 @@ export function mountPalette(el, store, actions) {
           'div.palette-group',
           {},
           h('div.group-name', {}, g.name),
-          h('div.group-keys', {}, keys.map((k) => h('button.pk', { title: k.code, onclick: () => actions.pickKeycode(k.code) }, k.label))),
+          h('div.group-keys', {}, keys.map((k) => h('button.pk', { class: isGlyph(k.label) ? 'glyph' : '', title: k.code, onclick: () => actions.pickKeycode(k.code) }, k.label))),
         );
       }),
     );

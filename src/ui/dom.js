@@ -78,3 +78,6 @@ export function frameScheduler(fn) {
     if (!pending) pending = requestAnimationFrame(() => ((pending = 0), fn()));
   };
 }
+
+// Single non-alphanumeric symbols (⇧ ⏎ ⌫ …) come from fallback fonts and render small.
+export const isGlyph = (text) => [...String(text)].length === 1 && /[^\w\s]/u.test(text) && /[^\x00-\x7f]/.test(text);

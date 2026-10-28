@@ -1,3 +1,19 @@
+/* JetBrains Mono (SIL OFL 1.1, see fonts/OFL.txt), bundled locally so the app works offline. */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../fonts/JetBrainsMono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../fonts/JetBrainsMono-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg: #0e1013;
   --panel: #14171c;
@@ -13,7 +29,7 @@
   --key: #1c2027;
   --key-hover: #242a33;
   --radius: 6px;
-  --mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
   color-scheme: dark;
 }
 
@@ -136,9 +152,12 @@ input.mono { font-family: var(--mono); font-size: 12px; }
   justify-content: center;
   overflow: hidden;
   line-height: 1.1;
+  font-family: var(--mono);
 }
 .key:hover { background: var(--key-hover); }
-.key .tap { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.key .tap { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.key .tap.glyph { font-size: 18px; font-weight: 400; }
+.pk.glyph { font-size: 15px; line-height: 1.2; padding: 1px 6px; }
 .key .hold { font-size: 9.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; min-height: 10px; }
 .key .idx { position: absolute; bottom: 1px; right: 3px; font-size: 8px; color: #4b525d; font-family: var(--mono); }
 .key.kind-trans .tap, .key.kind-none .tap { color: #4b525d; }
@@ -156,7 +175,7 @@ input.mono { font-family: var(--mono); font-size: 12px; }
 .palette-groups { display: flex; flex-wrap: wrap; gap: 12px 22px; }
 .group-name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
 .group-keys { display: flex; flex-wrap: wrap; gap: 3px; max-width: 460px; }
-.pk { min-width: 30px; padding: 3px 6px; font-size: 12px; background: var(--key); }
+.pk { min-width: 30px; padding: 3px 6px; font-size: 12px; background: var(--key); font-family: var(--mono); }
 
 /* Inspector forms */
 .field { display: grid; grid-template-columns: 82px 1fr; align-items: center; gap: 8px; margin-bottom: 8px; }

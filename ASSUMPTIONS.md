@@ -63,7 +63,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
     changes**; (b) **Save project / Open project** buttons write and read a JSON project file (layouts +
     keymap + file name), so work can be backed up and moved between browsers. Project files are already
     recognized by Import.
-17. 🛠 **Decided (to implement):** Dark mode only. **New:** bundle a monospace font locally (JetBrains Mono,
+17. ✅ **Implemented:** Dark mode only. **New:** bundle a monospace font locally (JetBrains Mono,
     SIL OFL 1.1, with its license file in `fonts/`) for key labels, the palette, raw binding fields and the
     preview. The rest of the UI keeps the system font stack. No external requests, so it still works offline.
 18. ✅ **Implemented:** Pointing behaviors (`&mkp/&mmv/&msc`) add

@@ -11,6 +11,14 @@ test('welcome screen, then example loads with layers and status', async ({ page 
   await expect(key(page, 12).locator('.hold')).toHaveText('Ctrl');
 });
 
+test('bundled monospace font loads for key labels', async ({ page }) => {
+  await loadExample(page);
+  await page.evaluate(() => document.fonts.ready);
+  expect(await page.evaluate(() => document.fonts.check('600 13px "JetBrains Mono"'))).toBe(true);
+  const family = await key(page, 1).locator('.tap').evaluate((el) => getComputedStyle(el).fontFamily);
+  expect(family).toContain('JetBrains Mono');
+});
+
 test('select a key and assign a keycode from the palette', async ({ page }) => {
   await loadExample(page);
   await key(page, 1).click();

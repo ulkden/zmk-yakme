@@ -1,5 +1,5 @@
 // Renders the physical layout with the bindings of the active layer.
-import { h, replace } from './dom.js';
+import { h, replace, isGlyph } from './dom.js';
 import { activeLayout } from '../core/state.js';
 import { layoutBounds } from '../core/layout-ops.js';
 import { bindingLabel } from '../core/labels.js';
@@ -37,7 +37,7 @@ function renderKey(state, key, i, unit, origin, onClick) {
     'button.' + keyClasses(state, i, binding).replace(/ /g, '.'),
     { style, title: `#${i}  ${binding || '(no binding)'}`, onclick: () => onClick(i) },
     h('span.hold', {}, label.hold),
-    h('span.tap', {}, label.tap),
+    h('span.tap', { class: isGlyph(label.tap) ? 'glyph' : '' }, label.tap),
     h('span.idx', {}, String(i)),
   );
 }
