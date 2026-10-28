@@ -66,7 +66,8 @@ Enable GitHub Pages for the repository root (branch `main`, folder `/`). No buil
 | Undo / redo | <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> |
 
 See [docs/DESIGN.md](docs/DESIGN.md) for the functional design, [ASSUMPTIONS.md](ASSUMPTIONS.md) for design decisions,
-and [docs/QA.md](docs/QA.md) for the manual QA process.
+[docs/QA.md](docs/QA.md) for the manual QA process,
+and [AGENTS.md](AGENTS.md) for the rules every change follows (for humans and AI agents alike).
 
 ## Credits & license
 
