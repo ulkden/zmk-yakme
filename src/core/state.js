@@ -1,0 +1,49 @@
+// Application state shape, derived values and persistence helpers.
+
+export const APP_ID = 'zmk-keymap-editor';
+
+export function initialState() {
+  return {
+    layouts: [],
+    layoutIndex: 0,
+    keymap: null,
+    ui: { mode: 'layers', layer: 0, key: null, combo: null },
+  };
+}
+
+export function activeLayout(state) {
+  return state.layouts[state.layoutIndex] ?? state.layouts[0] ?? null;
+}
+
+export function keyCount(state) {
+  const layout = activeLayout(state);
+  if (layout) return layout.keys.length;
+  return Math.max(0, ...(state.keymap?.layers ?? []).map((l) => l.bindings.length));
+}
+
+// Clamp UI selections after undo/import so they always point at something valid.
+export function normalizeUi(state) {
+  const layers = state.keymap?.layers.length ?? 0;
+  const combos = state.keymap?.combos.length ?? 0;
+  const keys = keyCount(state);
+  const ui = { ...state.ui };
+  ui.layer = Math.min(Math.max(0, ui.layer), Math.max(0, layers - 1));
+  if (ui.key !== null && ui.key >= keys) ui.key = null;
+  if (ui.combo !== null && ui.combo >= combos) ui.combo = null;
+  const same = Object.keys(ui).every((k) => ui[k] === state.ui[k]);
+  return same ? state : { ...state, ui };
+}
+
+export function serialize(state) {
+  return JSON.stringify({ app: APP_ID, version: 1, layouts: state.layouts, layoutIndex: state.layoutIndex, keymap: state.keymap });
+}
+
+export function deserialize(json) {
+  try {
+    const data = typeof json === 'string' ? JSON.parse(json) : json;
+    if (data?.app !== APP_ID || !Array.isArray(data.layouts)) return null;
+    return { ...initialState(), layouts: data.layouts, layoutIndex: data.layoutIndex ?? 0, keymap: data.keymap ?? null };
+  } catch {
+    return null;
+  }
+}

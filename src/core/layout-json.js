@@ -37,7 +37,8 @@ function applyProps(cur, item, first) {
 export function parseKleLayout(data, name = 'KLE layout') {
   const cur = { x: 0, y: 0, w: 1, h: 1, r: 0, rx: 0, ry: 0, clusterX: 0, clusterY: 0 };
   const keys = [];
-  for (const row of data) {
+  const rows = data.some(Array.isArray) ? data : [data];
+  for (const row of rows) {
     if (!Array.isArray(row)) continue; // metadata object
     row.forEach((item, idx) => {
       if (typeof item === 'string') {
