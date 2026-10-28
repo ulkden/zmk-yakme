@@ -32,8 +32,9 @@ Decisions made while building unattended. Each one can be changed. Review and te
    ≥ 0.5u or `x` goes backwards), with columns padded. Plan: import several popular split and
    single-board ZMK keyboards from GitHub (layouts + keymaps), check how they look in the editor and
    in the exported text, then pick a more refined approach based on what looks wrong.
-9. If a layer has fewer bindings than the layout has keys, it is padded with `&trans` (`&none` on
-   layer 0). Extra bindings beyond the key count are kept and reported as a warning.
+9. 🛠 **Decided (to implement):** Short layers are padded on export (`&none` on layer 0, `&trans`
+   elsewhere), and extra bindings are kept and shown as a warning. In addition, the warning gets a
+   one-click **"Trim extra bindings"** action (undoable).
 10. Deleting/moving layers remaps **numeric** layer params in `&mo &lt &to &tog &sl` and combo
     `layers`. Symbolic params (e.g. `&mo NAV` with a `#define`) are left untouched. References to a
     deleted layer become `&trans`.
