@@ -92,7 +92,14 @@ test('export dialog previews the example keymap', async ({ page }) => {
   const pre = page.locator('dialog pre.preview');
   await expect(pre).toContainText('compatible = "zmk,keymap";');
   await expect(pre).toContainText('combo_esc {');
-  await expect(page.locator('dialog ul.notices')).toHaveCount(0);
+  await expect(page.locator('dialog ul.notices')).not.toContainText('includes will be added');
+  await expect(pre).toContainText('// Base');
+  await page.getByLabel('Generate a layer diagram comment above each layer').uncheck();
+  await expect(pre).not.toContainText('// Base');
+  await expect(page.locator('dialog ul.notices')).toContainText('No comments are written');
+  await page.getByRole('button', { name: 'Close' }).click();
+  await page.getByRole('button', { name: 'Export…' }).click();
+  await expect(page.getByLabel('Generate a layer diagram comment above each layer')).not.toBeChecked();
   await page.getByRole('button', { name: 'Close' }).click();
   await expect(page.locator('dialog[open]')).toHaveCount(0);
 });
@@ -115,4 +122,8 @@ test('screenshots for visual review', async ({ page }, info) => {
   await page.screenshot({ path: info.outputPath('03-combos.png'), fullPage: true });
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.screenshot({ path: info.outputPath('04-import.png') });
+  await page.getByRole('button', { name: 'Cancel' }).click();
+  await page.getByRole('button', { name: 'Export…' }).click();
+  await page.locator('dialog pre.preview').evaluate((el) => (el.scrollTop = el.scrollHeight * 0.25));
+  await page.screenshot({ path: info.outputPath('06-export.png') });
 });

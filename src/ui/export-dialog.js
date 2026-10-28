@@ -1,26 +1,47 @@
 // Export dialog: editable file name, notices about generated content, preview, copy and download.
-import { h, download, toast } from './dom.js';
+import { h, replace, download, toast } from './dom.js';
 import { dialog } from './modal.js';
 import { exportKeymapDetailed, exportFileName } from '../core/export.js';
 
-function exportNotices(addedIncludes) {
+function notices(state, addedIncludes, actions, rerender) {
   const items = [];
   if (addedIncludes.length) {
     items.push(h('li', {}, 'These includes will be added: ', addedIncludes.map((i) => h('code', {}, `<${i}>`, ' '))));
   }
-  return items.length ? h('ul.notices', {}, items) : null;
+  const diagrams = state.ui.diagrams !== false;
+  items.push(
+    h(
+      'li',
+      {},
+      h(
+        'label.check',
+        {},
+        h('input', { type: 'checkbox', name: 'diagrams', checked: diagrams, onchange: (e) => (actions.setDiagrams(e.target.checked), rerender()) }),
+        ' Generate a layer diagram comment above each layer',
+      ),
+      diagrams
+        ? h('span.small.notice-detail', {}, 'Comments inside the keymap and combos sections are replaced by the generated diagrams.')
+        : h('span.small.notice-detail', {}, 'No comments are written inside the keymap and combos sections.'),
+    ),
+  );
+  return h('ul.notices', {}, items);
 }
 
 export function openExport(store, actions) {
-  const s = store.get();
-  const { text, addedIncludes } = exportKeymapDetailed(s);
+  let text = '';
   const name = h('input.filename', {
     type: 'text',
-    value: exportFileName(s),
+    value: exportFileName(store.get()),
     spellcheck: false,
     onchange: (e) => actions.setFileName(e.target.value.trim() || null),
   });
-  const currentName = () => exportFileName({ fileName: name.value.trim() });
+  const content = h('div.export-content');
+  const render = () => {
+    const s = store.get();
+    const result = exportKeymapDetailed(s, { diagrams: s.ui.diagrams !== false });
+    text = result.text;
+    replace(content, notices(s, result.addedIncludes, actions, render), h('pre.preview', {}, text));
+  };
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(text);
@@ -32,17 +53,12 @@ export function openExport(store, actions) {
   };
   const save = () => {
     actions.setFileName(name.value.trim() || null);
-    download(currentName(), text);
+    download(exportFileName({ fileName: name.value.trim() }), text);
     actions.markClean();
     dlg.close();
   };
-  const body = h(
-    'div.export-body',
-    {},
-    h('label.field', {}, h('span', {}, 'File name'), name),
-    exportNotices(addedIncludes),
-    h('pre.preview', {}, text),
-  );
+  render();
+  const body = h('div.export-body', {}, h('label.field', {}, h('span', {}, 'File name'), name), content);
   const dlg = dialog('Export keymap', body, [
     h('button', { onclick: () => dlg.close() }, 'Close'),
     h('span.grow'),

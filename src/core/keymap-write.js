@@ -2,6 +2,7 @@
 // imported file, only the keymap and combos nodes are regenerated.
 import { parseDts, findNodes, hasCompatible } from '../dts/parse.js';
 import { requiredIncludes, addIncludes } from './includes.js';
+import { diagramComment } from './diagram.js';
 
 const IND = '    ';
 
@@ -50,9 +51,11 @@ function padBindings(bindings, keyCount, filler) {
   return out;
 }
 
-function layerLines(layer, id, idx, opts) {
+function layerLines(layer, id, idx, opts, layers) {
   const bindings = padBindings(layer.bindings, opts.keyCount ?? 0, idx === 0 ? '&none' : '&trans');
+  const diagram = opts.diagrams ? diagramComment({ ...layer, bindings }, layers, opts.keys, opts.rows) : [];
   return [
+    ...diagram,
     `${id} {`,
     `${IND}display-name = ${quote(layer.name)};`,
     `${IND}bindings = <`,
@@ -65,7 +68,7 @@ function layerLines(layer, id, idx, opts) {
 
 export function keymapLines(keymap, opts = {}, header = 'keymap') {
   const ids = layerIds(keymap.layers);
-  const body = keymap.layers.flatMap((layer, idx) => ['', ...layerLines(layer, ids[idx], idx, opts).map((l) => IND + l)]);
+  const body = keymap.layers.flatMap((layer, idx) => ['', ...layerLines(layer, ids[idx], idx, opts, keymap.layers).map((l) => IND + l)]);
   return [`${header} {`, `${IND}compatible = "zmk,keymap";`, ...body, '};'];
 }
 
@@ -145,7 +148,8 @@ function splice(keymap, opts) {
   return { text: withIncludes, addedIncludes: added };
 }
 
-// opts: { rows: [bindings per row], keyCount: pad layers to this many bindings }
+// opts: { rows: [bindings per row], keyCount: pad layers to this many bindings,
+//         diagrams: add layer diagram comments, keys: physical keys for the diagrams }
 // Returns { text, addedIncludes }.
 export function writeKeymapDetailed(keymap, opts = {}) {
   const o = { ...opts, rows: opts.rows ?? keymap.rowHints ?? [], keyCount: opts.keyCount ?? 0 };

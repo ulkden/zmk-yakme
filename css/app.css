@@ -228,8 +228,11 @@ pre.preview {
   margin: 0;
   white-space: pre;
 }
-ul.notices { margin: 0 0 12px; padding: 10px 12px 10px 28px; background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--warn); }
+ul.notices { margin: 0 0 12px; padding: 10px 12px; list-style: none; background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--warn); }
 ul.notices code { font-family: var(--mono); color: var(--text); }
+ul.notices li + li { margin-top: 6px; }
+ul.notices .check { color: var(--text); font-size: 13px; }
+.notice-detail { display: block; color: var(--muted); margin: 2px 0 0 22px; }
 .export-body .field { grid-template-columns: 82px minmax(0, 360px); }
 dialog:has(pre.preview) { width: min(980px, calc(100vw - 32px)); }
 

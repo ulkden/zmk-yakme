@@ -16,7 +16,7 @@ import { mountShortcuts, mountDropzone } from './ui/shortcuts.js';
 
 const prefs = loadPrefs();
 const initial = loadDocument();
-initial.ui = { ...initial.ui, advance: !!prefs.advance };
+initial.ui = { ...initial.ui, advance: !!prefs.advance, diagrams: prefs.diagrams ?? true };
 const store = createStore(initial, { normalize: normalizeUi });
 const actions = createActions(store, { savePref, notify: toast });
 const dialogs = createDialogs(store, actions);

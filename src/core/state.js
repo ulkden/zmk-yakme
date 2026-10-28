@@ -7,7 +7,7 @@ export function initialState() {
     layouts: [],
     layoutIndex: 0,
     keymap: null,
-    ui: { mode: 'layers', layer: 0, key: null, combo: null },
+    ui: { mode: 'layers', layer: 0, key: null, combo: null, diagrams: true },
   };
 }
 

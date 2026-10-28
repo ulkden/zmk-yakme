@@ -40,6 +40,10 @@ export function createActions(store, { savePref = () => {}, notify = () => {} } 
       setUi({ advance });
       savePref('advance', advance);
     },
+    setDiagrams(diagrams) {
+      setUi({ diagrams });
+      savePref('diagrams', diagrams);
+    },
     setFileName: (fileName) => store.update((s) => ({ ...s, fileName }), { history: false }),
     markClean: () => store.update((s) => ({ ...s, cleanKeymap: s.keymap }), { history: false }),
     selectLayout: (layoutIndex) => store.update((s) => ({ ...s, layoutIndex })),
@@ -114,7 +118,7 @@ export function createActions(store, { savePref = () => {}, notify = () => {} } 
     newKeymap(rows, layerCount, keepLayout) {
       store.update((s) => {
         const layouts = keepLayout && s.layouts.length ? s.layouts : [gridLayout(rows)];
-        const base = { ...initialState(), ui: { ...initialState().ui, advance: s.ui.advance }, layouts };
+        const base = { ...initialState(), ui: { ...initialState().ui, advance: s.ui.advance, diagrams: s.ui.diagrams }, layouts };
         let km = ops.emptyKeymap(keyCount(base));
         for (let i = 1; i < layerCount; i++) km = ops.addLayer(km, keyCount(base));
         return { ...base, keymap: km, cleanKeymap: km };
@@ -123,7 +127,7 @@ export function createActions(store, { savePref = () => {}, notify = () => {} } 
     loadExample: () =>
       store.update((s) => {
         const ex = exampleState();
-        return { ...ex, ui: { ...ex.ui, advance: s.ui.advance }, cleanKeymap: ex.keymap };
+        return { ...ex, ui: { ...ex.ui, advance: s.ui.advance, diagrams: s.ui.diagrams }, cleanKeymap: ex.keymap };
       }),
   };
   return actions;
