@@ -1,0 +1,104 @@
+// Side panel: edits the selected key's binding, or combos in combos mode.
+import { h, replace } from './dom.js';
+import { bindingEditor } from './binding-editor.js';
+import { bindingLabel } from '../core/labels.js';
+
+function ctxOf(state) {
+  return { layers: state.keymap.layers, customBehaviors: state.keymap.customBehaviors ?? [] };
+}
+
+function keyPanel(state, actions) {
+  const { ui, keymap } = state;
+  const layer = keymap.layers[ui.layer];
+  if (ui.key === null) {
+    return h('div.empty-hint', {}, h('p', {}, 'Select a key to edit it.'), h('p.muted', {}, 'Tip: ← → move between keys, Delete clears, Ctrl+Z undoes.'));
+  }
+  const binding = layer.bindings[ui.key] ?? (ui.layer === 0 ? '&none' : '&trans');
+  return h(
+    'div',
+    {},
+    h('h3', {}, `Key ${ui.key}`, h('span.muted', {}, ` · ${layer.name}`)),
+    bindingEditor(binding, ctxOf(state), actions.setKeyBinding),
+    h(
+      'div.quick',
+      {},
+      h('button', { onclick: () => actions.setKeyBinding('&trans') }, '▽ Transparent'),
+      h('button', { onclick: () => actions.setKeyBinding('&none') }, '∅ None'),
+    ),
+    h(
+      'label.check',
+      {},
+      h('input', { type: 'checkbox', checked: !!ui.advance, onchange: (e) => actions.setAdvance(e.target.checked) }),
+      ' Advance to next key after picking a keycode',
+    ),
+  );
+}
+
+function comboList(state, actions) {
+  const { ui, keymap } = state;
+  return h(
+    'div.combo-list',
+    {},
+    keymap.combos.map((c, i) =>
+      h(
+        'button.combo-item',
+        { class: ui.combo === i ? 'active' : '', onclick: () => actions.selectCombo(ui.combo === i ? null : i) },
+        h('span.combo-name', {}, c.name),
+        h('span.combo-out', {}, bindingLabel(c.binding, keymap.layers).tap || c.binding),
+        h('span.muted', {}, c.keyPositions.join(' + ') || 'no keys'),
+      ),
+    ),
+    h('button.add-combo', { onclick: actions.addCombo }, '+ New combo'),
+  );
+}
+
+function layerChips(combo, layers, actions) {
+  const toggle = (i) => {
+    const has = combo.layers.includes(i);
+    const next = has ? combo.layers.filter((l) => l !== i) : [...combo.layers, i].sort((a, b) => a - b);
+    actions.updateCombo({ layers: next });
+  };
+  return h(
+    'div.chips',
+    {},
+    layers.map((l, i) => h('button.chip', { class: combo.layers.includes(i) ? 'on' : '', onclick: () => toggle(i) }, l.name)),
+  );
+}
+
+function comboEditor(state, actions) {
+  const combo = state.keymap.combos[state.ui.combo];
+  if (!combo) return h('p.muted', {}, 'Select a combo, or click keys on the keyboard to start a new one.');
+  return h(
+    'div.combo-editor',
+    {},
+    h('p.muted', {}, 'Click keys on the keyboard to add or remove them.'),
+    h('label.field', {}, h('span', {}, 'Name'), h('input', { type: 'text', value: combo.name, spellcheck: false, onchange: (e) => actions.updateCombo({ name: e.target.value.trim() || combo.name }) })),
+    bindingEditor(combo.binding, ctxOf(state), (binding) => actions.updateCombo({ binding })),
+    h(
+      'label.field',
+      {},
+      h('span', {}, 'Timeout ms'),
+      h('input', {
+        type: 'number',
+        min: 0,
+        value: combo.timeout ?? '',
+        placeholder: 'default (50)',
+        onchange: (e) => actions.updateCombo({ timeout: e.target.value === '' ? null : Number(e.target.value) }),
+      }),
+    ),
+    h('div.field', {}, h('span', {}, 'Layers'), layerChips(combo, state.keymap.layers, actions)),
+    h('p.muted.small', {}, 'No layers selected = active on all layers.'),
+    h('button.danger', { onclick: actions.removeCombo }, 'Delete combo'),
+  );
+}
+
+export function mountInspector(el, store, actions) {
+  const render = () => {
+    const state = store.get();
+    if (!state.keymap) return replace(el);
+    if (state.ui.mode === 'combos') replace(el, h('h3', {}, 'Combos'), comboList(state, actions), comboEditor(state, actions));
+    else replace(el, keyPanel(state, actions));
+  };
+  store.subscribe(render);
+  render();
+}

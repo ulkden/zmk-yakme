@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>ZMK Keymap Editor</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="empty">
+  <header class="topbar">
+    <div class="brand">⌨ ZMK Keymap Editor</div>
+    <nav id="toolbar" class="toolbar"></nav>
+  </header>
+  <main class="workspace">
+    <section class="center">
+      <div id="welcome"></div>
+      <div id="tabs" class="tabs"></div>
+      <div id="keyboard" class="keyboard"></div>
+      <div id="palette" class="palette"></div>
+    </section>
+    <aside id="inspector" class="inspector"></aside>
+  </main>
+  <footer id="status" class="status"></footer>
+  <div id="drop-overlay"><div>Drop layout or keymap files to import</div></div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
