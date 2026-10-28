@@ -4,13 +4,12 @@
 import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { join } from 'node:path';
-import { stampFile } from './stamp.js';
+import { stampFile, stampBuild } from './stamp.js';
 
 const SITE_FILES = ['index.html', 'css', 'src', 'fonts', 'LICENSE'];
 const TEXT = /\.(html|css|js)$/;
 
-function siteVersion() {
-  const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
+function commit() {
   let sha = process.env.GITHUB_SHA;
   if (!sha) {
     try {
@@ -19,7 +18,7 @@ function siteVersion() {
       sha = 'local';
     }
   }
-  return `${version}+${sha.slice(0, 7)}`;
+  return sha.slice(0, 7);
 }
 
 function* files(dir) {
@@ -31,7 +30,8 @@ function* files(dir) {
 }
 
 const out = process.argv[2] ?? '_site';
-const version = siteVersion();
+const build = commit();
+const version = `${JSON.parse(readFileSync('package.json', 'utf8')).version}+${build}`;
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 for (const entry of SITE_FILES) cpSync(entry, join(out, entry), { recursive: true });
@@ -45,5 +45,7 @@ for (const path of files(out)) {
     stamped++;
   }
 }
+const projectFile = join(out, 'src/data/project.js');
+writeFileSync(projectFile, stampBuild(readFileSync(projectFile, 'utf8'), build));
 writeFileSync(join(out, '.nojekyll'), '');
 console.log(`Built ${out}/ (version ${version}, ${stamped} files stamped)`);

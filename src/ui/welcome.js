@@ -1,5 +1,6 @@
 // Empty state shown before anything is loaded.
 import { h, replace } from './dom.js';
+import { versionLine } from './version.js';
 
 export function mountWelcome(el, store, actions, dialogs) {
   const render = () => {
@@ -23,6 +24,7 @@ export function mountWelcome(el, store, actions, dialogs) {
           h('button.big', { onclick: actions.loadExample }, 'Try the example'),
         ),
         h('p.muted.small', {}, 'Tip: drop .keymap, .dtsi, .overlay or .json files anywhere on this page.'),
+        versionLine(),
       ),
     );
   };

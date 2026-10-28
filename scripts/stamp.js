@@ -33,3 +33,10 @@ export function stampFile(path, source, version) {
   if (path.endsWith('.html')) return stampHtml(source, version);
   return source;
 }
+
+// Fill in BUILD in src/data/project.js with the commit being deployed.
+const BUILD_LINE = "export const BUILD = '';";
+export function stampBuild(source, build) {
+  if (!source.includes(BUILD_LINE)) throw new Error(`stampBuild: "${BUILD_LINE}" not found`);
+  return source.replace(BUILD_LINE, `export const BUILD = ${JSON.stringify(build)};`);
+}

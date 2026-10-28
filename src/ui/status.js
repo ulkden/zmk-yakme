@@ -1,7 +1,8 @@
-// Bottom status bar: layout choice, key count and warnings.
+// Bottom status bar: layout choice, key count, warnings and the app version.
 import { h, replace } from './dom.js';
 import { activeLayout, keyCount } from '../core/state.js';
 import { validate } from '../core/validate.js';
+import { versionLink } from './version.js';
 
 const FIXES = { trim: { label: 'Trim extra bindings', run: (actions) => actions.trimExtraBindings() } };
 
@@ -45,6 +46,7 @@ export function mountStatus(el, store, actions) {
         ),
         h('span.grow'),
         warnBtn,
+        versionLink(),
       ),
       open && warnings.length
         ? h(
