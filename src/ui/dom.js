@@ -6,7 +6,7 @@ export function h(spec, props = {}, ...children) {
   const el = document.createElement(tag || 'div');
   if (classes.length) el.className = classes.join(' ');
   for (const [k, v] of Object.entries(props ?? {})) {
-    if (v === undefined || v === null || v === false) continue;
+    if (v === undefined || v === null || (v === false && !(k in el))) continue;
     if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
     else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
     else if (k === 'class') el.className += (el.className ? ' ' : '') + v;

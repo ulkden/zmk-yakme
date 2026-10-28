@@ -42,3 +42,15 @@ Decisions made while building unattended. Each one can be changed. Review and te
     (e.g. the tap key of `&mt`/`&lt`). Behaviors without a keycode param are replaced with `&kp X`.
 16. State autosaves to `localStorage`. "New" and imports replace the current state (undoable).
 17. Dark mode only, system font stack, no web fonts (works offline).
+18. Pointing behaviors (`&mkp/&mmv/&msc`) add `dt-bindings/zmk/pointing.h` (current ZMK). Older
+    configs used `mouse.h`.
+19. Keymaps written with preprocessor helper macros (e.g. zmk-nodefree-config's `ZMK_LAYER(...)`)
+    are **not** parsed. Only real devicetree nodes are.
+20. "Advance to next key after picking a keycode" is **off** by default (toggle in the side panel).
+21. Layer rename uses the browser's `prompt()` dialog (✎ button or double-click an active tab). This is
+    a simple MVP choice that can become inline editing later.
+22. Delete/Backspace on a selected key sets `&none` on layer 0 and `&trans` on other layers.
+23. Exported layer bindings are padded to the layout's key count. The exported file name follows the
+    imported keymap's file name, or `keymap.keymap`.
+24. Keymaps can also be imported from a URL. `github.com/.../blob/...` links are rewritten to
+    `raw.githubusercontent.com` so the browser can fetch them (CORS).
