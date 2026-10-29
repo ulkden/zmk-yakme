@@ -25,6 +25,9 @@ physical layout plus an optional existing keymap into an edited ZMK `.keymap` fi
 Import is one dialog that auto-detects content: a single file can supply a layout, a
 keymap, or both. Files can also be dropped anywhere on the page.
 
+Every dialog and popover closes the same ways: its own buttons, Esc, the ✕ in its top-right
+corner, or a click outside it. Closing without a button counts as Cancel.
+
 ## Click budget (≤ 3 clicks)
 
 | Action                 | Clicks                                             |
