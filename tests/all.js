@@ -18,3 +18,4 @@ import './zmk-boards.test.js';
 import './version.test.js';
 import './serve-paths.test.js';
 import './numbers.test.js';
+import './source-refs.test.js';

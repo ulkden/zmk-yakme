@@ -1,5 +1,6 @@
 // Replace comments and preprocessor directives with spaces so that the parser
-// can ignore them while every offset still matches the original text.
+// can ignore them while every offset still matches the original text. With
+// { directives: false } directive lines are kept (their comments are still blanked).
 
 const DIRECTIVE = /^#\s*(include|define|undef|ifdef|ifndef|if|elif|else|endif|pragma|error|warning|line)\b/;
 
@@ -28,7 +29,7 @@ function directiveEnd(text, i) {
   return text.length;
 }
 
-export function maskNonCode(text) {
+export function maskNonCode(text, { directives = true } = {}) {
   let out = '';
   let i = 0;
   let lineStart = true;
@@ -46,7 +47,7 @@ export function maskNonCode(text) {
     } else if (c === '/' && next === '*') {
       end = text.indexOf('*/', i + 2);
       end = end < 0 ? text.length : end + 2;
-    } else if (c === '#' && lineStart && DIRECTIVE.test(text.slice(i, i + 12))) {
+    } else if (directives && c === '#' && lineStart && DIRECTIVE.test(text.slice(i, i + 12))) {
       end = directiveEnd(text, i);
     }
     if (end >= 0) {

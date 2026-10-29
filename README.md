@@ -17,7 +17,8 @@ It runs entirely in your browser: no install, no account, no firmware changes.
 3. **Export** a `.keymap`. The layers and combos are written out neatly, optionally with a diagram of
    each layer as a comment (comments inside those two sections are replaced), and behaviors you edited
    are rewritten. Everything else in your file (`#include`s, `#define`s, other comments, unedited
-   behaviors and other settings) stays as it was, and missing `#include`s are added for you.
+   behaviors and other settings) stays as it was, and missing `#include`s are added for you. Renaming
+   or deleting a behavior also updates the places that use it, such as a tap-dance.
 
 Your work autosaves in the browser, and **Save project** keeps a backup file you can open later.
 
