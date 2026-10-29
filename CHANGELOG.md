@@ -25,6 +25,9 @@ merged pull request.
 - Long file paths in the GitHub repository list are shortened in the middle, so the file name stays
   visible, and hovering shows the whole path.
 - The Combos list shows each combo's key positions as small keycaps joined by "+" (pressed together).
+- The Import dialog lists the files it accepts in two boxes (physical layouts; keymaps and saved
+  projects). Its main button is now **Load**: it imports pasted text or a file link, or lists a
+  repository's files, which you then import with **Import selected**.
 
 ### Fixed
 

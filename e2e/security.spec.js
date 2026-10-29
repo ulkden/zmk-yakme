@@ -4,7 +4,7 @@ import { test, expect } from './helpers.js';
 test('URL import refuses non-GitHub hosts with a clear message', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog [name="import-url"]').fill('https://example.com/my.keymap');
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await expect(page.locator('dialog .dialog-msg')).toContainText('only https links to GitHub');
 });
 

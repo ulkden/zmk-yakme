@@ -91,7 +91,7 @@ test('number fields reject text that is not a whole number and keep the last val
 test('edit an imported macro and mod-morph, rename updates references, delete clears uses', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(FULL_KEYMAP);
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await behaviorsTab(page).click();
   const panel = page.locator('#inspector');
   await expect(panel.locator('.combo-item')).toHaveCount(2);
