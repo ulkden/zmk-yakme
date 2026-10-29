@@ -623,17 +623,34 @@ dialog.modal {
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 18px 20px;
+  padding: 0;
   width: min(640px, calc(100vw - 32px));
   max-height: calc(100vh - 64px);
 }
 dialog.modal::backdrop {
   background: rgba(0, 0, 0, 0.55);
 }
+/* Padding lives on the inner wrapper so that only backdrop clicks hit the <dialog> itself. */
+.dialog-inner {
+  position: relative;
+  padding: 18px 20px;
+}
 dialog h2 {
   margin: 0 0 12px;
+  padding-right: 32px;
   font-size: 16px;
   font-weight: 600;
+}
+.dialog-x {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+}
+.dialog-x:hover {
+  color: var(--text);
 }
 .dialog-buttons {
   display: flex;

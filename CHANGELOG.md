@@ -6,6 +6,11 @@ merged pull request.
 
 ## [Unreleased]
 
+### Changed
+
+- Every dialog has a ✕ in its corner and closes when you click outside it (like Cancel), just like the
+  layer settings popover.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
