@@ -51,6 +51,8 @@ flash firmware.
 
 ## Usage cheatsheet
 
+Step-by-step instructions with screenshots are in the **[user guide](docs/guide/README.md)**.
+
 | Do this | How |
 |---|---|
 | Import | **Import** → *Choose files…*, paste text, or paste a URL. A GitHub repo URL lists its files so you can pick which to import. You can also drop files anywhere. |

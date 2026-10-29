@@ -6,6 +6,11 @@ merged pull request.
 
 ## [Unreleased]
 
+### Added
+
+- A [user guide](docs/guide/README.md) with step-by-step instructions, screenshots and a shortcuts cheat
+  sheet, linked from the welcome screen.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
