@@ -3,6 +3,7 @@ import { h } from './dom.js';
 import { numberField, textField, selectField, chips } from './fields.js';
 import { FLAVORS, MOD_FLAGS, countBehaviorUses } from '../core/behavior-ops.js';
 import { normalizeBinding } from '../core/bindings.js';
+import { refHolders } from '../core/source-refs.js';
 
 const KIND_LABEL = { 'hold-tap': 'Hold-tap', 'mod-morph': 'Mod-morph', macro: 'Macro' };
 const modLabel = (m) =>
@@ -135,10 +136,12 @@ function deleteRow(state, actions) {
       'Delete behavior',
     );
   const uses = countBehaviorUses(state.keymap, b.label);
+  const holders = refHolders(state.keymap.source, b.label);
+  const where = holders.length ? `, including in ${holders.join(', ')}` : '';
   return h(
     'div.confirm-row',
     {},
-    h('span', {}, `Delete &${b.label}?${uses ? ` Its ${uses} use(s) become &none.` : ''}`),
+    h('span', {}, `Delete &${b.label}?${uses ? ` Its ${uses} use(s) become &none${where}.` : ''}`),
     h('button', { onclick: () => ((confirmingDelete = null), actions.refreshInspector()) }, 'Cancel'),
     h('button.danger.solid', { onclick: () => ((confirmingDelete = null), actions.removeBehavior()) }, 'Delete'),
   );

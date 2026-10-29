@@ -16,3 +16,4 @@ import './stamp.test.js';
 import './project-format.test.js';
 import './zmk-boards.test.js';
 import './version.test.js';
+import './source-refs.test.js';

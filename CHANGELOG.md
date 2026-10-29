@@ -6,6 +6,13 @@ merged pull request.
 
 ## [Unreleased]
 
+### Fixed
+
+- Renaming or deleting a behavior also updates the places the editor keeps as they are in your file:
+  other behaviors such as tap-dances, `&label { … };` overrides, `#define`s and unknown layer properties.
+  Before, the exported keymap could refer to a behavior that no longer existed and fail to build. The
+  delete prompt counts these uses and says where they are.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
