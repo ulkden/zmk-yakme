@@ -53,7 +53,7 @@ flash firmware.
 
 | Do this | How |
 |---|---|
-| Import | **Import** → *Choose files…*, paste text, or paste a URL. A GitHub repo URL lists its files so you can pick which to import. You can also drop files anywhere. |
+| Import | **Import** → *Choose files…*, or paste text or a URL and click **Load**. A GitHub repo URL lists its files so you can pick which to import. You can also drop files anywhere. |
 | Edit a key | Click the key, then click a keycode in the palette, choose a behavior in the side panel, or just type a letter or digit. |
 | Clear a key | Select it and press <kbd>Delete</kbd>, or use *Transparent* / *None*. |
 | Move between keys | Arrow keys (they follow the physical layout) |

@@ -656,6 +656,56 @@ dialog h2 {
 .import-body .big {
   align-self: flex-start;
 }
+.accepts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.accept-box {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--box-tint);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+}
+.accept-box.layouts {
+  --box-tint: var(--accent);
+}
+.accept-box.keymaps {
+  --box-tint: var(--ok);
+}
+.accept-box h3 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--box-tint);
+}
+.accept-box ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+.accept-box .muted {
+  white-space: nowrap;
+}
+.info-box {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  background: var(--accent-dim);
+  color: var(--muted);
+  font-size: 12px;
+}
+.info-box::before {
+  content: 'ⓘ ';
+  color: var(--accent);
+}
+@media (max-width: 560px) {
+  .accepts {
+    grid-template-columns: 1fr;
+  }
+}
 .close-body p {
   margin: 0 0 10px;
 }

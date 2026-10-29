@@ -39,6 +39,6 @@ test('an unreadable autosave is backed up before starting fresh', async ({ page 
 test('importing a project from a newer version shows why it cannot open', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(JSON.stringify({ ...V1_PROJECT, version: 99 }));
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await expect(page.locator('dialog .dialog-msg')).toContainText('newer version of zmk-yakme');
 });

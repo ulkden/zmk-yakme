@@ -6,6 +6,12 @@ merged pull request.
 
 ## [Unreleased]
 
+### Changed
+
+- The Import dialog lists the files it accepts in two boxes (physical layouts; keymaps and saved
+  projects). Its main button is now **Load**: it imports pasted text or a file link, or lists a
+  repository's files, which you then import with **Import selected**.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
