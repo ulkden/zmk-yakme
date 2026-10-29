@@ -12,7 +12,7 @@ function projectButtons(store, actions) {
     style: { display: 'none' },
     onchange: (e) => importFiles([...e.target.files], store, actions).finally(() => (e.target.value = '')),
   });
-  const open = h('button', { onclick: () => input.click(), title: 'Open a saved project (.json)' }, 'Open project');
+  const open = h('button', { onclick: () => input.click(), title: 'Open a saved project (.json)' }, 'Open Project');
   const save = h(
     'button',
     {
@@ -23,7 +23,7 @@ function projectButtons(store, actions) {
         toast('Project saved');
       },
     },
-    'Save project',
+    'Save Project',
   );
   return { open, save, input };
 }
@@ -37,7 +37,7 @@ export function mountToolbar(el, store, actions, dialogs) {
     'Export…',
   );
   const project = projectButtons(store, actions);
-  const close = h('button', { onclick: dialogs.openClose, title: 'Close the keymap and start fresh' }, 'Close keymap');
+  const close = h('button', { onclick: dialogs.openClose, title: 'Close the keymap and start fresh' }, 'Close Keymap');
   replace(
     el,
     h('button', { onclick: dialogs.openImport, title: 'Import layout or keymap (or drop files anywhere)' }, 'Import'),

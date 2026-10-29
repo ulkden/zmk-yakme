@@ -25,7 +25,7 @@ export function openClose(store, actions) {
     body,
     [
       h('button', { onclick: () => dlg.close() }, 'Cancel'),
-      h(dirty ? 'button.danger.solid' : 'button.primary', { onclick: close }, 'Close keymap'),
+      h(dirty ? 'button.danger.solid' : 'button.primary', { onclick: close }, 'Close Keymap'),
     ],
     'close-keymap',
   );

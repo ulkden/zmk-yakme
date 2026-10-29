@@ -19,9 +19,9 @@ export function mountWelcome(el, store, actions, dialogs) {
         h(
           'div.welcome-actions',
           {},
-          h('button.primary.big', { onclick: dialogs.openImport }, 'Import files'),
-          h('button.big', { onclick: dialogs.openNew }, 'Start blank'),
-          h('button.big', { onclick: actions.loadExample }, 'Try the example'),
+          h('button.primary.big', { onclick: dialogs.openImport }, 'Import Files'),
+          h('button.big', { onclick: dialogs.openNew }, 'Start Blank'),
+          h('button.big', { onclick: actions.loadExample }, 'Try the Example'),
         ),
         h('p.muted.small', {}, 'Tip: drop .keymap, .dtsi, .overlay or .json files anywhere on this page.'),
         versionLine(),

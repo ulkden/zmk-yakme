@@ -4,7 +4,7 @@ import { activeLayout, keyCount } from '../core/state.js';
 import { validate } from '../core/validate.js';
 import { versionLink } from './version.js';
 
-const FIXES = { trim: { label: 'Trim extra bindings', run: (actions) => actions.trimExtraBindings() } };
+const FIXES = { trim: { label: 'Trim Extra Bindings', run: (actions) => actions.trimExtraBindings() } };
 
 function warningItem(w, actions) {
   const fix = FIXES[w.fix];

@@ -34,11 +34,11 @@ keymap, or both. Files can also be dropped anywhere on the page.
 | Set a key behavior     | key → behavior select → option (3)                 |
 | Add layer              | + (1)                                              |
 | Layer settings         | ✎ → field or action (2); delete needs 1 more to confirm (3) |
-| Add combo              | Combos tab → + New combo → key(s) (3)              |
-| Add custom behavior    | Behaviors tab → + Hold-tap/Mod-morph/Macro (2)     |
+| Add combo              | Combos tab → + New Combo → key(s) (3)              |
+| Add custom behavior    | Behaviors tab → + Hold-Tap/Mod-Morph/Macro (2)     |
 | Export                 | Export… → Download (2)                             |
-| Save project           | Save project (1)                                   |
-| Close keymap           | Close keymap → Close keymap (2)                    |
+| Save project           | Save Project (1)                                   |
+| Close keymap           | Close Keymap → Close Keymap (2)                    |
 | See version / release notes | version link in the status bar or on the welcome screen (1) |
 
 ## Architecture

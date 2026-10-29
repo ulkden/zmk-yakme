@@ -98,9 +98,9 @@ test('layer settings popover: rename, node name, move and delete', async ({ page
   await pop.locator('[name="layer-id"]').fill('Nav Layer!');
   await pop.locator('[name="layer-id"]').press('Enter');
   await expect(pop.locator('[name="layer-id"]')).toHaveValue('nav_layer');
-  await pop.getByRole('button', { name: '‹ Move left' }).click();
+  await pop.getByRole('button', { name: '‹ Move Left' }).click();
   await expect(page.locator('.tab-list .tab.active')).toHaveText('2Nav');
-  await pop.getByRole('button', { name: 'Delete layer' }).click();
+  await pop.getByRole('button', { name: 'Delete Layer' }).click();
   await expect(pop).toContainText('Delete "Nav"?');
   await pop.getByRole('button', { name: 'Delete', exact: true }).click();
   await expect(page.locator('.tab-list .tab:not(.add)')).toHaveText(['0Base', '1Lower', '2Raise']);
@@ -124,7 +124,7 @@ test('combos: create by clicking keys and assign a keycode', async ({ page }) =>
   await page.getByRole('button', { name: /Combos/ }).click();
   await key(page, 13).click();
   await expect(page.locator('#status')).toContainText('1 combos');
-  await page.getByRole('button', { name: '+ New combo' }).click();
+  await page.getByRole('button', { name: '+ New Combo' }).click();
   await key(page, 13).click();
   await key(page, 14).click();
   await pick(page, '⇥');
@@ -145,7 +145,7 @@ test('combos: create by clicking keys and assign a keycode', async ({ page }) =>
   await expect(pre).toContainText('timeout-ms = <40>;');
   await page.locator('dialog').getByRole('button', { name: 'Close', exact: true }).click();
   await expect(page.locator('#status')).toContainText('2 combos');
-  await page.getByRole('button', { name: 'Delete combo' }).click();
+  await page.getByRole('button', { name: 'Delete Combo' }).click();
   await expect(page.locator('#status')).toContainText('1 combos');
 });
 
@@ -170,10 +170,10 @@ test('autosave survives a reload', async ({ page }) => {
 });
 
 test('new keymap from rows', async ({ page }) => {
-  await page.getByRole('button', { name: 'Start blank' }).click();
+  await page.getByRole('button', { name: 'Start Blank' }).click();
   await page.locator('dialog .field', { hasText: 'Keys per row' }).locator('input').fill('5, 5, 2');
   await page.locator('dialog .field', { hasText: 'Layers' }).locator('input').fill('2');
-  await page.getByRole('button', { name: 'Create grid' }).click();
+  await page.getByRole('button', { name: 'Create Grid' }).click();
   await expect(keys(page)).toHaveCount(12);
   await expect(page.locator('.tab-list .tab:not(.add)')).toHaveCount(2);
 });

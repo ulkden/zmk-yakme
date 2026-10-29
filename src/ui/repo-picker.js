@@ -51,6 +51,6 @@ export async function showRepoPicker(panel, info, store, actions, done) {
       `${info.owner}/${info.repo} @ ${listing.ref}${listing.truncated ? ' (listing truncated by GitHub)' : ''}. Likely files are preselected.`,
     ),
     list,
-    h('div.repo-actions', {}, h('button.primary', { onclick: run }, 'Import selected'), msg),
+    h('div.repo-actions', {}, h('button.primary', { onclick: run }, 'Import Selected'), msg),
   );
 }
