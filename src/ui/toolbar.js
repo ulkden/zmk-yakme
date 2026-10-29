@@ -3,16 +3,9 @@
 import { h, replace, download, toast } from './dom.js';
 import { serialize } from '../core/state.js';
 import { projectFileName } from '../core/export.js';
-import { importFiles } from './import-flow.js';
 
-function projectButtons(store, actions) {
-  const input = h('input', {
-    type: 'file',
-    accept: '.json',
-    style: { display: 'none' },
-    onchange: (e) => importFiles([...e.target.files], store, actions).finally(() => (e.target.value = '')),
-  });
-  const open = h('button', { onclick: () => input.click(), title: 'Open a saved project (.json)' }, 'Open project');
+function projectButtons(store, actions, dialogs) {
+  const open = h('button', { onclick: dialogs.openProject, title: 'Open a saved project (.json)' }, 'Open project');
   const save = h(
     'button',
     {
@@ -25,7 +18,7 @@ function projectButtons(store, actions) {
     },
     'Save project',
   );
-  return { open, save, input };
+  return { open, save };
 }
 
 export function mountToolbar(el, store, actions, dialogs) {
@@ -36,7 +29,7 @@ export function mountToolbar(el, store, actions, dialogs) {
     { onclick: dialogs.openExport, title: 'Preview, copy or download the .keymap' },
     'Export…',
   );
-  const project = projectButtons(store, actions);
+  const project = projectButtons(store, actions, dialogs);
   const close = h('button', { onclick: dialogs.openClose, title: 'Close the keymap and start fresh' }, 'Close keymap');
   replace(
     el,
@@ -46,7 +39,6 @@ export function mountToolbar(el, store, actions, dialogs) {
     h('span.sep'),
     project.open,
     project.save,
-    project.input,
     h('span.sep'),
     undo,
     redo,

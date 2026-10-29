@@ -6,6 +6,10 @@ merged pull request.
 
 ## [Unreleased]
 
+### Added
+
+- **Open project** on the welcome screen, next to Import, Start blank and Try the example.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
