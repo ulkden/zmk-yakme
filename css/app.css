@@ -24,6 +24,7 @@
   --accent: #7aa2f7;
   --accent-dim: rgba(122, 162, 247, 0.16);
   --warn: #e0b562;
+  --warn-dim: rgba(224, 181, 98, 0.35);
   --danger: #f28b82;
   --ok: #8bd49c;
   --key: #1c2027;
@@ -615,6 +616,30 @@ button.link {
   color: var(--warn);
   max-height: 120px;
   overflow: auto;
+}
+.clear-warnings {
+  margin-left: 18px;
+}
+.status .warn.pulse {
+  animation: warn-pulse 900ms ease-out 1;
+}
+@keyframes warn-pulse {
+  from {
+    box-shadow: 0 0 0 0 var(--warn-dim);
+  }
+  to {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .status .warn.pulse {
+    animation: warn-highlight 900ms step-end 1;
+  }
+}
+@keyframes warn-highlight {
+  from {
+    background: var(--warn-dim);
+  }
 }
 
 /* Dialogs */

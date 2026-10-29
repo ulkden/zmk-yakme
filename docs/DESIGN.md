@@ -37,6 +37,7 @@ keymap, or both. Files can also be dropped anywhere on the page.
 | Add combo              | Combos tab → + New combo → key(s) (3)              |
 | Add custom behavior    | Behaviors tab → + Hold-tap/Mod-morph/Macro (2)     |
 | Export                 | Export… → Download (2)                             |
+| Clear warnings         | ⚠ N warnings → Clear Warnings (2); "N hidden" shows them again (1) |
 | Save project           | Save project (1)                                   |
 | Close keymap           | Close keymap → Close keymap (2)                    |
 | See version / release notes | version link in the status bar or on the welcome screen (1) |
