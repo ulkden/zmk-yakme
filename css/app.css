@@ -513,6 +513,26 @@ input.raw {
 .combo-name {
   font-weight: 500;
 }
+/* Key positions drawn like small keycaps, so they read as keys. */
+.combo-keys {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.key-chip {
+  min-width: 24px;
+  padding: 2px 5px;
+  background: var(--key);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font-family: var(--mono);
+  font-size: 12px;
+  text-align: center;
+  color: var(--text);
+}
 .combo-out {
   color: var(--accent);
 }

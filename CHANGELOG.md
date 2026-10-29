@@ -6,6 +6,10 @@ merged pull request.
 
 ## [Unreleased]
 
+### Changed
+
+- The Combos list shows each combo's key positions as small keycaps instead of "12 + 13".
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
