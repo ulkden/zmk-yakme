@@ -13,9 +13,24 @@ async function fetchFiles(info, ref, paths) {
   );
 }
 
+// Long paths shorten in the middle: the head (leading folders) ends in "…" while the tail
+// (parent folder and file name) always stays visible. The full path is in the tooltip.
+function pathParts(path) {
+  const parts = path.split('/');
+  const tail = parts.slice(-2).join('/');
+  return { head: parts.length > 2 ? parts.slice(0, -2).join('/') + '/' : '', tail };
+}
+
 function fileRow(file) {
   const box = h('input', { type: 'checkbox', checked: file.selected, value: file.path });
-  return h('label.repo-file', {}, box, h('span.mono', {}, file.path), h('span.badge', {}, file.kind));
+  const { head, tail } = pathParts(file.path);
+  return h(
+    'label.repo-file',
+    { title: file.path },
+    box,
+    h('span.repo-path', {}, h('span.path-head', {}, head), h('span.path-tail', {}, tail)),
+    h('span.badge', {}, file.kind),
+  );
 }
 
 // Fills `panel` with the repository's files; calls done() after a successful import.
