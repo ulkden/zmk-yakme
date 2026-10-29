@@ -21,6 +21,7 @@ export function mountShortcuts(store, actions) {
     const s = store.get();
     if (e.key === 'Escape' && s.ui.layerMenu) return actions.closeLayerMenu();
     if (typing(document.activeElement) || mod || document.querySelector('dialog[open]')) return;
+    if (e.key === 'Escape' && s.ui.mode === 'combos' && s.ui.combo !== null) return actions.finishCombo();
     if (!s.keymap || s.ui.mode !== 'layers') return;
     const n = keyCount(s);
     const dir = ARROWS[e.key];

@@ -10,6 +10,9 @@ merged pull request.
 
 - Scroll the mouse wheel over a focused number field to change it: by 10 for millisecond settings
   (Shift for 1), by 1 for the layer count. Empty fields are left as "default".
+- **Save Combo** (or Esc) finishes editing a combo. **Save Behavior** returns from the Behaviors tab to
+  the key you were editing, and clicking a key there does the same for that key. Changes still apply
+  as you make them.
 
 ### Fixed
 

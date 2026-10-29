@@ -48,6 +48,29 @@ describe('actions (UI flows without DOM)', () => {
     assert.equal(store.get().ui.key, 1);
   });
 
+  test('finishing a combo deselects it; finishing a behavior returns to the last key', () => {
+    const { store, actions } = setup();
+    actions.loadExample();
+    actions.keyClick(7);
+    actions.selectCombo(0);
+    actions.finishCombo();
+    assert.deepEqual([store.get().ui.mode, store.get().ui.combo], ['combos', null]);
+    actions.addBehavior('hold-tap');
+    assert.equal(store.get().ui.mode, 'behaviors');
+    const undoable = store.canUndo();
+    actions.finishBehavior();
+    assert.deepEqual([store.get().ui.mode, store.get().ui.key], ['layers', 7]);
+    assert.equal(store.canUndo(), undoable);
+  });
+
+  test('a key click in the Behaviors tab switches to editing that key', () => {
+    const { store, actions } = setup();
+    actions.loadExample();
+    actions.setMode('behaviors');
+    actions.keyClick(4);
+    assert.deepEqual([store.get().ui.mode, store.get().ui.key], ['layers', 4]);
+  });
+
   test('palette fills the tap key of mod-tap', () => {
     const { store, actions } = setup();
     actions.loadExample();

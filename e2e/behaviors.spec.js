@@ -134,3 +134,18 @@ test('deleting a behavior also clears its uses in behaviors kept verbatim', asyn
   expect(text.replace(/\/\/.*$/gm, '')).not.toMatch(/&hmr\b/);
   expect(text).toContain('bindings = <&none>, <&kp SQT>;');
 });
+
+test('Save Behavior returns to the last key; a key click leaves the Behaviors tab', async ({ page }) => {
+  await loadExample(page);
+  await key(page, 7).click();
+  await behaviorsTab(page).click();
+  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  await page.getByRole('button', { name: 'Save Behavior' }).click();
+  await expect(page.locator('#inspector h3')).toContainText('Key 7');
+  await expect(key(page, 7)).toHaveClass(/selected/);
+
+  await behaviorsTab(page).click();
+  await key(page, 3).click();
+  await expect(page.locator('#inspector h3')).toContainText('Key 3');
+  await expect(page.locator('#inspector select.behavior')).toBeVisible();
+});
