@@ -1,6 +1,7 @@
 // Operations on editable custom behaviors. Every function returns a new keymap.
 import { parseBinding, formatBinding } from './bindings.js';
 import { sanitizeId } from './keymap-write.js';
+import { countRefs, rewriteRefs } from './source-refs.js';
 
 const DEFAULTS = {
   'hold-tap': {
@@ -41,18 +42,24 @@ function uniqueLabel(km, base, except = null) {
   return label;
 }
 
-// Replace `&from` with `&to` (or the whole binding with `&none` when to is null) everywhere.
+const cellsOf = (km, label) => (behaviors(km).find((b) => b.label === label)?.kind === 'hold-tap' ? 2 : 0);
+
+// Replace `&from` with `&to` (or the whole binding with `&none` when to is null) everywhere,
+// including unknown properties (`extra`) and the parts of an imported file kept verbatim.
 export function renameBehaviorRefs(km, from, to) {
   const fix = (b) => {
     const { behavior, params } = parseBinding(b);
     if (behavior !== from) return b;
     return to === null ? '&none' : formatBinding(to, params);
   };
+  const cells = cellsOf(km, from);
+  const fixExtra = (item) => ({ ...item, extra: (item.extra ?? []).map((e) => rewriteRefs(e, from, to, cells)) });
   return {
     ...km,
-    layers: km.layers.map((l) => ({ ...l, bindings: l.bindings.map(fix) })),
-    combos: km.combos.map((c) => ({ ...c, binding: fix(c.binding) })),
-    behaviors: behaviors(km).map((b) => ({ ...b, bindings: b.bindings.map(fix) })),
+    layers: km.layers.map((l) => fixExtra({ ...l, bindings: l.bindings.map(fix) })),
+    combos: km.combos.map((c) => fixExtra({ ...c, binding: fix(c.binding) })),
+    behaviors: behaviors(km).map((b) => fixExtra({ ...b, bindings: b.bindings.map(fix) })),
+    ...(km.source ? { source: rewriteRefs(km.source, from, to, cells, true) } : {}),
   };
 }
 
@@ -62,7 +69,12 @@ export function countBehaviorUses(km, label) {
     ...km.combos.map((c) => c.binding),
     ...behaviors(km).flatMap((b) => b.bindings),
   ];
-  return all.filter((b) => parseBinding(b).behavior === label).length;
+  const extras = [...km.layers, ...km.combos, ...behaviors(km)].flatMap((x) => x.extra ?? []);
+  return (
+    all.filter((b) => parseBinding(b).behavior === label).length +
+    extras.reduce((n, e) => n + countRefs(e, label), 0) +
+    countRefs(km.source, label, true)
+  );
 }
 
 export function addBehavior(km, kind) {

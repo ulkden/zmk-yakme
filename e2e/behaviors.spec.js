@@ -1,5 +1,6 @@
 import { test, expect, key, loadExample } from './helpers.js';
 import { FULL_KEYMAP } from '../tests/fixtures/full-keymap.js';
+import { VERBATIM_REFS_KEYMAP } from '../tests/fixtures/verbatim-refs.js';
 
 const behaviorsTab = (page) => page.getByRole('button', { name: /^Behaviors \(/ });
 
@@ -71,4 +72,20 @@ test('edit an imported macro and mod-morph, rename updates references, delete cl
   text = await exportText(page);
   expect(text).not.toContain('hey');
   expect(text).toContain('mods = <(MOD_LSFT)>;');
+});
+
+test('deleting a behavior also clears its uses in behaviors kept verbatim', async ({ page }) => {
+  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog textarea').fill(VERBATIM_REFS_KEYMAP);
+  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await behaviorsTab(page).click();
+  const panel = page.locator('#inspector');
+  await expect(panel.locator('.combo-item', { hasText: '&hmr' })).toContainText('4 use(s)');
+  await panel.locator('.combo-item', { hasText: '&hmr' }).click();
+  await panel.getByRole('button', { name: 'Delete behavior' }).click();
+  await expect(panel).toContainText('Its 4 use(s) become &none, including in #define, &td0.');
+  await panel.getByRole('button', { name: 'Delete', exact: true }).click();
+  const text = await exportText(page);
+  expect(text.replace(/\/\/.*$/gm, '')).not.toMatch(/&hmr\b/);
+  expect(text).toContain('bindings = <&none>, <&kp SQT>;');
 });
