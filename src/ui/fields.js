@@ -1,20 +1,55 @@
 // Small form-field builders shared by the side panels.
 import { h } from './dom.js';
+import { stepValue } from '../core/number-step.js';
 
-// Optional integer (empty = null), committed on change.
+const WHEEL_COMMIT_MS = 500;
+
+// While a number field is focused, the mouse wheel steps its value (Shift: by 1). Acting only on
+// focus keeps panel scrolling from changing fields by accident. A burst of steps is committed
+// once, after a pause or on blur, so it is a single undo step. Returns the input.
+export function wheelStep(input, step = 1) {
+  let timer;
+  const commit = () => {
+    clearTimeout(timer);
+    if (input.dataset.pending) input.dispatchEvent(new Event('change'));
+  };
+  input.addEventListener(
+    'wheel',
+    (e) => {
+      const delta = e.deltaY || e.deltaX; // Shift+wheel scrolls sideways in some browsers
+      if (document.activeElement !== input || !delta) return;
+      e.preventDefault(); // also stops Chromium's own stepping, which fills empty fields
+      const limits = { min: Number(input.min) || 0, max: input.max === '' ? Infinity : Number(input.max) };
+      const next = stepValue(input.value, (delta < 0 ? 1 : -1) * (e.shiftKey ? 1 : step), limits);
+      if (next === null) return;
+      input.value = String(next);
+      input.dispatchEvent(new Event('input'));
+      clearTimeout(timer);
+      timer = setTimeout(commit, WHEEL_COMMIT_MS);
+    },
+    { passive: false },
+  );
+  input.addEventListener('blur', commit);
+  return input;
+}
+
+// Optional millisecond value (empty = null), committed on change; the wheel steps by 10.
 export function numberField(label, name, value, placeholder, onChange) {
   return h(
     'label.field',
     {},
     h('span', {}, label),
-    h('input', {
-      type: 'number',
-      name,
-      min: 0,
-      value: value ?? '',
-      placeholder,
-      onchange: (e) => onChange(e.target.value === '' ? null : Number(e.target.value)),
-    }),
+    wheelStep(
+      h('input', {
+        type: 'number',
+        name,
+        min: 0,
+        value: value ?? '',
+        placeholder,
+        onchange: (e) => onChange(e.target.value === '' ? null : Number(e.target.value)),
+      }),
+      10,
+    ),
   );
 }
 

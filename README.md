@@ -64,6 +64,7 @@ flash firmware.
 | Back up work | **Save project** / **Open project** (JSON). Work also autosaves in the browser. |
 | Start over | **Close keymap** clears the layout, keymap, autosaved copy and undo history. |
 | Undo / redo | <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> |
+| Change a number | Click the field, then scroll: ±10 for milliseconds (<kbd>Shift</kbd> for ±1). |
 
 ## Feedback and contributing
 

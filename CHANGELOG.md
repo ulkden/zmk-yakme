@@ -6,6 +6,11 @@ merged pull request.
 
 ## [Unreleased]
 
+### Added
+
+- Scroll the mouse wheel over a focused number field to change it: by 10 for millisecond settings
+  (Shift for 1), by 1 for the layer count. Empty fields are left as "default".
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
