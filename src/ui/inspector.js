@@ -123,7 +123,16 @@ function comboEditor(state, actions) {
     ),
     h('div.field', {}, h('span', {}, 'Layers'), layerChips(combo, state.keymap.layers, actions)),
     h('p.muted.small', {}, 'No layers selected = active on all layers.'),
-    h('button.danger', { onclick: actions.removeCombo }, 'Delete combo'),
+    h(
+      'div.finish-row',
+      {},
+      h(
+        'button.primary',
+        { onclick: actions.finishCombo, title: 'Changes are already applied; this returns to the combo list (Esc)' },
+        'Save Combo',
+      ),
+      h('button.danger', { onclick: actions.removeCombo }, 'Delete combo'),
+    ),
   );
 }
 

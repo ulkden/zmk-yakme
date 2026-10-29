@@ -177,3 +177,16 @@ test('new keymap from rows', async ({ page }) => {
   await expect(keys(page)).toHaveCount(12);
   await expect(page.locator('.tab-list .tab:not(.add)')).toHaveCount(2);
 });
+
+test('Save Combo and Esc finish editing a combo', async ({ page }) => {
+  await loadExample(page);
+  await page.locator('.tab.combos').click();
+  await page.locator('.combo-item').first().click();
+  await page.getByRole('button', { name: 'Save Combo' }).click();
+  await expect(page.locator('.combo-item.active')).toHaveCount(0);
+  await expect(page.locator('#inspector')).toContainText('Select a combo');
+  await page.locator('.combo-item').first().click();
+  await expect(page.locator('.combo-item.active')).toHaveCount(1);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.combo-item.active')).toHaveCount(0);
+});

@@ -58,8 +58,8 @@ flash firmware.
 | Clear a key | Select it and press <kbd>Delete</kbd>, or use *Transparent* / *None*. |
 | Move between keys | Arrow keys (they follow the physical layout) |
 | Layers | `+` adds a layer. ✎ (or double-click the active tab) opens layer settings: display name, node name, move, delete. |
-| Combos | **Combos** tab → **+ New combo**, then click keys. Set the binding, timeout, prior-idle, slow-release and layers in the side panel. |
-| Behaviors | **Behaviors** tab → add a hold-tap, mod-morph or macro, then pick it from the Behavior list when editing a key. |
+| Combos | **Combos** tab → **+ New combo**, then click keys. Set the binding, timeout, prior-idle, slow-release and layers in the side panel. **Save Combo** (or <kbd>Esc</kbd>) finishes. |
+| Behaviors | **Behaviors** tab → add a hold-tap, mod-morph or macro. **Save Behavior** (or clicking a key) goes back to editing keys, where you pick it from the Behavior list. |
 | Export | **Export…** → set the file name, choose whether to add layer diagrams, then **Download** or **Copy**. |
 | Back up work | **Save project** / **Open project** (JSON). Work also autosaves in the browser. |
 | Start over | **Close keymap** clears the layout, keymap, autosaved copy and undo history. |
