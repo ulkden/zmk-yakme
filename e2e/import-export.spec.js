@@ -30,6 +30,8 @@ test('layout files imported together are merged', async ({ page }) => {
   const alt = ELVN_LAYOUT.replace(/default_layout/g, 'alt_layout').replace('Default Layout', 'Alt Layout');
   await importFiles(page, [file('a.dtsi', ELVN_LAYOUT), file('b.dtsi', alt), file('elvn.keymap', ELVN_KEYMAP)]);
   await expect(page.locator('#status select option')).toHaveText(['Default Layout', 'Alt Layout']);
+  await page.getByLabel('Physical Layouts:').selectOption('Alt Layout');
+  await expect(page.locator('#status select')).toHaveValue('1');
   await expect(keys(page)).toHaveCount(4);
 });
 

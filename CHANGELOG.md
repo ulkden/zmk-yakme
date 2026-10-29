@@ -6,6 +6,10 @@ merged pull request.
 
 ## [Unreleased]
 
+### Changed
+
+- The layout picker in the status bar is labelled **Physical Layouts:**.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
