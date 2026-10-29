@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { parseKeymap } from '../src/core/keymap-parse.js';
 import { FULL_KEYMAP } from './fixtures/full-keymap.js';
 import { ELVN_KEYMAP } from './fixtures/elvn.js';
+import { DEFINE_BINDINGS_KEYMAP } from './fixtures/define-bindings.js';
 
 describe('parseKeymap', () => {
   test('returns null when there is no keymap node', () => {
@@ -69,6 +70,22 @@ describe('parseKeymap', () => {
     assert.deepEqual(c.keyPositions, ['LT0', 2, 'RT0']);
     assert.equal(c.slowRelease, true);
     assert.deepEqual(c.extra, ['hold-trigger = <1>;']);
+  });
+
+  test('reads #define names used as whole bindings as one key each', () => {
+    const km = parseKeymap(DEFINE_BINDINGS_KEYMAP);
+    assert.deepEqual(km.layers[0].bindings, [
+      '&bootloader',
+      'U_NA',
+      'U_NA',
+      'U_RDO',
+      '&hm LGUI A',
+      'U_NA',
+      '&bt BT_SEL 0',
+      '&bt BT_CLR',
+    ]);
+    assert.deepEqual(km.rowHints, [4, 4]);
+    assert.equal(km.combos[0].binding, 'U_RDO');
   });
 
   test('reads editable behaviors and macros', () => {

@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { test, expect, keys, key, loadExample } from './helpers.js';
 import { ELVN_KEYMAP, ELVN_LAYOUT } from '../tests/fixtures/elvn.js';
 import { FULL_KEYMAP } from '../tests/fixtures/full-keymap.js';
+import { DEFINE_BINDINGS_KEYMAP } from '../tests/fixtures/define-bindings.js';
 
 const file = (name, text) => ({ name, mimeType: 'text/plain', buffer: Buffer.from(text) });
 
@@ -41,6 +42,16 @@ test('paste import detects keymap with combos and custom behaviors', async ({ pa
   await key(page, 1).click();
   await expect(page.locator('#inspector select.behavior')).toHaveValue('hm');
   await expect(page.locator('#status')).toContainText('2 combos');
+});
+
+test('#define names used as bindings are one key each', async ({ page }) => {
+  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog textarea').fill(DEFINE_BINDINGS_KEYMAP);
+  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await expect(page.locator('#status')).toContainText('8 keys');
+  await expect(key(page, 1)).toContainText('U_NA');
+  await expect(key(page, 4)).toContainText('A');
+  await expect(page.locator('#status')).toContainText('No issues');
 });
 
 test('import shows an error for unrecognized text', async ({ page }) => {

@@ -6,6 +6,12 @@ merged pull request.
 
 ## [Unreleased]
 
+### Fixed
+
+- Keymaps that write whole bindings as `#define` names (Miryoku's `U_NA`, `U_RDO`, …) import one key per
+  name, instead of shifting the rest of the layer and padding the export with extra `&trans`. Layers
+  that use macro calls such as `HRML(A, S, D, F)`, which can stand for several keys, get a warning.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
