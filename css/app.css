@@ -701,13 +701,24 @@ dialog h2 {
 .repo-file:hover {
   background: var(--panel-2);
 }
-.repo-file .mono {
+.repo-path {
+  display: flex;
+  flex: 1;
+  min-width: 0;
   font-family: var(--mono);
   font-size: 12px;
-  flex: 1;
+  white-space: nowrap;
+}
+.path-head {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+}
+.path-tail {
+  flex-shrink: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .badge {
   font-size: 10px;

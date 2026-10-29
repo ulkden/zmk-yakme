@@ -6,6 +6,11 @@ merged pull request.
 
 ## [Unreleased]
 
+### Changed
+
+- Long file paths in the GitHub repository list are shortened in the middle, so the file name stays
+  visible, and hovering shows the whole path.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
