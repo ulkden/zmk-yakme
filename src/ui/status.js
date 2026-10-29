@@ -60,14 +60,18 @@ export function mountStatus(el, store, actions) {
     if (addedWarnings(seen, texts).length) pulseStart = performance.now();
     seen = texts;
     const visible = warnings.filter((w) => !dismissed.has(w.text));
-    const layoutPart =
+    const layoutPart = h(
+      'label.status-layout',
+      {},
+      h('span.muted', {}, 'Physical Layouts:'),
       s.layouts.length > 1
         ? h(
             'select',
             { onchange: (e) => actions.selectLayout(Number(e.target.value)) },
             s.layouts.map((l, i) => h('option', { value: i, selected: i === s.layoutIndex }, l.name)),
           )
-        : h('span', {}, layout?.name ?? 'No layout');
+        : h('span', {}, layout?.name ?? 'No layout'),
+    );
     replace(
       el,
       h(
