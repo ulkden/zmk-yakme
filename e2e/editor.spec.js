@@ -177,3 +177,43 @@ test('new keymap from rows', async ({ page }) => {
   await expect(keys(page)).toHaveCount(12);
   await expect(page.locator('.tab-list .tab:not(.add)')).toHaveCount(2);
 });
+
+test('the mouse wheel steps a focused number field, as one undo step', async ({ page }) => {
+  await loadExample(page);
+  await page.locator('.tab.combos').click();
+  await page.locator('.combo-item').first().click();
+  const timeout = page.locator('[name="combo-timeout"]');
+  await timeout.hover();
+  await page.mouse.wheel(0, -100);
+  await expect(timeout).toHaveValue('50'); // not focused: left alone
+  await timeout.focus();
+  await page.mouse.wheel(0, -100);
+  await page.mouse.wheel(0, -100);
+  await page.mouse.wheel(0, 100);
+  await expect(timeout).toHaveValue('60');
+
+  const idle = page.locator('[name="combo-idle"]');
+  await idle.focus();
+  await idle.hover();
+  await page.mouse.wheel(0, -100);
+  await expect(idle).toHaveValue(''); // empty means "off": left alone
+
+  await page.locator('#inspector h3').click();
+  await page.getByRole('button', { name: 'Export…' }).click();
+  await expect(page.locator('dialog pre.preview')).toContainText('timeout-ms = <60>;');
+  await page.keyboard.press('Escape');
+  await page.keyboard.press('Control+z');
+  await expect(timeout).toHaveValue('50');
+});
+
+test('the New dialog layer count steps by one with the wheel', async ({ page }) => {
+  await page.getByRole('button', { name: 'New', exact: true }).click();
+  const layers = page.locator('dialog [name="layers"]');
+  await layers.focus();
+  await layers.hover();
+  await page.mouse.wheel(0, -100);
+  await expect(layers).toHaveValue('4');
+  await layers.fill('32');
+  await page.mouse.wheel(0, -100);
+  await expect(layers).toHaveValue('32');
+});
