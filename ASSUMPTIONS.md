@@ -54,7 +54,10 @@ Decisions made while building unattended. Each one can be changed. Review and te
 13. ✅ **Implemented:** The combo editor adds **`require-prior-idle-ms`** (number, empty =
     unset) and **`slow-release`** (checkbox). **Symbolic key positions** (e.g. `#define`d names in
     `key-positions`) are accepted: they're written back unchanged, and the UI warns that it can't place
-    them on the keyboard. Any other combo properties are still preserved verbatim.
+    them on the keyboard. Any other combo properties are still preserved verbatim. **Named combo
+    layers** (e.g. `layers = <BASE>`) are kept the same way: written back unchanged, shown as read-only
+    chips, and left out of renumbering, which the #10 warning covers. Imported combo node names are kept
+    as they are.
 14. ✅ **Implemented:** In Combos mode, key clicks do nothing until a combo exists and is
     selected. **"+ New combo" is the only way to create one**, and it selects the new combo. Then key clicks
     add or remove keys from the selected combo. With no combo selected, the panel hints at

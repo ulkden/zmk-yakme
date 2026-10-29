@@ -6,6 +6,11 @@ merged pull request.
 
 ## [Unreleased]
 
+### Fixed
+
+- Combos limited to named layers (`layers = <BASE>` with a `#define`) keep that limit on export instead
+  of becoming active on every layer, and imported combo names keep their capital letters.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
