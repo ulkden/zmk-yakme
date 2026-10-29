@@ -41,8 +41,8 @@ Keep the field names exactly as shown: they are read back automatically when fee
 
 1. We periodically review open feedback together, decide on changes, and fix them with tests.
 2. A fixed issue goes back to *In QA* for a re-test.
-3. When it passes, the matching user-guide section is written and the issue moves to *Documented* and
-   is closed.
+3. When it passes, the matching section of the [user guide](guide/README.md) is written and the issue
+   moves to *Documented* and is closed. Screenshots come from `npm run screenshots`.
 
 | QA status       | Meaning                                         |
 |-----------------|-------------------------------------------------|
