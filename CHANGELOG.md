@@ -6,6 +6,12 @@ merged pull request.
 
 ## [Unreleased]
 
+### Added
+
+- **Save Combo** (or Esc) finishes editing a combo. **Save Behavior** returns from the Behaviors tab to
+  the key you were editing, and clicking a key there does the same for that key. Changes still apply
+  as you make them.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.

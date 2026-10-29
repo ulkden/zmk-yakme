@@ -32,11 +32,13 @@ function uiActions({ store, get, setUi, savePref }) {
   };
 }
 
-function keyActions({ get, editKeymap, actions }) {
+function keyActions({ get, setUi, editKeymap, actions }) {
   return {
     keyClick(pos) {
       const { ui } = get();
       if (ui.mode === 'layers') return actions.selectKey(ui.key === pos ? null : pos);
+      // From the Behaviors tab, a key click goes back to editing that key.
+      if (ui.mode === 'behaviors') return setUi({ mode: 'layers', key: pos });
       if (ui.mode === 'combos' && ui.combo !== null) editKeymap((km) => ops.toggleComboKey(km, ui.combo, pos));
     },
     setKeyBinding(binding) {
@@ -145,6 +147,10 @@ function comboAndBehaviorActions(ctx) {
     addBehavior: behaviors.add,
     updateBehavior: behaviors.update,
     removeBehavior: behaviors.remove,
+    // Edits apply as they are made, so finishing only moves on: back to the combo list, or
+    // from a behavior back to the key that was being edited (ui.key survives mode changes).
+    finishCombo: () => combos.select(null),
+    finishBehavior: () => ctx.setUi({ mode: 'layers', layerMenu: false }),
   };
 }
 

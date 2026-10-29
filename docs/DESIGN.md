@@ -36,6 +36,8 @@ keymap, or both. Files can also be dropped anywhere on the page.
 | Layer settings         | ✎ → field or action (2); delete needs 1 more to confirm (3) |
 | Add combo              | Combos tab → + New combo → key(s) (3)              |
 | Add custom behavior    | Behaviors tab → + Hold-tap/Mod-morph/Macro (2)     |
+| Finish a combo         | Save Combo, or Esc (1)                             |
+| Back to the key from Behaviors | Save Behavior (returns to the last key), or click any key (1) |
 | Export                 | Export… → Download (2)                             |
 | Save project           | Save project (1)                                   |
 | Close keymap           | Close keymap → Close keymap (2)                    |

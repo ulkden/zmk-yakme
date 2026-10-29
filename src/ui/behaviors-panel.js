@@ -163,7 +163,19 @@ function editor(state, actions) {
       placeholder: 'optional',
     }),
     kindFields(b, update),
-    deleteRow(state, actions),
+    h(
+      'div.finish-row',
+      {},
+      h(
+        'button.primary',
+        {
+          onclick: actions.finishBehavior,
+          title: 'Changes are already applied; this returns to the key you were editing',
+        },
+        'Save Behavior',
+      ),
+      deleteRow(state, actions),
+    ),
   );
 }
 
