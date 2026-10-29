@@ -6,6 +6,7 @@ import { requiredIncludes, ensureIncludes, addIncludes } from '../src/core/inclu
 import { writeKeymapDetailed } from '../src/core/keymap-write.js';
 import { FULL_KEYMAP } from './fixtures/full-keymap.js';
 import { ELVN_KEYMAP } from './fixtures/elvn.js';
+import { DEFINE_BINDINGS_KEYMAP } from './fixtures/define-bindings.js';
 
 const strip = (km) => ({
   layers: km.layers.map(({ name, bindings, extra }) => ({ name, bindings, extra })),
@@ -77,6 +78,13 @@ describe('writeKeymap', () => {
     ];
     const re = parseKeymap(writeKeymap(km));
     assert.deepEqual(re.combos, km.combos);
+  });
+
+  test('#define names used as bindings export in place, without padding', () => {
+    const km = parseKeymap(DEFINE_BINDINGS_KEYMAP);
+    const out = writeKeymap(km, { keyCount: 8, rows: km.rowHints });
+    assert.deepEqual(parseKeymap(out).layers[0].bindings, km.layers[0].bindings);
+    assert.match(out, /bindings = <U_RDO>;/);
   });
 
   test('adds new layers with display names', () => {

@@ -123,6 +123,19 @@ describe('import', () => {
 });
 
 describe('validate', () => {
+  test('warns when a layer uses macro calls that may stand for several keys', () => {
+    const s = {
+      ...initialState(),
+      keymap: { layers: [{ name: 'Base', bindings: ['HRML(A,S,D,F)', '&kp G', 'U_NA'] }], combos: [] },
+    };
+    assert.deepEqual(
+      validate(s).map((w) => w.text),
+      [
+        'Layer "Base" uses macro calls (HRML(…)) that can stand for several keys, so its keys may not line up. Edit this layer in your file instead.',
+      ],
+    );
+  });
+
   test('warns about count mismatches and bad combos', () => {
     const s = {
       ...initialState(),
