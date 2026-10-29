@@ -6,6 +6,11 @@ merged pull request.
 
 ## [Unreleased]
 
+### Added
+
+- Scroll the mouse wheel over a focused number field to change it: by 10 for millisecond settings
+  (Shift for 1), by 1 for the layer count. Empty fields are left as "default".
+
 ### Fixed
 
 - Tabbing into a millisecond field (tapping term, combo timeout, macro wait and so on) selects its value
