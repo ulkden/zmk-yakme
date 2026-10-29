@@ -6,6 +6,11 @@ merged pull request.
 
 ## [Unreleased]
 
+### Added
+
+- New warnings make the warning button pulse once, so they're hard to miss. **Clear Warnings** hides
+  the current ones until something new comes up, and "N hidden" brings them back.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.
