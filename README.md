@@ -62,7 +62,7 @@ flash firmware.
 | Combos | **Combos** tab → **+ New combo**, then click keys. Set the binding, timeout, prior-idle, slow-release and layers in the side panel. **Save Combo** (or <kbd>Esc</kbd>) finishes. |
 | Behaviors | **Behaviors** tab → add a hold-tap, mod-morph or macro. **Save Behavior** (or clicking a key) goes back to editing keys, where you pick it from the Behavior list. |
 | Export | **Export…** → set the file name, choose whether to add layer diagrams, then **Download** or **Copy**. |
-| Back up work | **Save project** / **Open project** (JSON). Work also autosaves in the browser. |
+| Back up work | **Save project** / **Open project** (JSON; also on the welcome screen). Work also autosaves in the browser. |
 | Start over | **Close keymap** clears the layout, keymap, autosaved copy and undo history. |
 | Undo / redo | <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> |
 | Change a number | Click the field, then scroll: ±10 for milliseconds (<kbd>Shift</kbd> for ±1). |
