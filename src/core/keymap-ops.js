@@ -68,7 +68,8 @@ export function remapLayerRefs(km, mapIdx) {
     combos: km.combos.map((c) => ({
       ...c,
       binding: remapBinding(c.binding),
-      layers: c.layers.map(mapIdx).filter((n) => n !== null),
+      // Named layers (e.g. `#define NAV 2`) can't be renumbered; symbolicLayerRefs warns about them.
+      layers: c.layers.map((l) => (typeof l === 'number' ? mapIdx(l) : l)).filter((n) => n !== null),
     })),
   };
 }
@@ -89,7 +90,10 @@ export function symbolicLayerRefs(km) {
     if (LAYER_BEHAVIORS.has(behavior) && params[0] && !/^\d+$/.test(params[0])) found.add(params[0]);
   };
   km.layers.forEach((l) => l.bindings.forEach(check));
-  km.combos.forEach((c) => check(c.binding));
+  km.combos.forEach((c) => {
+    check(c.binding);
+    c.layers.forEach((l) => typeof l !== 'number' && found.add(l));
+  });
   return [...found];
 }
 

@@ -565,6 +565,11 @@ textarea.macro-steps {
   background: var(--accent-dim);
   border-color: var(--accent);
 }
+.chip.named {
+  border: 1px dashed var(--accent);
+  font-family: var(--mono);
+  cursor: default;
+}
 
 /* Status */
 .status {

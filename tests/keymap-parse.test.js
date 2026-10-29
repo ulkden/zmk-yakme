@@ -4,6 +4,7 @@ import { parseKeymap } from '../src/core/keymap-parse.js';
 import { FULL_KEYMAP } from './fixtures/full-keymap.js';
 import { ELVN_KEYMAP } from './fixtures/elvn.js';
 import { DEFINE_BINDINGS_KEYMAP } from './fixtures/define-bindings.js';
+import { NAMED_COMBOS_KEYMAP } from './fixtures/named-combos.js';
 
 describe('parseKeymap', () => {
   test('returns null when there is no keymap node', () => {
@@ -86,6 +87,13 @@ describe('parseKeymap', () => {
     ]);
     assert.deepEqual(km.rowHints, [4, 4]);
     assert.equal(km.combos[0].binding, 'U_RDO');
+  });
+
+  test('keeps named combo layers', () => {
+    const [base, num] = parseKeymap(NAMED_COMBOS_KEYMAP).combos;
+    assert.deepEqual(base.layers, ['BASE']);
+    assert.deepEqual(num.layers, ['NUM', 1]);
+    assert.deepEqual(num.keyPositions, ['COMBO_TPSL']);
   });
 
   test('reads editable behaviors and macros', () => {
