@@ -36,7 +36,7 @@ test('layout files imported together are merged', async ({ page }) => {
 test('paste import detects keymap with combos and custom behaviors', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(FULL_KEYMAP);
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await expect(page.locator('.tab-list .tab:not(.add)')).toHaveText(['0Base', '1Lower']);
   await key(page, 1).click();
   await expect(page.locator('#inspector select.behavior')).toHaveValue('hm');
@@ -46,7 +46,7 @@ test('paste import detects keymap with combos and custom behaviors', async ({ pa
 test('import shows an error for unrecognized text', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill('hello world');
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await expect(page.locator('dialog .dialog-msg')).toContainText('No physical layout or keymap');
 });
 

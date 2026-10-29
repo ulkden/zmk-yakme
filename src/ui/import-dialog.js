@@ -15,6 +15,42 @@ async function fetchText(url) {
   return res.text();
 }
 
+const code = (text) => h('code', {}, text);
+
+function acceptedFiles() {
+  return h(
+    'div.accepts',
+    {},
+    h(
+      'section.accept-box.layouts',
+      {},
+      h('h3', {}, 'Physical layouts'),
+      h(
+        'ul',
+        {},
+        h(
+          'li',
+          {},
+          'ZMK ',
+          code('.dtsi'),
+          ' / ',
+          code('.overlay'),
+          h('span.muted', {}, ' (e.g. from zmk-layout-helper)'),
+        ),
+        h('li', {}, 'QMK ', code('info.json')),
+        h('li', {}, 'KLE JSON'),
+      ),
+    ),
+    h(
+      'section.accept-box.keymaps',
+      {},
+      h('h3', {}, 'Keymaps & saved projects'),
+      h('ul', {}, h('li', {}, 'ZMK ', code('.keymap')), h('li', {}, 'Saved project ', code('.zmk-project.json'))),
+    ),
+    h('p.info-box', {}, 'The type is detected automatically. You can also drop files anywhere on the page.'),
+  );
+}
+
 export function openImport(store, actions) {
   const msg = h('p.dialog-msg');
   const text = h('textarea', {
@@ -56,11 +92,7 @@ export function openImport(store, actions) {
   const body = h(
     'div.import-body',
     {},
-    h(
-      'p.muted',
-      {},
-      'Physical layouts: ZMK .dtsi/.overlay (e.g. from zmk-layout-helper), QMK info.json, KLE JSON. Keymaps: ZMK .keymap. Saved projects (.json) too. The type is detected automatically; files can also be dropped anywhere.',
-    ),
+    acceptedFiles(),
     h('button.primary.big', { onclick: () => fileInput.click() }, 'Choose files…'),
     fileInput,
     text,
@@ -68,8 +100,10 @@ export function openImport(store, actions) {
     repoPanel,
     msg,
   );
+  // "Load" imports pasted text or a file link straight away, or lists a repository's files,
+  // which are then imported with "Import selected".
   const dlg = dialog('Import', body, [
     h('button', { onclick: () => dlg.close() }, 'Cancel'),
-    h('button.primary', { onclick: run }, 'Import'),
+    h('button.primary', { onclick: run }, 'Load'),
   ]);
 }

@@ -4,7 +4,7 @@ import { ELVN_KEYMAP, ELVN_LAYOUT } from '../tests/fixtures/elvn.js';
 async function pasteImport(page, text) {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(text);
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
 }
 
 test('KLE paste seeds the base layer from legends', async ({ page }) => {
@@ -43,7 +43,7 @@ test('import from a GitHub repository lists and imports selected files', async (
   });
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog [name="import-url"]').fill('https://github.com/me/zmk-config');
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   const rows = page.locator('dialog .repo-file');
   await expect(rows).toHaveCount(3);
   await expect(rows.filter({ hasText: 'elvn.overlay' }).locator('input')).not.toBeChecked();
@@ -59,6 +59,6 @@ test('repository listing errors are shown', async ({ page }) => {
   await page.route('https://api.github.com/**', (r) => r.fulfill({ status: 404, json: {} }));
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog [name="import-url"]').fill('https://github.com/me/missing');
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await expect(page.locator('dialog .repo-panel')).toContainText('not found');
 });
