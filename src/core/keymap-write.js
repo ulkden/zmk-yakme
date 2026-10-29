@@ -90,11 +90,18 @@ function comboLines(combo, id) {
   ];
 }
 
+// A combo name that is already a valid node name is written as it is (case included), so
+// imported combos keep their names; anything else is sanitized.
+const NODE_NAME = /^[A-Za-z][A-Za-z0-9_]*$/;
+
 export function combosLines(combos, header = 'combos') {
-  const ids = uniqueIds(
-    combos.map((c) => ({ name: c.name })),
-    'combo',
-  );
+  const kept = new Set();
+  const entries = combos.map((c) => {
+    const keep = NODE_NAME.test(c.name) && !kept.has(c.name);
+    if (keep) kept.add(c.name);
+    return { id: keep ? c.name : null, name: c.name };
+  });
+  const ids = uniqueIds(entries, 'combo');
   const body = combos.flatMap((c, i) => ['', ...comboLines(c, ids[i]).map((l) => IND + l)]);
   return [`${header} {`, `${IND}compatible = "zmk,combos";`, ...body, '};'];
 }

@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { test, expect, keys, key, loadExample } from './helpers.js';
 import { ELVN_KEYMAP, ELVN_LAYOUT } from '../tests/fixtures/elvn.js';
 import { FULL_KEYMAP } from '../tests/fixtures/full-keymap.js';
+import { NAMED_COMBOS_KEYMAP } from '../tests/fixtures/named-combos.js';
 
 const file = (name, text) => ({ name, mimeType: 'text/plain', buffer: Buffer.from(text) });
 
@@ -41,6 +42,19 @@ test('paste import detects keymap with combos and custom behaviors', async ({ pa
   await key(page, 1).click();
   await expect(page.locator('#inspector select.behavior')).toHaveValue('hm');
   await expect(page.locator('#status')).toContainText('2 combos');
+});
+
+test('named combo layers are shown read-only and kept when layers are toggled', async ({ page }) => {
+  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog textarea').fill(NAMED_COMBOS_KEYMAP);
+  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('.tab.combos').click();
+  await page.locator('.combo-item', { hasText: 'combo_tpsl_NUM' }).click();
+  await expect(page.locator('.chip.named')).toHaveText(['NUM']);
+  await page.locator('button.chip', { hasText: 'base_layer' }).click();
+  await page.getByRole('button', { name: 'Export…' }).click();
+  await expect(page.locator('pre.preview')).toContainText('layers = <NUM 0 1>;');
+  await expect(page.locator('pre.preview')).toContainText('layers = <BASE>;');
 });
 
 test('import shows an error for unrecognized text', async ({ page }) => {

@@ -24,14 +24,15 @@ function comboWarnings(km, keys) {
   km.combos.forEach((c) => {
     const numeric = c.keyPositions.filter((p) => typeof p === 'number');
     const symbolic = c.keyPositions.filter((p) => typeof p !== 'number');
-    if (c.keyPositions.length < 2) out.push({ text: `Combo "${c.name}" needs at least 2 keys.` });
+    // A name can stand for several positions (`#define PAIR 15 16`), so only count plain numbers.
+    if (!symbolic.length && c.keyPositions.length < 2) out.push({ text: `Combo "${c.name}" needs at least 2 keys.` });
     const bad = numeric.filter((p) => p >= keys);
     if (bad.length) out.push({ text: `Combo "${c.name}" uses key position(s) ${bad.join(', ')} outside the layout.` });
     if (symbolic.length)
       out.push({
         text: `Combo "${c.name}" uses named position(s) ${symbolic.join(', ')} that can't be shown on the keyboard.`,
       });
-    const badLayers = c.layers.filter((l) => l >= km.layers.length);
+    const badLayers = c.layers.filter((l) => typeof l === 'number' && l >= km.layers.length);
     if (badLayers.length) out.push({ text: `Combo "${c.name}" refers to missing layer(s) ${badLayers.join(', ')}.` });
   });
   return out;

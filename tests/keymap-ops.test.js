@@ -91,6 +91,13 @@ describe('keymap ops', () => {
     assert.deepEqual(ops.symbolicLayerRefs(km()), ['NAV']);
   });
 
+  test('named combo layers survive renumbering and are reported as symbolic', () => {
+    const k = { ...km(), combos: [{ ...km().combos[0], layers: ['NUM', 2] }] };
+    assert.deepEqual(ops.removeLayer(k, 1).combos[0].layers, ['NUM', 1]);
+    assert.deepEqual(ops.moveLayer(k, 2, 0).combos[0].layers, ['NUM', 0]);
+    assert.deepEqual(ops.symbolicLayerRefs(k), ['NAV', 'NUM']);
+  });
+
   test('setLayerId sanitizes and keeps node names unique', () => {
     assert.equal(ops.setLayerId(km(), 2, 'Num Pad!').layers[2].id, 'num_pad');
     assert.equal(ops.setLayerId(km(), 2, 'a').layers[2].id, 'a_2');

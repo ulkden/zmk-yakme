@@ -138,4 +138,19 @@ describe('validate', () => {
     assert.match(validate(s).at(-2).text, /named position\(s\) NAMED/);
     assert.match(w[0].text, /1 bindings for 2 keys/);
   });
+
+  test('a single named position may stand for several keys', () => {
+    const s = {
+      ...initialState(),
+      layouts: [{ name: 'g', keys: [{}, {}] }],
+      keymap: {
+        layers: [{ name: 'Base', bindings: ['&a', '&b'] }],
+        combos: [{ name: 'c', keyPositions: ['PAIR'], layers: ['BASE'] }],
+      },
+    };
+    assert.deepEqual(
+      validate(s).map((w) => w.text),
+      ['Combo "c" uses named position(s) PAIR that can\'t be shown on the keyboard.'],
+    );
+  });
 });
