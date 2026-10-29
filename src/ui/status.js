@@ -18,14 +18,18 @@ export function mountStatus(el, store, actions) {
     const layout = activeLayout(s);
     if (!s.keymap) return replace(el);
     const warnings = validate(s);
-    const layoutPart =
+    const layoutPart = h(
+      'label.status-layout',
+      {},
+      h('span.muted', {}, 'Physical Layouts:'),
       s.layouts.length > 1
         ? h(
             'select',
             { onchange: (e) => actions.selectLayout(Number(e.target.value)) },
             s.layouts.map((l, i) => h('option', { value: i, selected: i === s.layoutIndex }, l.name)),
           )
-        : h('span', {}, layout?.name ?? 'No layout');
+        : h('span', {}, layout?.name ?? 'No layout'),
+    );
     const warnBtn = warnings.length
       ? h(
           'button.warn',
