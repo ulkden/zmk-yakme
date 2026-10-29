@@ -22,6 +22,7 @@ export function mountWelcome(el, store, actions, dialogs) {
           h('button.primary.big', { onclick: dialogs.openImport }, 'Import files'),
           h('button.big', { onclick: dialogs.openNew }, 'Start blank'),
           h('button.big', { onclick: actions.loadExample }, 'Try the example'),
+          h('button.big', { onclick: dialogs.openProject, title: 'Open a saved project (.json)' }, 'Open project'),
         ),
         h('p.muted.small', {}, 'Tip: drop .keymap, .dtsi, .overlay or .json files anywhere on this page.'),
         versionLine(),
