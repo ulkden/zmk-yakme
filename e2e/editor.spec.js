@@ -177,3 +177,25 @@ test('new keymap from rows', async ({ page }) => {
   await expect(keys(page)).toHaveCount(12);
   await expect(page.locator('.tab-list .tab:not(.add)')).toHaveCount(2);
 });
+
+test('the keycode filter clears with its ✕ or Esc, keeping the selected key', async ({ page }) => {
+  await loadExample(page);
+  await key(page, 1).click();
+  const filter = page.getByLabel('Filter keycodes');
+  const clear = page.getByRole('button', { name: 'Clear filter' });
+  await expect(clear).toBeHidden();
+  const all = await page.locator('.palette .pk').count();
+  await filter.fill('vol');
+  await expect(clear).toBeVisible();
+  expect(await page.locator('.palette .pk').count()).toBeLessThan(all);
+  await clear.click();
+  await expect(filter).toHaveValue('');
+  await expect(filter).toBeFocused();
+  await expect(page.locator('.palette .pk')).toHaveCount(all);
+  await filter.fill('vol');
+  await filter.press('Escape');
+  await expect(filter).toHaveValue('');
+  await expect(clear).toBeHidden();
+  await expect(page.locator('.palette .pk')).toHaveCount(all);
+  await expect(key(page, 1)).toHaveClass(/selected/);
+});

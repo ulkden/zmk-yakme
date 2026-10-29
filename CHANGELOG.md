@@ -6,6 +6,10 @@ merged pull request.
 
 ## [Unreleased]
 
+### Added
+
+- A ✕ inside the keycode filter clears it (Esc does too), in every browser.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.

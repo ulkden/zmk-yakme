@@ -417,8 +417,34 @@ input.mono {
 .palette-head {
   margin-bottom: 10px;
 }
+.search-wrap {
+  position: relative;
+  display: inline-block;
+}
 .palette .search {
   width: 240px;
+  padding-right: 28px;
+}
+.search::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.search-clear {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0 6px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.search-clear:hover {
+  color: var(--text);
+}
+.search-clear[hidden] {
+  display: none;
 }
 .palette-groups {
   display: flex;
