@@ -48,7 +48,7 @@ test('import from a GitHub repository lists and imports selected files', async (
   await expect(rows).toHaveCount(3);
   await expect(rows.filter({ hasText: 'elvn.overlay' }).locator('input')).not.toBeChecked();
   await expect(rows.filter({ hasText: 'elvn.keymap' }).locator('input')).toBeChecked();
-  await page.getByRole('button', { name: 'Import selected' }).click();
+  await page.getByRole('button', { name: 'Import Selected' }).click();
   await expect(page.locator('dialog[open]')).toHaveCount(0);
   await expect(keys(page)).toHaveCount(4);
   await expect(page.locator('#status')).toContainText('Default Layout');

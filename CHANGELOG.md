@@ -6,6 +6,10 @@ merged pull request.
 
 ## [Unreleased]
 
+### Changed
+
+- Button labels use Title Case (e.g. **Try the Example**, **Close Keymap**, **+ Hold-Tap**).
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.

@@ -61,7 +61,7 @@ export function openImport(store, actions) {
       {},
       'Physical layouts: ZMK .dtsi/.overlay (e.g. from zmk-layout-helper), QMK info.json, KLE JSON. Keymaps: ZMK .keymap. Saved projects (.json) too. The type is detected automatically; files can also be dropped anywhere.',
     ),
-    h('button.primary.big', { onclick: () => fileInput.click() }, 'Choose files…'),
+    h('button.primary.big', { onclick: () => fileInput.click() }, 'Choose Files…'),
     fileInput,
     text,
     url,

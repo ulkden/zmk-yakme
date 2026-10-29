@@ -23,8 +23,8 @@ test('an autosave from a newer version is explained and never overwritten', asyn
   await expect(notice).toContainText('saved by a newer version');
   await notice.getByRole('button', { name: 'OK' }).click();
   await loadExample(page);
-  await page.locator('#toolbar').getByRole('button', { name: 'Close keymap' }).click();
-  await page.locator('dialog.close-keymap').getByRole('button', { name: 'Close keymap' }).click();
+  await page.locator('#toolbar').getByRole('button', { name: 'Close Keymap' }).click();
+  await page.locator('dialog.close-keymap').getByRole('button', { name: 'Close Keymap' }).click();
   await page.waitForTimeout(500);
   expect(await page.evaluate((k) => localStorage.getItem(k), DOC_KEY)).toBe(newer);
 });

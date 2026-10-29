@@ -19,14 +19,14 @@ It runs entirely in your browser: no install, no account, no firmware changes.
    are rewritten. Everything else in your file (`#include`s, `#define`s, other comments, unedited
    behaviors and other settings) stays as it was, and missing `#include`s are added for you.
 
-Your work autosaves in the browser, and **Save project** keeps a backup file you can open later.
+Your work autosaves in the browser, and **Save Project** keeps a backup file you can open later.
 
 ## Privacy
 
 Nothing you import leaves your browser. There are no analytics, cookies, trackers, external fonts or
 CDNs. The only network requests are the ones you ask for, when you import from a GitHub URL, and they
 go to GitHub only. A Content-Security-Policy in the page enforces this. Autosave uses your browser's
-local storage; **Close keymap** clears it.
+local storage; **Close Keymap** clears it.
 
 ## How it compares
 
@@ -53,16 +53,16 @@ flash firmware.
 
 | Do this | How |
 |---|---|
-| Import | **Import** → *Choose files…*, paste text, or paste a URL. A GitHub repo URL lists its files so you can pick which to import. You can also drop files anywhere. |
+| Import | **Import** → *Choose Files…*, paste text, or paste a URL. A GitHub repo URL lists its files so you can pick which to import. You can also drop files anywhere. |
 | Edit a key | Click the key, then click a keycode in the palette, choose a behavior in the side panel, or just type a letter or digit. |
 | Clear a key | Select it and press <kbd>Delete</kbd>, or use *Transparent* / *None*. |
 | Move between keys | Arrow keys (they follow the physical layout) |
 | Layers | `+` adds a layer. ✎ (or double-click the active tab) opens layer settings: display name, node name, move, delete. |
-| Combos | **Combos** tab → **+ New combo**, then click keys. Set the binding, timeout, prior-idle, slow-release and layers in the side panel. |
+| Combos | **Combos** tab → **+ New Combo**, then click keys. Set the binding, timeout, prior-idle, slow-release and layers in the side panel. |
 | Behaviors | **Behaviors** tab → add a hold-tap, mod-morph or macro, then pick it from the Behavior list when editing a key. |
 | Export | **Export…** → set the file name, choose whether to add layer diagrams, then **Download** or **Copy**. |
-| Back up work | **Save project** / **Open project** (JSON). Work also autosaves in the browser. |
-| Start over | **Close keymap** clears the layout, keymap, autosaved copy and undo history. |
+| Back up work | **Save Project** / **Open Project** (JSON). Work also autosaves in the browser. |
+| Start over | **Close Keymap** clears the layout, keymap, autosaved copy and undo history. |
 | Undo / redo | <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> |
 
 ## Feedback and contributing

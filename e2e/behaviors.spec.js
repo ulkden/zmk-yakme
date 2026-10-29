@@ -13,7 +13,7 @@ async function exportText(page) {
 test('create a hold-tap, use it on a key, and export it', async ({ page }) => {
   await loadExample(page);
   await behaviorsTab(page).click();
-  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  await page.getByRole('button', { name: '+ Hold-Tap' }).click();
   await expect(behaviorsTab(page)).toHaveText('Behaviors (1)');
   const panel = page.locator('#inspector');
   await panel.locator('[name="bh-label"]').fill('hm');
@@ -59,13 +59,13 @@ test('edit an imported macro and mod-morph, rename updates references, delete cl
   expect(text).toContain('&hey');
   expect(text).not.toContain('&hello');
 
-  await panel.getByRole('button', { name: '+ Mod-morph' }).click();
+  await panel.getByRole('button', { name: '+ Mod-Morph' }).click();
   const modsRow = panel.locator('.field', { has: page.locator('span', { hasText: /^Mods$/ }) });
   await modsRow.locator('.chip', { hasText: 'RShift' }).click();
   await expect(panel.locator('.chip.on')).toHaveText(['LShift']);
 
   await panel.locator('.combo-item', { hasText: '&hey' }).click();
-  await panel.getByRole('button', { name: 'Delete behavior' }).click();
+  await panel.getByRole('button', { name: 'Delete Behavior' }).click();
   await expect(panel).toContainText('Its 1 use(s) become &none.');
   await panel.getByRole('button', { name: 'Delete', exact: true }).click();
   text = await exportText(page);

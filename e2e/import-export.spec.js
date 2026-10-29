@@ -8,7 +8,7 @@ const file = (name, text) => ({ name, mimeType: 'text/plain', buffer: Buffer.fro
 async function importFiles(page, files) {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   const chooser = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Choose files…' }).click();
+  await page.getByRole('button', { name: 'Choose Files…' }).click();
   await (await chooser).setFiles(files);
   await expect(page.locator('dialog[open]')).toHaveCount(0);
 }
@@ -22,7 +22,7 @@ test('import a keymap file, then its physical layout', async ({ page }) => {
   await expect(page.locator('#status')).toContainText('Default Layout');
   await page.locator('#status button.warn').click();
   await expect(page.locator('#status .warnings')).toContainText('7 binding(s) beyond');
-  await page.getByRole('button', { name: 'Trim extra bindings' }).click();
+  await page.getByRole('button', { name: 'Trim Extra Bindings' }).click();
   await expect(page.locator('#status')).toContainText('No issues');
 });
 
@@ -135,6 +135,6 @@ test('screenshots for visual review', async ({ page }, info) => {
   await page.screenshot({ path: info.outputPath('06-export.png') });
   await page.locator('dialog').getByRole('button', { name: 'Close', exact: true }).click();
   await page.getByRole('button', { name: /^Behaviors/ }).click();
-  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  await page.getByRole('button', { name: '+ Hold-Tap' }).click();
   await page.screenshot({ path: info.outputPath('07-behaviors.png') });
 });

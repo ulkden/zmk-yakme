@@ -30,9 +30,9 @@ export function openNew(store, actions) {
     h('p.muted', {}, 'Creates an empty keymap on a simple grid. Import a physical layout later to replace the grid.'),
   );
   const dlg = dialog('New keymap', body, [
-    h('button', { onclick: guarded(actions.loadExample) }, 'Load example'),
+    h('button', { onclick: guarded(actions.loadExample) }, 'Load Example'),
     h('span.grow'),
-    hasLayout ? h('button', { onclick: create(true) }, 'Blank on current layout') : null,
-    h('button.primary', { onclick: create(false) }, 'Create grid'),
+    hasLayout ? h('button', { onclick: create(true) }, 'Blank on Current Layout') : null,
+    h('button.primary', { onclick: create(false) }, 'Create Grid'),
   ]);
 }
