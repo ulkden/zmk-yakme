@@ -17,6 +17,8 @@ merged pull request.
   the current ones until something new comes up, and "N hidden" brings them back.
 - A ✕ inside the keycode filter clears it (Esc does too), in every browser.
 - **Open project** on the welcome screen, next to Import, Start blank and Try the example.
+- A [user guide](docs/guide/README.md) with step-by-step instructions, screenshots and a shortcuts cheat
+  sheet, linked from the welcome screen.
 
 ### Changed
 
