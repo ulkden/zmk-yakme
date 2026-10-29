@@ -25,7 +25,7 @@ export const keys = (page) => page.locator('#keyboard .key');
 export const key = (page, i) => keys(page).nth(i);
 
 export async function loadExample(page) {
-  await page.getByRole('button', { name: 'Try the example' }).click();
+  await page.getByRole('button', { name: 'Try the Example' }).click();
   await expect(keys(page)).toHaveCount(42);
 }
 

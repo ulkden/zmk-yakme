@@ -75,7 +75,7 @@ function comboList(state, actions) {
           : h('span.muted', {}, 'no keys'),
       ),
     ),
-    h('button.add-combo', { onclick: actions.addCombo }, '+ New combo'),
+    h('button.add-combo', { onclick: actions.addCombo }, '+ New Combo'),
   );
 }
 
@@ -99,7 +99,7 @@ function layerChips(combo, layers, actions) {
 
 function comboEditor(state, actions) {
   const combo = state.keymap.combos[state.ui.combo];
-  if (!combo) return h('p.muted', {}, 'Select a combo, or press "+ New combo" and then click keys to add them.');
+  if (!combo) return h('p.muted', {}, 'Select a combo, or press "+ New Combo" and then click keys to add them.');
   return h(
     'div.combo-editor',
     {},
@@ -144,7 +144,7 @@ function comboEditor(state, actions) {
         { onclick: actions.finishCombo, title: 'Changes are already applied; this returns to the combo list (Esc)' },
         'Save Combo',
       ),
-      h('button.danger', { onclick: actions.removeCombo }, 'Delete combo'),
+      h('button.danger', { onclick: actions.removeCombo }, 'Delete Combo'),
     ),
   );
 }

@@ -93,7 +93,7 @@ export function openImport(store, actions) {
     'div.import-body',
     {},
     acceptedFiles(),
-    h('button.primary.big', { onclick: () => fileInput.click() }, 'Choose files…'),
+    h('button.primary.big', { onclick: () => fileInput.click() }, 'Choose Files…'),
     fileInput,
     text,
     url,

@@ -9,7 +9,7 @@ function deleteRow(layer, i, total, actions) {
     return h(
       'button.danger',
       { disabled: total <= 1, onclick: () => ((confirming = true), actions.refreshLayerMenu()) },
-      'Delete layer',
+      'Delete Layer',
     );
   }
   return h(
@@ -62,8 +62,8 @@ export function layerPopover(state, actions) {
     h(
       'div.popover-actions',
       {},
-      h('button', { disabled: i === 0, onclick: () => actions.moveLayer(i, -1) }, '‹ Move left'),
-      h('button', { disabled: i === layers.length - 1, onclick: () => actions.moveLayer(i, 1) }, 'Move right ›'),
+      h('button', { disabled: i === 0, onclick: () => actions.moveLayer(i, -1) }, '‹ Move Left'),
+      h('button', { disabled: i === layers.length - 1, onclick: () => actions.moveLayer(i, 1) }, 'Move Right ›'),
       h('span.grow'),
       deleteRow(layer, i, layers.length, actions),
     ),
