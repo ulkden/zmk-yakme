@@ -25,6 +25,7 @@
   --accent-dim: rgba(122, 162, 247, 0.16);
   --warn: #e0b562;
   --warn-dim: rgba(224, 181, 98, 0.35);
+  --warn-pulse: rgba(224, 181, 98, 0.6);
   --danger: #f28b82;
   --ok: #8bd49c;
   --key: #1c2027;
@@ -636,10 +637,10 @@ button.link {
 }
 @keyframes warn-pulse {
   from {
-    box-shadow: 0 0 0 0 var(--warn-dim);
+    box-shadow: 0 0 0 0 var(--warn-pulse);
   }
   to {
-    box-shadow: 0 0 0 8px transparent;
+    box-shadow: 0 0 0 12px transparent;
   }
 }
 @media (prefers-reduced-motion: reduce) {

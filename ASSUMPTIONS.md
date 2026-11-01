@@ -118,3 +118,9 @@ Decisions made while building unattended. Each one can be changed. Review and te
     scroll), so scrolling the side panel past a field never changes it. Millisecond fields step by
     **10** (Shift: 1); the New dialog's layer count steps by 1, within 1–32. Empty fields ("default" /
     "off") and text that isn't a whole number are left alone. A burst of steps is one undo step.
+28. ✅ **Agreed:** New warnings make the warning button give **one stronger pulse**: a 12 px ring at
+    60 % of the warning colour (`--warn-pulse`), fading over 900 ms. It was chosen over a subtler 8 px /
+    35 % ring after comparing both with a real Corne switched to its 5-column layout, because the button
+    sits in a corner, away from where you work. With reduced motion, a brief static highlight at 35 %
+    (`--warn-dim`) replaces it. Cleared warnings are matched by text and stay hidden while they still
+    apply; "N hidden" brings them back.
