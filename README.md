@@ -84,6 +84,7 @@ other contribution: tests for every change, real ZMK files as fixtures, and no u
 ## Development
 
 There is no build step and there are no runtime dependencies: plain ES modules, served as they are.
+Node (the version in `.nvmrc`) is the only tool you need; `npm run serve` uses a small built-in server.
 
 ```sh
 nvm use                           # Node version from .nvmrc

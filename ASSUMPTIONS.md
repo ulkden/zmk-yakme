@@ -6,7 +6,9 @@ Decisions made while building unattended. Each one can be changed. Review and te
 1. ✅ **Resolved:** Tooling is Node LTS (via nvm) plus Playwright. `npm test` runs 82 unit tests and
    `npm run test:e2e` runs 16 browser tests. All pass.
 2. ✅ **Confirmed:** No build step and no dependencies: plain ES modules so the repo can be served as-is from
-   GitHub Pages. ES modules need http(s), so for local use run `python3 -m http.server` (opening `index.html` as a file won't work).
+   GitHub Pages. ES modules need http(s), so for local use run `npm run serve` (opening `index.html` as a file won't work).
+   It runs `scripts/serve.mjs`, a small Node static server, so Node is the only tool development needs. It replaced
+   `python3 -m http.server`, whose listen backlog of 5 made macOS reset connections when the browser tests ran in parallel.
 
 ## Scope / interpretation
 3. ✅ **Implemented:** Combos **and** custom behavior definitions can be created and edited:
