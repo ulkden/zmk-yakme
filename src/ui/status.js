@@ -5,7 +5,7 @@ import { validate } from '../core/validate.js';
 import { versionLink } from './version.js';
 import { addedWarnings, stillDismissed } from '../core/warning-diff.js';
 
-const FIXES = { trim: { label: 'Trim extra bindings', run: (actions) => actions.trimExtraBindings() } };
+const FIXES = { trim: { label: 'Trim Extra Bindings', run: (actions) => actions.trimExtraBindings() } };
 
 function warningItem(w, actions) {
   const fix = FIXES[w.fix];

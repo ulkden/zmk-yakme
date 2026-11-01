@@ -14,7 +14,7 @@ async function exportText(page) {
 test('create a hold-tap, use it on a key, and export it', async ({ page }) => {
   await loadExample(page);
   await behaviorsTab(page).click();
-  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  await page.getByRole('button', { name: '+ Hold-Tap' }).click();
   await expect(behaviorsTab(page)).toHaveText('Behaviors (1)');
   const panel = page.locator('#inspector');
   await panel.locator('[name="bh-label"]').fill('hm');
@@ -46,7 +46,7 @@ test('create a hold-tap, use it on a key, and export it', async ({ page }) => {
 test('tabbing into a number field selects its value, so typing replaces it', async ({ page }) => {
   await loadExample(page);
   await behaviorsTab(page).click();
-  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  await page.getByRole('button', { name: '+ Hold-Tap' }).click();
   const panel = page.locator('#inspector');
   await panel.locator('[name="bh-quick"]').fill('150');
   const term = await panel.locator('[name="bh-term"]').elementHandle();
@@ -65,7 +65,7 @@ test('tabbing into a number field selects its value, so typing replaces it', asy
 test('number fields reject text that is not a whole number and keep the last value', async ({ page }) => {
   await loadExample(page);
   await behaviorsTab(page).click();
-  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  await page.getByRole('button', { name: '+ Hold-Tap' }).click();
   const panel = page.locator('#inspector');
   const term = panel.locator('[name="bh-term"]');
   for (const typed of ['18o', '1.5', '-5']) {
@@ -105,13 +105,13 @@ test('edit an imported macro and mod-morph, rename updates references, delete cl
   expect(text).toContain('&hey');
   expect(text).not.toContain('&hello');
 
-  await panel.getByRole('button', { name: '+ Mod-morph' }).click();
+  await panel.getByRole('button', { name: '+ Mod-Morph' }).click();
   const modsRow = panel.locator('.field', { has: page.locator('span', { hasText: /^Mods$/ }) });
   await modsRow.locator('.chip', { hasText: 'RShift' }).click();
   await expect(panel.locator('.chip.on')).toHaveText(['LShift']);
 
   await panel.locator('.combo-item', { hasText: '&hey' }).click();
-  await panel.getByRole('button', { name: 'Delete behavior' }).click();
+  await panel.getByRole('button', { name: 'Delete Behavior' }).click();
   await expect(panel).toContainText('Its 1 use(s) become &none.');
   await panel.getByRole('button', { name: 'Delete', exact: true }).click();
   text = await exportText(page);
@@ -127,7 +127,7 @@ test('deleting a behavior also clears its uses in behaviors kept verbatim', asyn
   const panel = page.locator('#inspector');
   await expect(panel.locator('.combo-item', { hasText: '&hmr' })).toContainText('4 use(s)');
   await panel.locator('.combo-item', { hasText: '&hmr' }).click();
-  await panel.getByRole('button', { name: 'Delete behavior' }).click();
+  await panel.getByRole('button', { name: 'Delete Behavior' }).click();
   await expect(panel).toContainText('Its 4 use(s) become &none, including in #define, &td0.');
   await panel.getByRole('button', { name: 'Delete', exact: true }).click();
   const text = await exportText(page);
@@ -139,7 +139,7 @@ test('Save Behavior keeps a value typed without pressing Enter', async ({ page }
   await loadExample(page);
   await key(page, 7).click();
   await behaviorsTab(page).click();
-  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  await page.getByRole('button', { name: '+ Hold-Tap' }).click();
   await page.locator('#inspector [name="bh-term"]').fill('180');
   await page.getByRole('button', { name: 'Save Behavior' }).click();
   expect(await exportText(page)).toContain('tapping-term-ms = <180>;');
@@ -149,7 +149,7 @@ test('Save Behavior returns to the last key; a key click leaves the Behaviors ta
   await loadExample(page);
   await key(page, 7).click();
   await behaviorsTab(page).click();
-  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  await page.getByRole('button', { name: '+ Hold-Tap' }).click();
   await page.getByRole('button', { name: 'Save Behavior' }).click();
   await expect(page.locator('#inspector h3')).toContainText('Key 7');
   await expect(key(page, 7)).toHaveClass(/selected/);

@@ -42,7 +42,7 @@ export function createStore(initial, { normalize = (s) => s } = {}) {
       state = normalize({ ...state, ...future.pop() });
       emit();
     },
-    // Replace the whole state and forget undo/redo history (e.g. "Close keymap").
+    // Replace the whole state and forget undo/redo history (e.g. "Close Keymap").
     reset(next) {
       past.length = 0;
       future.length = 0;

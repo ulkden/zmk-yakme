@@ -6,7 +6,7 @@ import { openNew } from './new-dialog.js';
 import { openExport } from './export-dialog.js';
 import { openClose } from './close-dialog.js';
 
-// One hidden file input for "Open project", shared by the toolbar and the welcome screen.
+// One hidden file input for "Open Project", shared by the toolbar and the welcome screen.
 function projectPicker(store, actions) {
   const input = h('input', {
     type: 'file',

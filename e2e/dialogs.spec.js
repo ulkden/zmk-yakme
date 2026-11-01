@@ -1,7 +1,7 @@
 import { test, expect, key, loadExample, pick } from './helpers.js';
 
 const open = (page) => page.locator('dialog[open]');
-const DIALOGS = ['Import', 'New', 'Export…', 'Close keymap'];
+const DIALOGS = ['Import', 'New', 'Export…', 'Close Keymap'];
 
 test('every dialog closes with its ✕, a click outside, or Esc', async ({ page }) => {
   await loadExample(page);
@@ -23,7 +23,7 @@ test('a confirmation closed by clicking outside counts as Cancel', async ({ page
   await key(page, 1).click();
   await pick(page, 'Z');
   await page.getByRole('button', { name: 'New', exact: true }).click();
-  await page.getByRole('button', { name: 'Load example' }).click();
+  await page.getByRole('button', { name: 'Load Example' }).click();
   await expect(page.locator('dialog.confirm')).toBeVisible();
   await page.mouse.click(5, 5);
   await expect(page.locator('dialog.confirm')).toHaveCount(0);

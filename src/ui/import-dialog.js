@@ -93,7 +93,7 @@ export function openImport(store, actions) {
     'div.import-body',
     {},
     acceptedFiles(),
-    h('button.primary.big', { onclick: () => fileInput.click() }, 'Choose files…'),
+    h('button.primary.big', { onclick: () => fileInput.click() }, 'Choose Files…'),
     fileInput,
     text,
     url,
@@ -101,7 +101,7 @@ export function openImport(store, actions) {
     msg,
   );
   // "Load" imports pasted text or a file link straight away, or lists a repository's files,
-  // which are then imported with "Import selected".
+  // which are then imported with "Import Selected".
   const dlg = dialog('Import', body, [
     h('button', { onclick: () => dlg.close() }, 'Cancel'),
     h('button.primary', { onclick: run }, 'Load'),

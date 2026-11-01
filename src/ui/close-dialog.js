@@ -1,4 +1,4 @@
-// "Close keymap": confirm, optionally reset preferences, then return to a fresh welcome screen.
+// "Close Keymap": confirm, optionally reset preferences, then return to a fresh welcome screen.
 import { h, toast } from './dom.js';
 import { dialog } from './modal.js';
 import { isDirty } from '../core/state.js';
@@ -25,7 +25,7 @@ export function openClose(store, actions) {
     body,
     [
       h('button', { onclick: () => dlg.close() }, 'Cancel'),
-      h(dirty ? 'button.danger.solid' : 'button.primary', { onclick: close }, 'Close keymap'),
+      h(dirty ? 'button.danger.solid' : 'button.primary', { onclick: close }, 'Close Keymap'),
     ],
     'close-keymap',
   );

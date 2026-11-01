@@ -39,15 +39,15 @@ corner, or a click outside it. Closing without a button counts as Cancel.
 | Set a key behavior     | key → behavior select → option (3)                 |
 | Add layer              | + (1)                                              |
 | Layer settings         | ✎ → field or action (2); delete needs 1 more to confirm (3) |
-| Add combo              | Combos tab → + New combo → key(s) (3)              |
-| Add custom behavior    | Behaviors tab → + Hold-tap/Mod-morph/Macro (2)     |
+| Add combo              | Combos tab → + New Combo → key(s) (3)              |
+| Add custom behavior    | Behaviors tab → + Hold-Tap/Mod-Morph/Macro (2)     |
 | Finish a combo         | Save Combo, or Esc (1)                             |
 | Back to the key from Behaviors | Save Behavior (returns to the last key), or click any key (1) |
 | Export                 | Export… → Download (2)                             |
 | Clear warnings         | ⚠ N warnings → Clear Warnings (2); "N hidden" shows them again (1) |
-| Save project           | Save project (1)                                   |
-| Open project           | Open project (toolbar or welcome screen) → pick in OS dialog (2) |
-| Close keymap           | Close keymap → Close keymap (2)                    |
+| Save project           | Save Project (1)                                   |
+| Open project           | Open Project (toolbar or welcome screen) → pick in OS dialog (2) |
+| Close keymap           | Close Keymap → Close Keymap (2)                    |
 | See version / release notes | version link in the status bar or on the welcome screen (1) |
 | Change a number        | field → type, or field → scroll the wheel (1)      |
 

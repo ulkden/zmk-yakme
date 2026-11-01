@@ -29,6 +29,7 @@ merged pull request.
 - The Import dialog lists the files it accepts in two boxes (physical layouts; keymaps and saved
   projects). Its main button is now **Load**: it imports pasted text or a file link, or lists a
   repository's files, which you then import with **Import selected**.
+- Button labels use Title Case (e.g. **Try the Example**, **Close Keymap**, **+ Hold-Tap**).
 
 ### Fixed
 

@@ -6,6 +6,8 @@ import { normalizeBinding } from '../core/bindings.js';
 import { refHolders } from '../core/source-refs.js';
 
 const KIND_LABEL = { 'hold-tap': 'Hold-tap', 'mod-morph': 'Mod-morph', macro: 'Macro' };
+// Button text is Title Case (both parts of a hyphenated word are capitalized).
+const ADD_LABEL = { 'hold-tap': '+ Hold-Tap', 'mod-morph': '+ Mod-Morph', macro: '+ Macro' };
 const modLabel = (m) =>
   m
     .replace('MOD_', '')
@@ -40,8 +42,8 @@ function list(state, actions) {
     h(
       'div.add-row',
       {},
-      Object.entries(KIND_LABEL).map(([kind, label]) =>
-        h('button.add-combo', { onclick: () => actions.addBehavior(kind) }, `+ ${label}`),
+      Object.entries(ADD_LABEL).map(([kind, label]) =>
+        h('button.add-combo', { onclick: () => actions.addBehavior(kind) }, label),
       ),
     ),
   );
@@ -133,7 +135,7 @@ function deleteRow(state, actions) {
     return h(
       'button.danger',
       { onclick: () => ((confirmingDelete = b.label), actions.refreshInspector()) },
-      'Delete behavior',
+      'Delete Behavior',
     );
   const uses = countBehaviorUses(state.keymap, b.label);
   const holders = refHolders(state.keymap.source, b.label);

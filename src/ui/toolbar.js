@@ -5,7 +5,7 @@ import { serialize } from '../core/state.js';
 import { projectFileName } from '../core/export.js';
 
 function projectButtons(store, actions, dialogs) {
-  const open = h('button', { onclick: dialogs.openProject, title: 'Open a saved project (.json)' }, 'Open project');
+  const open = h('button', { onclick: dialogs.openProject, title: 'Open a saved project (.json)' }, 'Open Project');
   const save = h(
     'button',
     {
@@ -16,7 +16,7 @@ function projectButtons(store, actions, dialogs) {
         toast('Project saved');
       },
     },
-    'Save project',
+    'Save Project',
   );
   return { open, save };
 }
@@ -30,7 +30,7 @@ export function mountToolbar(el, store, actions, dialogs) {
     'Export…',
   );
   const project = projectButtons(store, actions, dialogs);
-  const close = h('button', { onclick: dialogs.openClose, title: 'Close the keymap and start fresh' }, 'Close keymap');
+  const close = h('button', { onclick: dialogs.openClose, title: 'Close the keymap and start fresh' }, 'Close Keymap');
   replace(
     el,
     h('button', { onclick: dialogs.openImport, title: 'Import layout or keymap (or drop files anywhere)' }, 'Import'),
