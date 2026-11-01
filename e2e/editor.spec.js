@@ -240,6 +240,16 @@ test('Save Combo and Esc finish editing a combo', async ({ page }) => {
   await expect(page.locator('.combo-item.active')).toHaveCount(0);
 });
 
+test('with reduced motion, new warnings get a brief highlight instead of the pulse', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await loadExample(page);
+  await page.locator('.tab.combos').click();
+  await page.getByRole('button', { name: '+ New combo' }).click();
+  const warn = page.locator('#status button.warn');
+  await expect(warn).toHaveCSS('animation-name', 'warn-highlight');
+  await expect(warn).not.toHaveClass(/pulse/, { timeout: 3000 });
+});
+
 test('new warnings pulse once; Clear Warnings hides them until a new one appears', async ({ page }) => {
   await loadExample(page);
   const status = page.locator('#status');
