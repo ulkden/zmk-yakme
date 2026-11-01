@@ -1,6 +1,6 @@
 {
   "name": "zmk-yakme",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "Client-side ZMK keymap editor: import a physical layout and keymap, edit layers and combos, export a .keymap file.",
