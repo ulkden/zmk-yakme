@@ -107,6 +107,62 @@ test('a repository with no keymap or likely layout lists all its files', async (
   await expect(page.getByLabel(/Show all files/)).toHaveCount(0);
 });
 
+test('a multi-keyboard repository is folded by keyboard', async ({ page }) => {
+  await listRepo(page, [
+    'ScottoFrog/QMK/keyboard.json',
+    'ScottoFrog/ZMK/boards/shields/frog/frog.keymap',
+    'ScottoWing/QMK/keyboard.json',
+    'ScottoWing/ZMK/config/wing.keymap',
+    'ScottoWing/ZMK/config/wing_left.overlay',
+  ]);
+  const group = (name) =>
+    page.locator('dialog details.repo-group', { has: page.locator('summary', { hasText: name }) });
+  const frog = group('ScottoFrog');
+  const wing = group('ScottoWing');
+  await expect(page.locator('dialog details.repo-group')).toHaveCount(2);
+  // Only the chosen keymap's keyboard is open and ticked.
+  await expect(frog).toHaveAttribute('open', '');
+  await expect(wing).not.toHaveAttribute('open', '');
+  await expect(page.locator('dialog .repo-file input:checked')).toHaveCount(2);
+  await expect(frog.locator('summary')).toContainText('1 keymap · 1 layout · 2 selected');
+  await expect(wing.locator('summary')).toContainText('1 keymap · 1 layout');
+  await expect(wing.locator('summary')).not.toContainText('selected');
+  // Folder names are the user's data: shown as they are, not restyled like palette headings.
+  await expect(frog.locator('.repo-group-name')).toHaveCSS('text-transform', 'none');
+  // Paths show inside their keyboard's folder; the tooltip has the whole path.
+  await expect(frog.locator('.repo-file', { hasText: 'frog.keymap' })).toHaveAttribute(
+    'title',
+    'ScottoFrog/ZMK/boards/shields/frog/frog.keymap',
+  );
+  await expect(frog.locator('.repo-path').first()).not.toContainText('ScottoFrog/');
+
+  // Unfold by mouse, tick, fold: the folded header still says what is ticked.
+  await wing.locator('summary').click();
+  await wing.locator('.repo-file', { hasText: 'wing.keymap' }).locator('input').check();
+  await wing.locator('summary').click();
+  await expect(wing).not.toHaveAttribute('open', '');
+  await expect(wing.locator('summary')).toContainText('1 selected');
+  // And by keyboard.
+  await wing.locator('summary').focus();
+  await page.keyboard.press('Enter');
+  await expect(wing).toHaveAttribute('open', '');
+
+  await page.getByLabel('Show all files (1 more)').check();
+  await expect(wing.locator('.repo-file:visible')).toHaveCount(3);
+  await page.getByRole('button', { name: 'Collapse All' }).click();
+  await expect(page.locator('dialog details.repo-group[open]')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Expand All' }).click();
+  await expect(page.locator('dialog details.repo-group[open]')).toHaveCount(2);
+});
+
+test('a standard zmk-config is not folded', async ({ page }) => {
+  await listRepo(page, ['boards/shields/cygnus/layouts.dtsi', 'config/cygnus.keymap', 'config/hillside_view.keymap']);
+  await expect(page.locator('dialog details.repo-group')).toHaveCount(0);
+  await expect(page.locator('dialog .repo-file:visible')).toHaveCount(3);
+  await expect(page.locator('dialog .repo-file input:checked')).toHaveCount(2);
+  await expect(page.getByRole('button', { name: 'Expand All' })).toHaveCount(0);
+});
+
 test('repository listing errors are shown', async ({ page }) => {
   await page.route('https://api.github.com/**', (r) => r.fulfill({ status: 404, json: {} }));
   await page.getByRole('button', { name: 'Import', exact: true }).click();

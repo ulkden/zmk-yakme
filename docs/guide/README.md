@@ -74,7 +74,11 @@ version's release notes.
 - Other files, such as split-half `.overlay`s and shield `.dtsi`s, are hidden. Tick **Show all files**
   under the list to see them too. A file you tick there stays listed.
 - **Deselect All** unticks every file, so you can pick just the ones you want.
-
+- **Repositories with several keyboards**, one per top-level folder, are folded by keyboard. Only the
+  keyboard whose keymap was chosen is open and ticked. Click a keyboard (or press <kbd>Enter</kbd> on it)
+  to unfold it; a folded keyboard still shows how many of its files are ticked. **Expand All** and
+  **Collapse All** open or close them all. A usual zmk-config, with `config/` and `boards/`, isn't
+  folded.
 - Only public repositories can be listed, and GitHub allows 60 listings an hour from your network. A
   missing or private repository, or the limit, is explained in the dialog.
 
