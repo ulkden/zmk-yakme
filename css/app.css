@@ -873,8 +873,36 @@ dialog h2 {
   margin-top: 6px;
   font-size: 13px;
 }
-.repo-tools button.link {
+.repo-tool-links {
   margin-left: auto;
+}
+/* One keyboard of a multi-keyboard repository: a foldable header, then its files indented. */
+.repo-group[hidden] {
+  display: none;
+}
+.repo-group summary {
+  padding: 3px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.repo-group summary:hover {
+  background: var(--panel-2);
+}
+.repo-group-name {
+  font-weight: 500;
+  margin-right: 8px;
+}
+.repo-group-counts {
+  color: var(--muted);
+  font-size: 12px;
+}
+.repo-group-selected {
+  color: var(--accent);
+  font-size: 12px;
+}
+.repo-group .repo-file {
+  padding-left: 18px;
 }
 .repo-path {
   display: flex;

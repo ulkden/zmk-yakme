@@ -124,3 +124,11 @@ Decisions made while building unattended. Each one can be changed. Review and te
     sits in a corner, away from where you work. With reduced motion, a brief static highlight at 35 %
     (`--warn-dim`) replaces it. Cleared warnings are matched by text and stay hidden while they still
     apply; "N hidden" brings them back.
+29. ✅ **Implemented (#82):** A repository listing is folded by keyboard when its **keymaps** sit in two or
+    more top-level folders below the listed one. ZMK's standard `config/` and `boards/` folders don't
+    count, so a usual zmk-config (keymaps in `config/`, custom shields in `boards/`) stays one flat list,
+    as before; #82 first proposed grouping by any top-level folder, which would have split such repos
+    and dropped their preselected shield layouts. Grouping on keymaps rather than on any likely file
+    keeps one keyboard's `QMK/` and `ZMK/` subfolders together when you list that keyboard's folder.
+    When grouped, only the chosen keymap's own layouts are preselected (scottokeebs: 46 files from 45
+    keyboards before, 1 now), and only its keyboard starts open.

@@ -36,6 +36,7 @@ corner, or a click outside it. Closing without a button counts as Cancel.
 |------------------------|----------------------------------------------------|
 | Import a file          | Import → choose file → pick in OS dialog (or drag & drop: 0) |
 | Untick a repo listing  | Deselect All (1)                                   |
+| Pick another keyboard in a multi-keyboard repo | Deselect All → ▸ keyboard → tick its files (3, plus one per extra file; the chosen keyboard is ticked already) |
 | Set a key to a keycode | key → palette keycode (2), or key + type a letter (1) |
 | Set a key behavior     | key → behavior select → option (3)                 |
 | Add layer              | + (1)                                              |

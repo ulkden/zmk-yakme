@@ -1,6 +1,6 @@
 // "Import from a GitHub repository": list importable files and import the checked ones.
 import { h, replace } from './dom.js';
-import { listRepo, rawUrl, importOrder } from '../core/github.js';
+import { listRepo, rawUrl, importOrder, groupRepoFiles } from '../core/github.js';
 import { importTexts } from './import-flow.js';
 
 async function fetchFiles(info, ref, paths) {
@@ -23,36 +23,98 @@ function pathParts(path) {
 
 function fileRow(file) {
   const box = h('input', { type: 'checkbox', checked: file.selected, value: file.path });
-  const { head, tail } = pathParts(file.path);
+  const { head, tail } = pathParts(file.label);
   return h(
     'label.repo-file',
-    { title: file.path },
+    { title: file.path, 'data-kind': file.kind },
     box,
     h('span.repo-path', {}, h('span.path-head', {}, head), h('span.path-tail', {}, tail)),
     h('span.badge', {}, file.kind),
   );
 }
 
+const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+
+// One keyboard's files under a foldable header, e.g. "ScottoFrog  1 keymap · 1 layout · 2 selected".
+// The header counts the files listed and those ticked, so folding never hides what will be imported.
+function groupBlock(folder, rows, open) {
+  const counts = h('span.repo-group-counts');
+  const ticked = h('span.repo-group-selected');
+  const el = h(
+    'details.repo-group',
+    { open },
+    h('summary', {}, h('span.repo-group-name', {}, folder), counts, ticked),
+    rows,
+  );
+  const refresh = () => {
+    const shown = rows.filter((r) => !r.hidden);
+    const kinds = ['keymap', 'layout'].map((k) => [k, shown.filter((r) => r.dataset.kind === k).length]);
+    replace(
+      counts,
+      kinds
+        .filter(([, n]) => n)
+        .map(([k, n]) => plural(n, k))
+        .join(' · '),
+    );
+    const n = rows.filter((r) => r.querySelector('input').checked).length;
+    replace(ticked, n ? ` · ${n} selected` : '');
+    el.hidden = !shown.length;
+  };
+  return { el, refresh };
+}
+
 // The file list. Only keymaps and likely layouts show at first; "Show all files" reveals the rest.
 // Visibility changes only when that box is toggled, and a ticked file is never hidden, so nothing
-// hidden is imported by surprise. A repository with no likely file shows everything.
+// hidden is imported by surprise. A repository with no likely file shows everything. A repository
+// holding several keyboards is folded by keyboard; only the chosen keymap's keyboard starts open.
 function fileList(files) {
   const rows = files.map(fileRow);
-  const list = h('div.repo-list', {}, rows);
+  const rowOf = new Map(files.map((f, i) => [f, rows[i]]));
+  const groups = groupRepoFiles(files);
+  const loose = (groups.find((g) => !g.folder)?.files ?? []).map((f) => rowOf.get(f));
+  const blocks = groups
+    .filter((g) => g.folder)
+    .map((g) =>
+      groupBlock(
+        g.folder,
+        g.files.map((f) => rowOf.get(f)),
+        g.files.some((f) => f.selected),
+      ),
+    );
+  const list = h(
+    'div.repo-list',
+    {},
+    loose,
+    blocks.map((b) => b.el),
+  );
+  const refresh = () => blocks.forEach((b) => b.refresh());
   const extra = files.filter((f) => !f.relevant).length;
   const showAll = h('input', { type: 'checkbox', checked: extra === files.length });
-  const update = () =>
+  const update = () => {
     rows.forEach((row, i) => {
       row.hidden = !showAll.checked && !files[i].relevant && !row.querySelector('input').checked;
     });
+    refresh();
+  };
   showAll.addEventListener('change', update);
+  list.addEventListener('change', refresh);
   update();
-  const deselect = () => list.querySelectorAll('input:checked').forEach((box) => (box.checked = false));
+  const deselect = () => {
+    list.querySelectorAll('input:checked').forEach((box) => (box.checked = false));
+    refresh();
+  };
+  const fold = (open) => () => blocks.forEach((b) => (b.el.open = open));
   const tools = h(
     'div.repo-tools',
     {},
     extra && extra < files.length ? h('label.check', {}, showAll, ` Show all files (${extra} more)`) : null,
-    h('button.link', { type: 'button', onclick: deselect, title: 'Untick every file' }, 'Deselect All'),
+    h(
+      'span.repo-tool-links',
+      {},
+      blocks.length ? h('button.link', { type: 'button', onclick: fold(true) }, 'Expand All') : null,
+      blocks.length ? h('button.link', { type: 'button', onclick: fold(false) }, 'Collapse All') : null,
+      h('button.link', { type: 'button', onclick: deselect, title: 'Untick every file' }, 'Deselect All'),
+    ),
   );
   return { list, tools };
 }

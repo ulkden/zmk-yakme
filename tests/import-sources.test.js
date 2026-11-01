@@ -1,7 +1,15 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { legendToBinding, legendToCode } from '../src/core/legends.js';
-import { parseGithubUrl, repoFiles, importOrder, listRepo, rawUrl, isAllowedUrl } from '../src/core/github.js';
+import {
+  parseGithubUrl,
+  repoFiles,
+  groupRepoFiles,
+  importOrder,
+  listRepo,
+  rawUrl,
+  isAllowedUrl,
+} from '../src/core/github.js';
 import { importText, applyImport, combineResults } from '../src/core/import.js';
 import { initialState } from '../src/core/state.js';
 
@@ -116,10 +124,38 @@ describe('GitHub URLs', () => {
 
   test('repoFiles lists importable files and preselects likely ones', () => {
     assert.deepEqual(repoFiles(tree), [
-      { path: 'config/corne.keymap', kind: 'keymap', selected: true, relevant: true },
-      { path: 'boards/shields/elvn/elvn.keymap', kind: 'keymap', selected: false, relevant: true },
-      { path: 'boards/shields/elvn/elvn-layouts.dtsi', kind: 'layout', selected: true, relevant: true },
-      { path: 'boards/shields/elvn/elvn.overlay', kind: 'layout', selected: false, relevant: false },
+      {
+        path: 'config/corne.keymap',
+        kind: 'keymap',
+        folder: '',
+        label: 'config/corne.keymap',
+        selected: true,
+        relevant: true,
+      },
+      {
+        path: 'boards/shields/elvn/elvn.keymap',
+        kind: 'keymap',
+        folder: '',
+        label: 'boards/shields/elvn/elvn.keymap',
+        selected: false,
+        relevant: true,
+      },
+      {
+        path: 'boards/shields/elvn/elvn-layouts.dtsi',
+        kind: 'layout',
+        folder: '',
+        label: 'boards/shields/elvn/elvn-layouts.dtsi',
+        selected: true,
+        relevant: true,
+      },
+      {
+        path: 'boards/shields/elvn/elvn.overlay',
+        kind: 'layout',
+        folder: '',
+        label: 'boards/shields/elvn/elvn.overlay',
+        selected: false,
+        relevant: false,
+      },
     ]);
     assert.deepEqual(
       repoFiles(tree, 'boards/shields/elvn').map((f) => [f.path.split('/').pop(), f.selected]),
@@ -157,6 +193,90 @@ describe('GitHub URLs', () => {
     );
     // A preselected file is always relevant, so the picker never hides a ticked file.
     assert.ok(files.every((f) => !f.selected || f.relevant));
+  });
+
+  // A repository holding several keyboards, one per top-level folder (like joe-scotto/scottokeebs).
+  const multi = [
+    'ScottoFrog/QMK/keyboard.json',
+    'ScottoFrog/ZMK/boards/shields/frog/frog.keymap',
+    'ScottoFrog/ZMK/boards/shields/frog/frog_left.overlay',
+    'ScottoWing/QMK/keyboard.json',
+    'ScottoWing/ZMK/config/wing.keymap',
+    '.github/workflows/build.yml.json',
+    'README.json',
+  ].map((path) => ({ type: 'blob', path }));
+
+  test('repoFiles groups a multi-keyboard repository by top-level folder and preselects one keyboard', () => {
+    const files = repoFiles(multi);
+    assert.deepEqual(
+      files.map((f) => [f.path, f.folder, f.selected]),
+      [
+        ['ScottoFrog/QMK/keyboard.json', 'ScottoFrog', true],
+        ['ScottoFrog/ZMK/boards/shields/frog/frog.keymap', 'ScottoFrog', true],
+        ['ScottoFrog/ZMK/boards/shields/frog/frog_left.overlay', 'ScottoFrog', false],
+        ['ScottoWing/QMK/keyboard.json', 'ScottoWing', false],
+        ['ScottoWing/ZMK/config/wing.keymap', 'ScottoWing', false],
+        ['.github/workflows/build.yml.json', '.github', false],
+        ['README.json', '', false],
+      ],
+    );
+    assert.equal(files[1].label, 'ZMK/boards/shields/frog/frog.keymap');
+    assert.deepEqual(
+      groupRepoFiles(files).map((g) => [g.folder, g.files.length]),
+      [
+        ['', 1],
+        ['ScottoFrog', 3],
+        ['ScottoWing', 2],
+        ['.github', 1],
+      ],
+    );
+  });
+
+  test('repoFiles keeps a standard zmk-config (config/ and boards/) as one ungrouped keyboard', () => {
+    const files = repoFiles(
+      [
+        'boards/shields/cygnus/cygnus.keymap',
+        'boards/shields/cygnus/layouts.dtsi',
+        'config/cygnus.keymap',
+        'config/hillside_view.keymap',
+        '.vscode/settings.json',
+      ].map((path) => ({ type: 'blob', path })),
+    );
+    assert.ok(files.every((f) => f.folder === ''));
+    assert.deepEqual(
+      files.filter((f) => f.selected).map((f) => f.path),
+      ['boards/shields/cygnus/layouts.dtsi', 'config/cygnus.keymap'],
+    );
+    assert.equal(groupRepoFiles(files).length, 1);
+  });
+
+  test('repoFiles groups two keyboard folders, but not one, and relative to the listed folder', () => {
+    const two = repoFiles(['sweep/cradio.keymap', 'zen/corneish_zen.keymap'].map((path) => ({ type: 'blob', path })));
+    assert.deepEqual(
+      two.map((f) => [f.folder, f.selected]),
+      [
+        ['sweep', true],
+        ['zen', false],
+      ],
+    );
+    const one = repoFiles(['config/a.keymap', 'extras/b.keymap'].map((path) => ({ type: 'blob', path })));
+    assert.ok(one.every((f) => f.folder === ''));
+    const based = repoFiles(multi, 'ScottoFrog');
+    assert.ok(
+      based.every((f) => f.folder === ''),
+      'folders inside the listed one are not keyboards',
+    );
+  });
+
+  test('repoFiles leaves a repository without keymaps flat, preselecting as before', () => {
+    const files = repoFiles(['A/info.json', 'B/info.json'].map((path) => ({ type: 'blob', path })));
+    assert.deepEqual(
+      files.map((f) => [f.folder, f.selected]),
+      [
+        ['', true],
+        ['', true],
+      ],
+    );
   });
 
   test('isAllowedUrl only accepts https GitHub hosts', () => {
