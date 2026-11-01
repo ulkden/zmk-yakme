@@ -53,7 +53,7 @@ function indentOf(text, pos) {
 }
 
 // Range covering a node plus its own line (so deleting it leaves no blank line).
-function lineRange(text, node) {
+export function lineRange(text, node) {
   const lineStart = text.lastIndexOf('\n', node.start - 1) + 1;
   const start = /^[ \t]*$/.test(text.slice(lineStart, node.start)) ? lineStart : node.start;
   const end = text[node.end] === '\n' ? node.end + 1 : node.end;

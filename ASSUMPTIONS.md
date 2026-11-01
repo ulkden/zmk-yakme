@@ -106,3 +106,11 @@ Decisions made while building unattended. Each one can be changed. Review and te
     their selection, so a re-render while tabbing between fields lost the select-all and typing added to the
     old value. The cost is no up/down arrows (spinner or arrow keys). Text that isn't a whole number keeps
     the previous value and shows a warning, instead of clearing the setting.
+26. ✅ **Agreed:** Text that export keeps verbatim has **one exception**: renaming or deleting an
+    editable behavior also updates references to it there, so the file still builds. That covers other
+    behaviors (tap-dances, sticky keys, …), `&label { … };` overrides, `#define` lines and unknown
+    properties. A rename replaces only the `&label` token. A delete turns each use and its parameters into
+    `&none` and removes overrides of the deleted behavior; its prompt says where the uses are. Comments
+    and everything else stay as they were. Checked on 40 real keymaps (200 behaviors, see #66): no other
+    text changed. The alternative, refusing to rename or delete until those references were edited by
+    hand, was rejected because a missed reference breaks the build.

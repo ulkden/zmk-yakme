@@ -20,7 +20,9 @@ physical layout plus an optional existing keymap into an edited ZMK `.keymap` fi
 4. **Export** — download or copy the `.keymap`. If a keymap was imported, the `keymap` and
    `combos` nodes are regenerated (comments inside them are replaced; see ASSUMPTIONS.md #5),
    behavior nodes are rewritten only when edited or deleted, and missing `#include`s are added.
-   Unknown properties inside those nodes, and everything outside them, are kept verbatim.
+   Unknown properties inside those nodes, and everything outside them, are kept verbatim, except
+   that renaming or deleting a behavior also updates its references there (other behaviors such as
+   tap-dances, `&label { … };` overrides and `#define`s), so the file still builds.
 
 Import is one dialog that auto-detects content: a single file can supply a layout, a
 keymap, or both. Files can also be dropped anywhere on the page.
