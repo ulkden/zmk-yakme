@@ -6,6 +6,7 @@ import { importText } from '../src/core/import.js';
 import { exportKeymap } from '../src/core/export.js';
 import { exampleState } from '../src/data/example.js';
 import { V1_PROJECT } from './fixtures/saved/v1-project.js';
+import { V2_PROJECT } from './fixtures/saved/v2-project.js';
 
 const clone = (o) => JSON.parse(JSON.stringify(o));
 
@@ -25,6 +26,25 @@ describe('saved-data format', () => {
       extra: [],
     });
     assert.match(exportKeymap(state), /combo_esc \{/);
+  });
+
+  test('a version 2 project still loads unchanged and exports everything it held', () => {
+    const { state } = readProject(JSON.stringify(V2_PROJECT));
+    assert.deepEqual(state.keymap, V2_PROJECT.keymap);
+    assert.deepEqual(state.layouts, V2_PROJECT.layouts);
+    assert.equal(state.fileName, 'four.keymap');
+    const out = exportKeymap(state);
+    assert.match(out, /combo_esc \{[^}]*key-positions = <COMBO_TOP>;[^}]*layers = <0>;/);
+    assert.match(out, /sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;/);
+    assert.match(out, /&hm LSHIFT A/);
+  });
+
+  test('named combo layers survive a save and load in the current format', () => {
+    const s = readProject(JSON.stringify(V2_PROJECT)).state;
+    const named = { ...s, keymap: { ...s.keymap, combos: [{ ...s.keymap.combos[0], layers: ['BASE', 1] }] } };
+    const saved = JSON.parse(serialize(named));
+    assert.equal(saved.version, 3);
+    assert.deepEqual(readProject(JSON.stringify(saved)).state.keymap.combos[0].layers, ['BASE', 1]);
   });
 
   test('missing version is treated as version 1', () => {

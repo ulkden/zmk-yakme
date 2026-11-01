@@ -7,6 +7,7 @@ import { writeKeymapDetailed } from '../src/core/keymap-write.js';
 import { FULL_KEYMAP } from './fixtures/full-keymap.js';
 import { ELVN_KEYMAP } from './fixtures/elvn.js';
 import { DEFINE_BINDINGS_KEYMAP } from './fixtures/define-bindings.js';
+import { NAMED_COMBOS_KEYMAP } from './fixtures/named-combos.js';
 
 const strip = (km) => ({
   layers: km.layers.map(({ name, bindings, extra }) => ({ name, bindings, extra })),
@@ -85,6 +86,22 @@ describe('writeKeymap', () => {
     const out = writeKeymap(km, { keyCount: 8, rows: km.rowHints });
     assert.deepEqual(parseKeymap(out).layers[0].bindings, km.layers[0].bindings);
     assert.match(out, /bindings = <U_RDO>;/);
+  });
+
+  test('writes named combo layers, positions and node names back unchanged', () => {
+    const out = writeKeymap(parseKeymap(NAMED_COMBOS_KEYMAP));
+    assert.match(out, /combo_tpsl_BASE \{[^}]*key-positions = <COMBO_TPSL>;[^}]*layers = <BASE>;/);
+    assert.match(out, /combo_tpsl_NUM \{[^}]*layers = <NUM 1>;/);
+  });
+
+  test('sanitizes combo names that are not node names, and keeps them unique', () => {
+    const km = parseKeymap(ELVN_KEYMAP);
+    const combo = { keyPositions: [0, 1], binding: '&kp TAB', timeout: null, layers: [], extra: [] };
+    km.combos = ['Esc Tab', 'dup', 'dup'].map((name) => ({ ...combo, name }));
+    assert.deepEqual(
+      parseKeymap(writeKeymap(km)).combos.map((c) => c.name),
+      ['esc_tab', 'dup', 'dup_2'],
+    );
   });
 
   test('adds new layers with display names', () => {

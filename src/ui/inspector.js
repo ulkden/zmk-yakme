@@ -69,17 +69,20 @@ function comboList(state, actions) {
   );
 }
 
+// Named layers (e.g. `layers = <BASE>` with a #define) are kept as they are and shown read-only.
 function layerChips(combo, layers, actions) {
+  const named = combo.layers.filter((l) => typeof l !== 'number');
+  const numbers = combo.layers.filter((l) => typeof l === 'number');
   const toggle = (i) => {
-    const has = combo.layers.includes(i);
-    const next = has ? combo.layers.filter((l) => l !== i) : [...combo.layers, i].sort((a, b) => a - b);
-    actions.updateCombo({ layers: next });
+    const next = numbers.includes(i) ? numbers.filter((l) => l !== i) : [...numbers, i].sort((a, b) => a - b);
+    actions.updateCombo({ layers: [...named, ...next] });
   };
   return h(
     'div.chips',
     {},
+    named.map((n) => h('span.chip.on.named', { title: 'Named in the file; change it there' }, n)),
     layers.map((l, i) =>
-      h('button.chip', { class: combo.layers.includes(i) ? 'on' : '', onclick: () => toggle(i) }, l.name),
+      h('button.chip', { class: numbers.includes(i) ? 'on' : '', onclick: () => toggle(i) }, l.name),
     ),
   );
 }

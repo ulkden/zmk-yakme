@@ -25,8 +25,8 @@ function intList(cells) {
     .filter((n) => !Number.isNaN(n));
 }
 
-// Key positions may be numbers or names (e.g. #defines); names are kept as strings.
-function positionList(cells) {
+// Key positions and combo layers may be numbers or names (e.g. #defines); names are kept as strings.
+function valueList(cells) {
   return splitParams(cells ?? '').map((t) => {
     const n = evalExpr(t);
     return Number.isNaN(n) ? t : n;
@@ -60,10 +60,10 @@ function parseLayer(node, text, arity) {
 function parseCombo(node, text, arity) {
   return {
     name: node.name,
-    keyPositions: positionList(propCells(node, 'key-positions')),
+    keyPositions: valueList(propCells(node, 'key-positions')),
     binding: splitBindings(propCells(node, 'bindings'), arity)[0] ?? '&none',
     timeout: optionalInt(node, 'timeout-ms'),
-    layers: intList(propCells(node, 'layers')),
+    layers: valueList(propCells(node, 'layers')),
     requirePriorIdle: optionalInt(node, 'require-prior-idle-ms'),
     slowRelease: !!getProp(node, 'slow-release'),
     extra: extraProps(node, COMBO_PROPS, text),
