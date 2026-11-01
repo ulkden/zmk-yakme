@@ -18,6 +18,29 @@ describe('splitBindings', () => {
     assert.deepEqual(splitBindings('&kp LS( LC(A) )'), ['&kp LS(LC(A))']);
   });
 
+  test('with parameter counts, bare names after a complete binding are bindings of their own', () => {
+    const counts = { bootloader: [0, 0], kp: [1, 1], bt: [1, 2] };
+    const arity = (name) => (counts[name] ? { min: counts[name][0], max: counts[name][1] } : null);
+    assert.deepEqual(splitBindings('U_NA &bootloader U_NA U_NA &kp LC(Y) U_RDO', arity), [
+      'U_NA',
+      '&bootloader',
+      'U_NA',
+      'U_NA',
+      '&kp LC(Y)',
+      'U_RDO',
+    ]);
+    // An optional parameter is taken only when it is a number.
+    assert.deepEqual(splitBindings('&bt BT_SEL 0 U_NA &bt BT_CLR U_NA', arity), [
+      '&bt BT_SEL 0',
+      'U_NA',
+      '&bt BT_CLR',
+      'U_NA',
+    ]);
+    // Unknown behaviors keep every following bare token, as without counts.
+    assert.deepEqual(splitBindings('&custom A B &kp C', arity), ['&custom A B', '&kp C']);
+    assert.deepEqual(bindingsPerLine('&bootloader U_NA\n U_NA &kp A', arity), [2, 2]);
+  });
+
   test('returns [] for empty input', () => {
     assert.deepEqual(splitBindings(''), []);
     assert.deepEqual(splitBindings(undefined), []);

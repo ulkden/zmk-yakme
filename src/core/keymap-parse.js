@@ -3,6 +3,7 @@ import { parseDts, findNodes, getProp, propCells, propString, hasCompatible } fr
 import { evalExpr } from '../dts/expr.js';
 import { splitBindings, bindingsPerLine, splitParams } from './bindings.js';
 import { parseBehaviors, behaviorKind } from './behaviors-parse.js';
+import { behaviorDef } from '../data/behaviors.js';
 
 const LAYER_PROPS = new Set(['bindings', 'display-name', 'label']);
 const COMBO_PROPS = new Set([
@@ -34,20 +35,33 @@ function positionList(cells) {
 
 const optionalInt = (node, name) => (getProp(node, name) ? (intList(propCells(node, name))[0] ?? null) : null);
 
-function parseLayer(node, text) {
+// Parameter counts used to split bindings: the file's own behaviors (`#binding-cells`), then the
+// built-in ones. Unknown behaviors return null and take every following bare token, as before.
+function arityOf(root) {
+  const cells = new Map();
+  for (const n of findNodes(root, (n) => n.labels.length > 0 && getProp(n, '#binding-cells')))
+    n.labels.forEach((l) => cells.set(l, intList(propCells(n, '#binding-cells'))[0] ?? 0));
+  return (name) => {
+    if (cells.has(name)) return { min: cells.get(name), max: cells.get(name) };
+    const params = behaviorDef(name)?.params;
+    return params ? { min: params.filter((p) => !p.endsWith('?')).length, max: params.length } : null;
+  };
+}
+
+function parseLayer(node, text, arity) {
   return {
     id: node.name,
     name: propString(node, 'display-name') ?? propString(node, 'label') ?? node.name,
-    bindings: splitBindings(propCells(node, 'bindings')),
+    bindings: splitBindings(propCells(node, 'bindings'), arity),
     extra: extraProps(node, LAYER_PROPS, text),
   };
 }
 
-function parseCombo(node, text) {
+function parseCombo(node, text, arity) {
   return {
     name: node.name,
     keyPositions: positionList(propCells(node, 'key-positions')),
-    binding: splitBindings(propCells(node, 'bindings'))[0] ?? '&none',
+    binding: splitBindings(propCells(node, 'bindings'), arity)[0] ?? '&none',
     timeout: optionalInt(node, 'timeout-ms'),
     layers: intList(propCells(node, 'layers')),
     requirePriorIdle: optionalInt(node, 'require-prior-idle-ms'),
@@ -67,17 +81,18 @@ export function parseKeymap(text) {
   const keymapNode = findNodes(root, (n) => hasCompatible(n, 'zmk,keymap'))[0];
   if (!keymapNode) return null;
   const comboNode = findNodes(root, (n) => hasCompatible(n, 'zmk,combos'))[0];
-  const layers = keymapNode.children.map((n) => parseLayer(n, text));
+  const arity = arityOf(root);
+  const layers = keymapNode.children.map((n) => parseLayer(n, text, arity));
   const firstCells = keymapNode.children[0] ? propCells(keymapNode.children[0], 'bindings') : '';
   return {
     layers,
-    combos: comboNode ? comboNode.children.map((n) => parseCombo(n, text)) : [],
+    combos: comboNode ? comboNode.children.map((n) => parseCombo(n, text, arity)) : [],
     behaviors: parseBehaviors(root, text),
     customBehaviors: findNodes(root, isOtherBehavior).map((n) => ({
       label: n.labels[0],
       cells: intList(propCells(n, '#binding-cells'))[0] ?? 0,
     })),
-    rowHints: bindingsPerLine(firstCells),
+    rowHints: bindingsPerLine(firstCells, arity),
     source: text,
   };
 }

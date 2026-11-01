@@ -20,21 +20,39 @@ export function splitParams(text) {
   return out;
 }
 
-// Turn the inner text of a `bindings = <...>` property into binding strings.
-export function splitBindings(cells) {
+// Optional parameters (e.g. the profile in `&bt BT_SEL 0`) are only ever numbers.
+function takesParam(range, have, tok) {
+  if (!range || have < range.min) return true;
+  return have < range.max && /^[\d(]/.test(tok);
+}
+
+// Turn the inner text of a `bindings = <...>` property into binding strings. Without `arity`,
+// every token up to the next `&` is a parameter. With `arity` (behavior name → { min, max }
+// parameter counts, or null when unknown), a bare name after a complete binding is a binding of
+// its own, because keymaps can #define whole bindings (Miryoku's `U_NA` for `&none`).
+export function splitBindings(cells, arity = null) {
   const groups = [];
+  let range = null;
   for (const tok of splitParams(cells)) {
-    if (tok.startsWith('&')) groups.push([tok]);
-    else if (groups.length) groups[groups.length - 1].push(tok);
+    const last = groups[groups.length - 1];
+    if (tok.startsWith('&')) {
+      groups.push([tok]);
+      range = arity ? arity(tok.slice(1)) : null;
+    } else if (last && takesParam(range, last.length - 1, tok)) {
+      last.push(tok);
+    } else if (arity) {
+      groups.push([tok]);
+      range = { min: 0, max: 0 };
+    }
   }
   return groups.map((g) => g.join(' '));
 }
 
 // Number of bindings beginning on each non-empty line (used to infer a grid layout).
-export function bindingsPerLine(cells) {
+export function bindingsPerLine(cells, arity = null) {
   return String(cells ?? '')
     .split('\n')
-    .map((line) => splitParams(line).filter((t) => t.startsWith('&')).length)
+    .map((line) => splitBindings(line, arity).length)
     .filter((n) => n > 0);
 }
 

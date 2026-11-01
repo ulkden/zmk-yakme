@@ -2,10 +2,21 @@
 // `fix` names an action the UI can offer (e.g. 'trim').
 import { activeLayout, keyCount } from './state.js';
 
+// A bare macro call (e.g. `HRML(A, S, D, F)`) can stand for several keys, so the layer may not
+// line up. Plain names (`U_NA`) are taken as one key each.
+const macroCalls = (layer) => [
+  ...new Set(layer.bindings.filter((b) => !b.startsWith('&') && b.includes('(')).map((b) => b.split('(')[0] + '(…)')),
+];
+
 function layerWarnings(km, keys, hasLayout) {
   const out = [];
   km.layers.forEach((layer, i) => {
     const n = layer.bindings.length;
+    const calls = macroCalls(layer);
+    if (calls.length)
+      out.push({
+        text: `Layer "${layer.name}" uses macro calls (${calls.join(', ')}) that can stand for several keys, so its keys may not line up. Edit this layer in your file instead.`,
+      });
     if (hasLayout && n < keys)
       out.push({
         text: `Layer "${layer.name}" has ${n} bindings for ${keys} keys; the rest export as ${i === 0 ? '&none' : '&trans'}.`,

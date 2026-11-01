@@ -6,10 +6,15 @@ merged pull request.
 
 ## [Unreleased]
 
-- **Fixed:** Tabbing into a millisecond field (tapping term, combo timeout, macro wait and so on) selects
-  its value again, so typing replaces it instead of adding to it. Text that isn't a whole number now keeps
-  the previous value and shows a warning, instead of clearing the setting. These fields no longer have
+### Fixed
+
+- Tabbing into a millisecond field (tapping term, combo timeout, macro wait and so on) selects its value
+  again, so typing replaces it instead of adding to it. Text that isn't a whole number now keeps the
+  previous value and shows a warning, instead of clearing the setting. These fields no longer have
   up/down arrows.
+- Keymaps that write whole bindings as `#define` names (Miryoku's `U_NA`, `U_RDO`, …) import one key per
+  name, instead of shifting the rest of the layer and padding the export with extra `&trans`. Layers
+  that use macro calls such as `HRML(A, S, D, F)`, which can stand for several keys, get a warning.
 
 ## [0.1.0] - 2026-10-28
 
