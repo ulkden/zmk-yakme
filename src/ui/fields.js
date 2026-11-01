@@ -1,19 +1,34 @@
 // Small form-field builders shared by the side panels.
-import { h } from './dom.js';
+import { h, toast } from './dom.js';
+import { parseOptionalUint } from '../core/numbers.js';
 
-// Optional integer (empty = null), committed on change.
+// Optional whole number (empty = null), committed on change. A text input, not type="number":
+// renderKeepingFocus can only restore a selection it can read, and number inputs hide theirs, so
+// tabbing into one during a re-render lost the select-all and typing appended to the old value.
+// Text that isn't a whole number is put back to the last value instead of clearing it.
 export function numberField(label, name, value, placeholder, onChange) {
+  const shown = (v) => (v == null ? '' : String(v));
   return h(
     'label.field',
     {},
     h('span', {}, label),
     h('input', {
-      type: 'number',
+      type: 'text',
+      inputMode: 'numeric',
       name,
-      min: 0,
-      value: value ?? '',
+      value: shown(value),
       placeholder,
-      onchange: (e) => onChange(e.target.value === '' ? null : Number(e.target.value)),
+      spellcheck: false,
+      autocomplete: 'off',
+      onchange: (e) => {
+        const next = parseOptionalUint(e.target.value);
+        if (next === undefined) {
+          e.target.value = shown(value);
+          return toast(`${label}: enter a whole number, or leave it empty`, 'warn');
+        }
+        e.target.value = shown(next);
+        onChange(next);
+      },
     }),
   );
 }
