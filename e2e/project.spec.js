@@ -23,6 +23,23 @@ test('save a project and open it again', async ({ page }) => {
   await expect(key(page, 1).locator('.tap')).toHaveText('Z');
 });
 
+test('the welcome screen opens a saved project', async ({ page }) => {
+  await loadExample(page);
+  await key(page, 1).click();
+  await pick(page, 'Z');
+  const dl = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Save project' }).click();
+  const json = await readFile(await (await dl).path(), 'utf8');
+  await page.getByRole('button', { name: 'Close keymap' }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Close keymap' }).click();
+
+  const chooser = page.waitForEvent('filechooser');
+  await page.locator('#welcome').getByRole('button', { name: 'Open project' }).click();
+  await (await chooser).setFiles({ name: 'p.json', mimeType: 'application/json', buffer: Buffer.from(json) });
+  await expect(keys(page)).toHaveCount(42);
+  await expect(key(page, 1).locator('.tap')).toHaveText('Z');
+});
+
 test('replacing unexported work asks first', async ({ page }) => {
   await loadExample(page);
   await key(page, 1).click();

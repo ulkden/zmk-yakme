@@ -46,6 +46,7 @@ corner, or a click outside it. Closing without a button counts as Cancel.
 | Export                 | Export… → Download (2)                             |
 | Clear warnings         | ⚠ N warnings → Clear Warnings (2); "N hidden" shows them again (1) |
 | Save project           | Save project (1)                                   |
+| Open project           | Open project (toolbar or welcome screen) → pick in OS dialog (2) |
 | Close keymap           | Close keymap → Close keymap (2)                    |
 | See version / release notes | version link in the status bar or on the welcome screen (1) |
 | Change a number        | field → type, or field → scroll the wheel (1)      |
