@@ -17,3 +17,4 @@ import './project-format.test.js';
 import './zmk-boards.test.js';
 import './version.test.js';
 import './serve-paths.test.js';
+import './numbers.test.js';

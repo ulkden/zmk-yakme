@@ -6,6 +6,11 @@ merged pull request.
 
 ## [Unreleased]
 
+- **Fixed:** Tabbing into a millisecond field (tapping term, combo timeout, macro wait and so on) selects
+  its value again, so typing replaces it instead of adding to it. Text that isn't a whole number now keeps
+  the previous value and shows a warning, instead of clearing the setting. These fields no longer have
+  up/down arrows.
+
 ## [0.1.0] - 2026-10-28
 
 First public release, at <https://ulkden.github.io/zmk-yakme/>.

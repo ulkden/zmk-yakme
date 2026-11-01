@@ -97,3 +97,9 @@ Decisions made while building unattended. Each one can be changed. Review and te
     app lists the `.keymap`, `.dtsi`, `.overlay` and `.json` files through the public GitHub API (git trees
     endpoint, no auth), preselects the likely keymap and physical-layout files, and imports the ones you
     check. Caveats: unauthenticated API calls are limited to 60 per hour per IP, and only public repos work.
+25. ✅ **Agreed:** The millisecond fields in the side panels (hold-tap tapping term, quick tap and prior
+    idle; combo timeout and prior idle; macro wait and tap) are **text inputs that take whole numbers**
+    (`inputmode="numeric"`, so phones still show a number keypad), not `type="number"`. Number inputs hide
+    their selection, so a re-render while tabbing between fields lost the select-all and typing added to the
+    old value. The cost is no up/down arrows (spinner or arrow keys). Text that isn't a whole number keeps
+    the previous value and shows a warning, instead of clearing the setting.

@@ -42,6 +42,51 @@ test('create a hold-tap, use it on a key, and export it', async ({ page }) => {
   expect(text).toContain('&hm LSHIFT A');
 });
 
+test('tabbing into a number field selects its value, so typing replaces it', async ({ page }) => {
+  await loadExample(page);
+  await behaviorsTab(page).click();
+  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  const panel = page.locator('#inspector');
+  await panel.locator('[name="bh-quick"]').fill('150');
+  const term = await panel.locator('[name="bh-term"]').elementHandle();
+  // Leaving Quick tap commits it, and the panel re-renders the field that Tab moved to.
+  await page.keyboard.press('Shift+Tab');
+  await expect.poll(() => term.evaluate((el) => el.isConnected)).toBe(false);
+  await expect(panel.locator('[name="bh-term"]')).toBeFocused();
+  await page.keyboard.type('180');
+  await page.keyboard.press('Enter');
+  await expect(panel.locator('[name="bh-term"]')).toHaveValue('180');
+  await expect(panel.locator('[name="bh-quick"]')).toHaveValue('150');
+  const text = await exportText(page);
+  expect(text).toMatch(/tapping-term-ms = <180>;\s+quick-tap-ms = <150>;/);
+});
+
+test('number fields reject text that is not a whole number and keep the last value', async ({ page }) => {
+  await loadExample(page);
+  await behaviorsTab(page).click();
+  await page.getByRole('button', { name: '+ Hold-tap' }).click();
+  const panel = page.locator('#inspector');
+  const term = panel.locator('[name="bh-term"]');
+  for (const typed of ['18o', '1.5', '-5']) {
+    await term.fill(typed);
+    await term.press('Enter');
+    await expect(term).toHaveValue('200');
+    await expect(page.locator('#toast')).toHaveText('Tapping term: enter a whole number, or leave it empty');
+  }
+  await term.fill(' 0180 ');
+  await term.press('Enter');
+  await expect(term).toHaveValue('180');
+  const quick = panel.locator('[name="bh-quick"]');
+  await quick.fill('150');
+  await quick.press('Enter');
+  await quick.fill('');
+  await quick.press('Enter');
+  await expect(quick).toHaveValue('');
+  const text = await exportText(page);
+  expect(text).toContain('tapping-term-ms = <180>;');
+  expect(text).not.toContain('quick-tap-ms');
+});
+
 test('edit an imported macro and mod-morph, rename updates references, delete clears uses', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(FULL_KEYMAP);
