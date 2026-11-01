@@ -22,6 +22,8 @@ merged pull request.
 
 ### Changed
 
+- Importing from a GitHub repository lists only its keymaps and likely layout files. **Show all files**
+  reveals the rest, and **Deselect All** unticks everything.
 - Every dialog has a ✕ in its corner and closes when you click outside it (like Cancel), just like the
   layer settings popover.
 - The layout picker in the status bar is labelled **Physical Layouts:**.

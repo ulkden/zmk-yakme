@@ -861,6 +861,21 @@ dialog h2 {
 .repo-file:hover {
   background: var(--panel-2);
 }
+/* display: flex above would otherwise override the hidden attribute. */
+.repo-file[hidden] {
+  display: none;
+}
+/* Under the list: "Show all files" on the left, Deselect All on the right. */
+.repo-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 13px;
+}
+.repo-tools button.link {
+  margin-left: auto;
+}
 .repo-path {
   display: flex;
   flex: 1;

@@ -47,6 +47,7 @@ test('import from a GitHub repository lists and imports selected files', async (
   await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   const rows = page.locator('dialog .repo-file');
   await expect(rows).toHaveCount(4);
+  await expect(page.locator('dialog .repo-file:visible')).toHaveCount(3); // elvn.overlay is hidden
   // A long path keeps its file name visible and shows the whole path on hover.
   const long = rows.filter({ hasText: 'scottofly.keymap' });
   await expect(long).toHaveAttribute('title', /^Some\/Very\/.*\/scottofly\/scottofly\.keymap$/);
@@ -61,6 +62,49 @@ test('import from a GitHub repository lists and imports selected files', async (
   await expect(keys(page)).toHaveCount(4);
   await expect(page.locator('#status')).toContainText('Default Layout');
   await expect(page.locator('#status')).toContainText('1 layers');
+});
+
+async function listRepo(page, paths) {
+  const tree = { truncated: false, tree: paths.map((path) => ({ type: 'blob', path })) };
+  await page.route('https://api.github.com/repos/me/zmk-config', (r) =>
+    r.fulfill({ json: { default_branch: 'main' } }),
+  );
+  await page.route('https://api.github.com/repos/me/zmk-config/git/trees/**', (r) => r.fulfill({ json: tree }));
+  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog [name="import-url"]').fill('https://github.com/me/zmk-config');
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
+}
+
+test('a repository lists keymaps and likely layouts; Show all and Deselect All', async ({ page }) => {
+  await listRepo(page, [
+    'config/corne.keymap',
+    'boards/shields/elvn/elvn-layouts.dtsi',
+    'boards/shields/elvn/elvn_left.overlay',
+    '.vscode/settings.json',
+  ]);
+  const visible = page.locator('dialog .repo-file:visible');
+  const row = (name) => page.locator('dialog .repo-file', { hasText: name });
+  await expect(visible).toHaveCount(2);
+  const showAll = page.getByLabel('Show all files (2 more)');
+  await showAll.check();
+  await expect(visible).toHaveCount(4);
+  await row('elvn_left.overlay').locator('input').check();
+  await showAll.uncheck();
+  // A ticked file stays visible, so nothing hidden is imported by surprise.
+  await expect(visible).toHaveCount(3);
+  await expect(row('settings.json')).toBeHidden();
+  await expect(row('elvn_left.overlay').locator('input')).toBeChecked();
+
+  await page.getByRole('button', { name: 'Deselect All' }).click();
+  await expect(page.locator('dialog .repo-file input:checked')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Import Selected' }).click();
+  await expect(page.locator('dialog .repo-actions')).toContainText('Select at least one file.');
+});
+
+test('a repository with no keymap or likely layout lists all its files', async ({ page }) => {
+  await listRepo(page, ['boards/shields/x/x_left.overlay', 'boards/shields/x/x.dtsi']);
+  await expect(page.locator('dialog .repo-file:visible')).toHaveCount(2);
+  await expect(page.getByLabel(/Show all files/)).toHaveCount(0);
 });
 
 test('repository listing errors are shown', async ({ page }) => {

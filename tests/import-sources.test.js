@@ -116,10 +116,10 @@ describe('GitHub URLs', () => {
 
   test('repoFiles lists importable files and preselects likely ones', () => {
     assert.deepEqual(repoFiles(tree), [
-      { path: 'config/corne.keymap', kind: 'keymap', selected: true },
-      { path: 'boards/shields/elvn/elvn.keymap', kind: 'keymap', selected: false },
-      { path: 'boards/shields/elvn/elvn-layouts.dtsi', kind: 'layout', selected: true },
-      { path: 'boards/shields/elvn/elvn.overlay', kind: 'layout', selected: false },
+      { path: 'config/corne.keymap', kind: 'keymap', selected: true, relevant: true },
+      { path: 'boards/shields/elvn/elvn.keymap', kind: 'keymap', selected: false, relevant: true },
+      { path: 'boards/shields/elvn/elvn-layouts.dtsi', kind: 'layout', selected: true, relevant: true },
+      { path: 'boards/shields/elvn/elvn.overlay', kind: 'layout', selected: false, relevant: false },
     ]);
     assert.deepEqual(
       repoFiles(tree, 'boards/shields/elvn').map((f) => [f.path.split('/').pop(), f.selected]),
@@ -129,6 +129,34 @@ describe('GitHub URLs', () => {
         ['elvn.overlay', false],
       ],
     );
+  });
+
+  test('repoFiles marks keymaps and likely layouts as relevant, and the rest not', () => {
+    const files = repoFiles([
+      { type: 'blob', path: '.vscode/settings.json' },
+      { type: 'blob', path: 'zen/corneish_zen.keymap' },
+      { type: 'blob', path: 'boards/shields/cygnus/cygnus.dtsi' },
+      { type: 'blob', path: 'boards/shields/cygnus/cygnus_left.overlay' },
+      { type: 'blob', path: 'boards/shields/cygnus/cygnus-physical.dtsi' },
+      { type: 'blob', path: 'Scotto34/QMK/keyboard.json' },
+      { type: 'blob', path: 'qmk/info.json' },
+      { type: 'blob', path: 'keymap.json' },
+    ]);
+    assert.deepEqual(
+      files.map((f) => [f.path.split('/').pop(), f.relevant]),
+      [
+        ['settings.json', false],
+        ['corneish_zen.keymap', true],
+        ['cygnus.dtsi', false],
+        ['cygnus_left.overlay', false],
+        ['cygnus-physical.dtsi', true],
+        ['keyboard.json', true],
+        ['info.json', true],
+        ['keymap.json', false],
+      ],
+    );
+    // A preselected file is always relevant, so the picker never hides a ticked file.
+    assert.ok(files.every((f) => !f.selected || f.relevant));
   });
 
   test('isAllowedUrl only accepts https GitHub hosts', () => {

@@ -33,6 +33,30 @@ function fileRow(file) {
   );
 }
 
+// The file list. Only keymaps and likely layouts show at first; "Show all files" reveals the rest.
+// Visibility changes only when that box is toggled, and a ticked file is never hidden, so nothing
+// hidden is imported by surprise. A repository with no likely file shows everything.
+function fileList(files) {
+  const rows = files.map(fileRow);
+  const list = h('div.repo-list', {}, rows);
+  const extra = files.filter((f) => !f.relevant).length;
+  const showAll = h('input', { type: 'checkbox', checked: extra === files.length });
+  const update = () =>
+    rows.forEach((row, i) => {
+      row.hidden = !showAll.checked && !files[i].relevant && !row.querySelector('input').checked;
+    });
+  showAll.addEventListener('change', update);
+  update();
+  const deselect = () => list.querySelectorAll('input:checked').forEach((box) => (box.checked = false));
+  const tools = h(
+    'div.repo-tools',
+    {},
+    extra && extra < files.length ? h('label.check', {}, showAll, ` Show all files (${extra} more)`) : null,
+    h('button.link', { type: 'button', onclick: deselect, title: 'Untick every file' }, 'Deselect All'),
+  );
+  return { list, tools };
+}
+
 // Fills `panel` with the repository's files; calls done() after a successful import.
 export async function showRepoPicker(panel, info, store, actions, done) {
   replace(panel, h('p.muted', {}, `Listing ${info.owner}/${info.repo}…`));
@@ -44,7 +68,7 @@ export async function showRepoPicker(panel, info, store, actions, done) {
   }
   if (!listing.files.length)
     return replace(panel, h('p.dialog-msg', {}, 'No .keymap, .dtsi, .overlay or .json files found here.'));
-  const list = h('div.repo-list', {}, listing.files.map(fileRow));
+  const { list, tools } = fileList(listing.files);
   const msg = h('p.dialog-msg');
   const run = async () => {
     const paths = [...list.querySelectorAll('input:checked')].map((i) => i.value);
@@ -66,6 +90,7 @@ export async function showRepoPicker(panel, info, store, actions, done) {
       `${info.owner}/${info.repo} @ ${listing.ref}${listing.truncated ? ' (listing truncated by GitHub)' : ''}. Likely files are preselected.`,
     ),
     list,
+    tools,
     h('div.repo-actions', {}, h('button.primary', { onclick: run }, 'Import Selected'), msg),
   );
 }

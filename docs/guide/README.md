@@ -66,9 +66,14 @@ version's release notes.
 
 1. Click **Import** and paste your zmk-config's address into the URL field, e.g.
    `https://github.com/you/zmk-config`, or a folder such as `…/tree/main/config`. Click **Load**.
-2. The keymap and layout files are listed with their kind, and the likely keymap and layout are already
-   checked. Long paths are shortened in the middle; hover over one to see all of it.
+2. The repository's keymaps and likely layout files are listed with their kind, and the likely keymap
+   and layout are already checked. Long paths are shortened in the middle; hover over one to see all of
+   it.
 3. Change the checks if needed and click **Import Selected**. The files are imported together.
+
+- Other files, such as split-half `.overlay`s and shield `.dtsi`s, are hidden. Tick **Show all files**
+  under the list to see them too. A file you tick there stays listed.
+- **Deselect All** unticks every file, so you can pick just the ones you want.
 
 - Only public repositories can be listed, and GitHub allows 60 listings an hour from your network. A
   missing or private repository, or the limit, is explained in the dialog.
