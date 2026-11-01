@@ -6,6 +6,7 @@ test('welcome screen, then example loads with layers and status', async ({ page 
   await loadExample(page);
   await expect(page.locator('.tab-list .tab:not(.add)')).toHaveText(['0Base', '1Lower', '2Raise']);
   await expect(page.locator('#status')).toContainText('42 keys · 3 layers · 1 combos');
+  await expect(page.locator('#status .status-layout')).toContainText('Physical Layouts:');
   await expect(page.locator('#status')).toContainText('No issues');
   await expect(key(page, 1).locator('.tap')).toHaveText('Q');
   await expect(key(page, 12).locator('.hold')).toHaveText('Ctrl');

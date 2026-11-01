@@ -20,6 +20,7 @@ merged pull request.
 
 - Every dialog has a ✕ in its corner and closes when you click outside it (like Cancel), just like the
   layer settings popover.
+- The layout picker in the status bar is labelled **Physical Layouts:**.
 
 ### Fixed
 
