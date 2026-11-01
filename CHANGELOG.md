@@ -22,6 +22,8 @@ merged pull request.
 - Every dialog has a ✕ in its corner and closes when you click outside it (like Cancel), just like the
   layer settings popover.
 - The layout picker in the status bar is labelled **Physical Layouts:**.
+- Long file paths in the GitHub repository list are shortened in the middle, so the file name stays
+  visible, and hovering shows the whole path.
 
 ### Fixed
 

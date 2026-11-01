@@ -31,6 +31,7 @@ test('import from a GitHub repository lists and imports selected files', async (
       { type: 'blob', path: 'boards/shields/elvn/elvn.keymap' },
       { type: 'blob', path: 'boards/shields/elvn/elvn-layouts.dtsi' },
       { type: 'blob', path: 'boards/shields/elvn/elvn.overlay' },
+      { type: 'blob', path: 'Some/Very/Long/Directory/Names/That/Never/End/boards/shields/scottofly/scottofly.keymap' },
     ],
   };
   await page.route('https://api.github.com/repos/me/zmk-config', (r) =>
@@ -45,7 +46,14 @@ test('import from a GitHub repository lists and imports selected files', async (
   await page.locator('dialog [name="import-url"]').fill('https://github.com/me/zmk-config');
   await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
   const rows = page.locator('dialog .repo-file');
-  await expect(rows).toHaveCount(3);
+  await expect(rows).toHaveCount(4);
+  // A long path keeps its file name visible and shows the whole path on hover.
+  const long = rows.filter({ hasText: 'scottofly.keymap' });
+  await expect(long).toHaveAttribute('title', /^Some\/Very\/.*\/scottofly\/scottofly\.keymap$/);
+  await expect(long.locator('.path-tail')).toHaveText('scottofly/scottofly.keymap');
+  const head = await long.locator('.path-head').evaluate((el) => el.scrollWidth > el.clientWidth);
+  expect(head).toBe(true);
+  await long.locator('input').uncheck();
   await expect(rows.filter({ hasText: 'elvn.overlay' }).locator('input')).not.toBeChecked();
   await expect(rows.filter({ hasText: 'elvn.keymap' }).locator('input')).toBeChecked();
   await page.getByRole('button', { name: 'Import selected' }).click();
