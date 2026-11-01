@@ -15,10 +15,9 @@ test('bundled monospace font loads for key labels', async ({ page }) => {
   await loadExample(page);
   await page.evaluate(() => document.fonts.ready);
   expect(await page.evaluate(() => document.fonts.check('600 13px "JetBrains Mono"'))).toBe(true);
-  const family = await key(page, 1)
-    .locator('.tap')
-    .evaluate((el) => getComputedStyle(el).fontFamily);
-  expect(family).toContain('JetBrains Mono');
+  // A retrying assertion, not a one-off read: WebKit re-renders the keyboard once just after it first
+  // appears (its width changes), and a read that lands on the replaced key sees an empty font-family.
+  await expect(key(page, 1).locator('.tap')).toHaveCSS('font-family', /JetBrains Mono/);
 });
 
 test('select a key and assign a keycode from the palette', async ({ page }) => {
