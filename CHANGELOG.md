@@ -16,6 +16,11 @@ merged pull request.
 - New warnings make the warning button pulse once, so they're hard to miss. **Clear Warnings** hides
   the current ones until something new comes up, and "N hidden" brings them back.
 
+### Changed
+
+- Every dialog has a ✕ in its corner and closes when you click outside it (like Cancel), just like the
+  layer settings popover.
+
 ### Fixed
 
 - Tabbing into a millisecond field (tapping term, combo timeout, macro wait and so on) selects its value
