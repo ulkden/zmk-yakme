@@ -50,7 +50,7 @@ test('paste import detects keymap with combos and custom behaviors', async ({ pa
 test('#define names used as bindings are one key each', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(DEFINE_BINDINGS_KEYMAP);
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await expect(page.locator('#status')).toContainText('8 keys');
   await expect(key(page, 1)).toContainText('U_NA');
   await expect(key(page, 4)).toContainText('A');
@@ -60,7 +60,7 @@ test('#define names used as bindings are one key each', async ({ page }) => {
 test('named combo layers are shown read-only and kept when layers are toggled', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(NAMED_COMBOS_KEYMAP);
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await page.locator('.tab.combos').click();
   await page.locator('.combo-item', { hasText: 'combo_tpsl_NUM' }).click();
   await expect(page.locator('.chip.named')).toHaveText(['NUM']);

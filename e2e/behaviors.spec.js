@@ -122,7 +122,7 @@ test('edit an imported macro and mod-morph, rename updates references, delete cl
 test('deleting a behavior also clears its uses in behaviors kept verbatim', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(VERBATIM_REFS_KEYMAP);
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await behaviorsTab(page).click();
   const panel = page.locator('#inspector');
   await expect(panel.locator('.combo-item', { hasText: '&hmr' })).toContainText('4 use(s)');
