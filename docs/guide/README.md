@@ -9,8 +9,8 @@ Open it at <https://ulkden.github.io/zmk-yakme/>. Nothing you load leaves your b
 [Checking your work](#checking-your-work) · [Exporting](#exporting) ·
 [Saving your work](#saving-your-work) · [Shortcuts cheat sheet](#shortcuts-cheat-sheet)
 
-Sections are added as each feature passes [manual QA](../QA.md). Importing from a GitHub repository,
-advanced combo options, renaming and deleting behaviors, and added `#include`s are still in QA.
+Sections are added as each feature passes [manual QA](../QA.md). Advanced combo options, renaming and
+deleting behaviors, and added `#include`s are still in QA.
 
 ## Getting started
 
@@ -59,6 +59,17 @@ version's release notes.
 - **Paste text:** paste a file's contents into the text box, then click **Load**.
 - **QMK and KLE layouts:** paste a QMK `info.json` or keyboard-layout-editor.com **Raw data**. With no
   keymap loaded, KLE legends become the starting keys (`Q` → Q, `Shift` → ⇧).
+
+### Import from a GitHub repository
+
+1. Click **Import** and paste your zmk-config's address into the URL field, e.g.
+   `https://github.com/you/zmk-config`, or a folder such as `…/tree/main/config`. Click **Load**.
+2. The keymap and layout files are listed with their kind, and the likely keymap and layout are already
+   checked. Long paths are shortened in the middle; hover over one to see all of it.
+3. Change the checks if needed and click **Import Selected**. The files are imported together.
+
+- Only public repositories can be listed, and GitHub allows 60 listings an hour from your network. A
+  missing or private repository, or the limit, is explained in the dialog.
 
 ### When a file can't be imported
 
@@ -158,8 +169,9 @@ highlighted while the behavior is selected.
 
 A mod-morph sends one binding normally and another while chosen modifiers are held.
 
-1. Click **+ Mod-Morph**.
-2. Set **Normal** to `&kp COMMA` and **With mods** to `&kp SEMI`; pick **LShift** under **Mods**.
+1. Click **+ Mod-Morph**. It starts as `&mm`: **Normal** `&kp COMMA`, **With mods** `&kp SEMI`, and
+   **LShift** and **RShift** under **Mods**, so Shift+comma types a semicolon.
+2. Change the bindings and mods as you like.
 3. Use it on a key: choose it in the Behavior list, or type `&mm` in **Raw**.
 
 ### Macro
