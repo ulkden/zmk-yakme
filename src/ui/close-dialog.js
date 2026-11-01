@@ -1,4 +1,4 @@
-// "Close keymap": confirm, optionally reset preferences, then return to a fresh welcome screen.
+// "Close Keymap": confirm, optionally reset preferences, then return to a fresh welcome screen.
 import { h, toast } from './dom.js';
 import { dialog } from './modal.js';
 import { isDirty } from '../core/state.js';

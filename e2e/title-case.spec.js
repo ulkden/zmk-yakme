@@ -14,6 +14,10 @@ function isTitleCase(text) {
   );
 }
 
+// Counts such as "⚠ 3 warnings" or "1 hidden" are status readouts that can be clicked, like badges,
+// so they keep sentence case.
+const isCount = (text) => /^\W*\d/.test(text);
+
 // Button labels only: keys, palette keycodes, tabs and chips show the user's data.
 const labels = (page) =>
   page.locator('button:visible').evaluateAll((els) =>
@@ -28,6 +32,8 @@ test('the title-case check itself', () => {
     expect(isTitleCase(ok), ok).toBe(true);
   for (const bad of ['Try the example', 'Close keymap', '+ Hold-tap', 'Open An Issue'])
     expect(isTitleCase(bad), bad).toBe(false);
+  for (const count of ['⚠ 3 warnings', '1 hidden']) expect(isCount(count), count).toBe(true);
+  expect(isCount('+ New Combo')).toBe(false);
 });
 
 test('every button label is in Title Case', async ({ page }) => {
@@ -50,6 +56,11 @@ test('every button label is in Title Case', async ({ page }) => {
   await page.locator('.tab.combos').click();
   await page.locator('.combo-item').first().click();
   await collect();
+  await page.getByRole('button', { name: '+ New Combo' }).click(); // a combo with no keys: a warning
+  await page.locator('#status button.warn').click();
+  await collect();
+  await page.getByRole('button', { name: 'Clear Warnings' }).click();
+  await collect();
   await page.getByRole('button', { name: /^Behaviors \(/ }).click();
   await page.getByRole('button', { name: '+ Hold-Tap' }).click();
   await page.getByRole('button', { name: 'Delete Behavior' }).click();
@@ -61,7 +72,7 @@ test('every button label is in Title Case', async ({ page }) => {
   await openAndClose('Export…', 'Close');
   await openAndClose('Close Keymap');
 
-  const wrong = [...seen].filter((t) => !isTitleCase(t));
+  const wrong = [...seen].filter((t) => !isCount(t) && !isTitleCase(t));
   expect(wrong, `Not in Title Case: ${wrong.join(' | ')}`).toEqual([]);
   expect(seen.size).toBeGreaterThan(20);
 });
