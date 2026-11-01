@@ -1,35 +1,70 @@
 // Small form-field builders shared by the side panels.
 import { h, toast } from './dom.js';
 import { parseOptionalUint } from '../core/numbers.js';
+import { stepValue } from '../core/number-step.js';
 
-// Optional whole number (empty = null), committed on change. A text input, not type="number":
-// renderKeepingFocus can only restore a selection it can read, and number inputs hide theirs, so
-// tabbing into one during a re-render lost the select-all and typing appended to the old value.
-// Text that isn't a whole number is put back to the last value instead of clearing it.
+const WHEEL_COMMIT_MS = 500;
+
+// While a number field is focused, the mouse wheel steps its value (Shift: by 1). Acting only on
+// focus keeps panel scrolling from changing fields by accident. A burst of steps is committed
+// once, after a pause or on blur, so it is a single undo step. Returns the input.
+export function wheelStep(input, step = 1) {
+  let timer;
+  const commit = () => {
+    clearTimeout(timer);
+    if (input.dataset.pending) input.dispatchEvent(new Event('change'));
+  };
+  input.addEventListener(
+    'wheel',
+    (e) => {
+      const delta = e.deltaY || e.deltaX; // Shift+wheel scrolls sideways in some browsers
+      if (document.activeElement !== input || !delta) return;
+      e.preventDefault(); // keeps the panel still, and stops Chromium stepping type="number" inputs itself
+      const limits = { min: Number(input.min) || 0, ...(input.max === '' ? {} : { max: Number(input.max) }) };
+      const next = stepValue(input.value, (delta < 0 ? 1 : -1) * (e.shiftKey ? 1 : step), limits);
+      if (next === null) return;
+      input.value = String(next);
+      input.dispatchEvent(new Event('input'));
+      clearTimeout(timer);
+      timer = setTimeout(commit, WHEEL_COMMIT_MS);
+    },
+    { passive: false },
+  );
+  input.addEventListener('blur', commit);
+  return input;
+}
+
+// Optional whole number of milliseconds (empty = null), committed on change; the wheel steps by 10.
+// A text input, not type="number": renderKeepingFocus can only restore a selection it can read, and
+// number inputs hide theirs, so tabbing into one during a re-render lost the select-all and typing
+// appended to the old value. Text that isn't a whole number is put back to the last value.
 export function numberField(label, name, value, placeholder, onChange) {
   const shown = (v) => (v == null ? '' : String(v));
   return h(
     'label.field',
     {},
     h('span', {}, label),
-    h('input', {
-      type: 'text',
-      inputMode: 'numeric',
-      name,
-      value: shown(value),
-      placeholder,
-      spellcheck: false,
-      autocomplete: 'off',
-      onchange: (e) => {
-        const next = parseOptionalUint(e.target.value);
-        if (next === undefined) {
-          e.target.value = shown(value);
-          return toast(`${label}: enter a whole number, or leave it empty`, 'warn');
-        }
-        e.target.value = shown(next);
-        onChange(next);
-      },
-    }),
+    wheelStep(
+      h('input', {
+        type: 'text',
+        inputMode: 'numeric',
+        name,
+        value: shown(value),
+        placeholder,
+        spellcheck: false,
+        autocomplete: 'off',
+        onchange: (e) => {
+          const next = parseOptionalUint(e.target.value);
+          if (next === undefined) {
+            e.target.value = shown(value);
+            return toast(`${label}: enter a whole number, or leave it empty`, 'warn');
+          }
+          e.target.value = shown(next);
+          onChange(next);
+        },
+      }),
+      10,
+    ),
   );
 }
 

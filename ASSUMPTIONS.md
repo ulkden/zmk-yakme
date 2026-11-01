@@ -114,3 +114,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
     and everything else stay as they were. Checked on 40 real keymaps (200 behaviors, see #66): no other
     text changed. The alternative, refusing to rename or delete until those references were edited by
     hand, was rejected because a missed reference breaks the build.
+27. ✅ **Agreed:** The mouse wheel steps a number field **only while it is focused** (click, then
+    scroll), so scrolling the side panel past a field never changes it. Millisecond fields step by
+    **10** (Shift: 1); the New dialog's layer count steps by 1, within 1–32. Empty fields ("default" /
+    "off") and text that isn't a whole number are left alone. A burst of steps is one undo step.

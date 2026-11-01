@@ -2,11 +2,12 @@
 import { h, toast } from './dom.js';
 import { dialog } from './modal.js';
 import { confirmReplace } from './import-flow.js';
+import { wheelStep } from './fields.js';
 
 export function openNew(store, actions) {
   const hasLayout = store.get().layouts.length > 0;
   const rows = h('input', { type: 'text', value: '12, 12, 12, 6', spellcheck: false });
-  const layers = h('input', { type: 'number', value: 3, min: 1, max: 32 });
+  const layers = wheelStep(h('input', { type: 'number', name: 'layers', value: 3, min: 1, max: 32 }));
   const parseRows = () =>
     rows.value
       .split(/[,\s]+/)

@@ -42,6 +42,7 @@ keymap, or both. Files can also be dropped anywhere on the page.
 | Save project           | Save project (1)                                   |
 | Close keymap           | Close keymap → Close keymap (2)                    |
 | See version / release notes | version link in the status bar or on the welcome screen (1) |
+| Change a number        | field → type, or field → scroll the wheel (1)      |
 
 ## Architecture
 
