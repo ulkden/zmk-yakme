@@ -40,7 +40,7 @@ test('layout files imported together are merged', async ({ page }) => {
 test('paste import detects keymap with combos and custom behaviors', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(FULL_KEYMAP);
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await expect(page.locator('.tab-list .tab:not(.add)')).toHaveText(['0Base', '1Lower']);
   await key(page, 1).click();
   await expect(page.locator('#inspector select.behavior')).toHaveValue('hm');
@@ -50,7 +50,7 @@ test('paste import detects keymap with combos and custom behaviors', async ({ pa
 test('#define names used as bindings are one key each', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(DEFINE_BINDINGS_KEYMAP);
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await expect(page.locator('#status')).toContainText('8 keys');
   await expect(key(page, 1)).toContainText('U_NA');
   await expect(key(page, 4)).toContainText('A');
@@ -60,7 +60,7 @@ test('#define names used as bindings are one key each', async ({ page }) => {
 test('named combo layers are shown read-only and kept when layers are toggled', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill(NAMED_COMBOS_KEYMAP);
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await page.locator('.tab.combos').click();
   await page.locator('.combo-item', { hasText: 'combo_tpsl_NUM' }).click();
   await expect(page.locator('.chip.named')).toHaveText(['NUM']);
@@ -73,7 +73,7 @@ test('named combo layers are shown read-only and kept when layers are toggled', 
 test('import shows an error for unrecognized text', async ({ page }) => {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await page.locator('dialog textarea').fill('hello world');
-  await page.locator('dialog').getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await expect(page.locator('dialog .dialog-msg')).toContainText('No physical layout or keymap');
 });
 
