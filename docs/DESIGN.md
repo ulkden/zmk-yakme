@@ -41,6 +41,7 @@ keymap, or both. Files can also be dropped anywhere on the page.
 | Finish a combo         | Save Combo, or Esc (1)                             |
 | Back to the key from Behaviors | Save Behavior (returns to the last key), or click any key (1) |
 | Export                 | Export… → Download (2)                             |
+| Clear warnings         | ⚠ N warnings → Clear Warnings (2); "N hidden" shows them again (1) |
 | Save project           | Save project (1)                                   |
 | Close keymap           | Close keymap → Close keymap (2)                    |
 | See version / release notes | version link in the status bar or on the welcome screen (1) |

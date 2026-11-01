@@ -13,6 +13,8 @@ merged pull request.
 - **Save Combo** (or Esc) finishes editing a combo. **Save Behavior** returns from the Behaviors tab to
   the key you were editing, and clicking a key there does the same for that key. Changes still apply
   as you make them.
+- New warnings make the warning button pulse once, so they're hard to miss. **Clear Warnings** hides
+  the current ones until something new comes up, and "N hidden" brings them back.
 
 ### Fixed
 

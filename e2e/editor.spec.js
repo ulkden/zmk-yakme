@@ -239,3 +239,38 @@ test('Save Combo and Esc finish editing a combo', async ({ page }) => {
   await page.keyboard.press('Escape');
   await expect(page.locator('.combo-item.active')).toHaveCount(0);
 });
+
+test('with reduced motion, new warnings get a brief highlight instead of the pulse', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await loadExample(page);
+  await page.locator('.tab.combos').click();
+  await page.getByRole('button', { name: '+ New combo' }).click();
+  const warn = page.locator('#status button.warn');
+  await expect(warn).toHaveCSS('animation-name', 'warn-highlight');
+  await expect(warn).not.toHaveClass(/pulse/, { timeout: 3000 });
+});
+
+test('new warnings pulse once; Clear Warnings hides them until a new one appears', async ({ page }) => {
+  await loadExample(page);
+  const status = page.locator('#status');
+  await expect(status).toContainText('No issues');
+  await page.locator('.tab.combos').click();
+  await page.getByRole('button', { name: '+ New combo' }).click();
+  await expect(status.locator('button.warn')).toHaveText('⚠ 1 warning');
+  await expect(status.locator('button.warn')).toHaveClass(/pulse/);
+  await expect(status.locator('button.warn')).not.toHaveClass(/pulse/, { timeout: 3000 });
+
+  await status.locator('button.warn').click();
+  await status.getByRole('button', { name: 'Clear Warnings' }).click();
+  await expect(status).toContainText('No new issues');
+  await expect(status.getByRole('button', { name: '1 hidden' })).toBeVisible();
+  await key(page, 5).click(); // the same warning still applies: it stays hidden
+  await expect(status.locator('button.warn')).toHaveCount(0);
+
+  await page.getByRole('button', { name: '+ New combo' }).click();
+  await expect(status.locator('button.warn')).toHaveText('⚠ 1 warning');
+  await expect(status.locator('button.warn')).toHaveClass(/pulse/);
+  await status.getByRole('button', { name: '1 hidden' }).click();
+  await expect(status.locator('button.warn')).toHaveText('⚠ 2 warnings');
+  await expect(status.locator('ul.warnings li')).toHaveCount(2);
+});

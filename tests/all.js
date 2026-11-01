@@ -20,3 +20,4 @@ import './serve-paths.test.js';
 import './numbers.test.js';
 import './source-refs.test.js';
 import './number-step.test.js';
+import './warning-diff.test.js';
