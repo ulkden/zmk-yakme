@@ -130,6 +130,8 @@ test('combos: create by clicking keys and assign a keycode', async ({ page }) =>
   await pick(page, '⇥');
   await expect(key(page, 13)).toHaveClass(/combo-on/);
   await expect(page.locator('.combo-item.active .key-chip')).toHaveText(['13', '14']);
+  await expect(page.locator('.combo-item.active .combo-keys')).toHaveText('13+14');
+  await expect(page.locator('.combo-item.active .combo-plus')).toHaveCount(1);
   await expect(page.locator('.combo-item.active .combo-out')).toHaveText('⇥');
   await page.locator('.combo-editor .field', { hasText: 'Timeout' }).locator('input').fill('40');
   await page.locator('.combo-editor .field', { hasText: 'Timeout' }).locator('input').press('Enter');

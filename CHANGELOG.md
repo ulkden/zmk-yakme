@@ -24,7 +24,7 @@ merged pull request.
 - The layout picker in the status bar is labelled **Physical Layouts:**.
 - Long file paths in the GitHub repository list are shortened in the middle, so the file name stays
   visible, and hovering shows the whole path.
-- The Combos list shows each combo's key positions as small keycaps instead of "12 + 13".
+- The Combos list shows each combo's key positions as small keycaps joined by "+" (pressed together).
 
 ### Fixed
 

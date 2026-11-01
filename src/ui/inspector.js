@@ -66,7 +66,11 @@ function comboList(state, actions) {
           ? h(
               'span.combo-keys',
               {},
-              c.keyPositions.map((p) => h('kbd.key-chip', {}, String(p))),
+              // "+" between keys: they are pressed together.
+              c.keyPositions.flatMap((p, i) => [
+                i ? h('span.combo-plus', {}, '+') : null,
+                h('kbd.key-chip', {}, String(p)),
+              ]),
             )
           : h('span.muted', {}, 'no keys'),
       ),

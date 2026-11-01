@@ -549,6 +549,11 @@ input.raw {
   gap: 4px;
   margin-top: 4px;
 }
+.combo-plus {
+  align-self: center;
+  color: var(--muted);
+  font-size: 12px;
+}
 .key-chip {
   min-width: 24px;
   padding: 2px 5px;
