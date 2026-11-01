@@ -6,6 +6,8 @@ merged pull request.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-01
+
 ### Added
 
 - Scroll the mouse wheel over a focused number field to change it: by 10 for millisecond settings
@@ -16,25 +18,25 @@ merged pull request.
 - New warnings make the warning button pulse once, so they're hard to miss. **Clear Warnings** hides
   the current ones until something new comes up, and "N hidden" brings them back.
 - A ✕ inside the keycode filter clears it (Esc does too), in every browser.
-- **Open project** on the welcome screen, next to Import, Start blank and Try the example.
+- **Open Project** on the welcome screen, next to Import Files, Start Blank and Try the Example.
 - A [user guide](docs/guide/README.md) with step-by-step instructions, screenshots and a shortcuts cheat
   sheet, linked from the welcome screen.
 
 ### Changed
 
-- Importing from a repository that holds several keyboards folds the list by keyboard. Only the keyboard
-  whose keymap was chosen is open and ticked, instead of ticking likely layouts from every keyboard.
+- The Import dialog lists the files it accepts in two boxes (physical layouts; keymaps and saved
+  projects). Its main button is now **Load**: it imports pasted text or a file link, or lists a
+  repository's files, which you then import with **Import Selected**.
 - Importing from a GitHub repository lists only its keymaps and likely layout files. **Show all files**
   reveals the rest, and **Deselect All** unticks everything.
+- Importing from a repository that holds several keyboards folds the list by keyboard. Only the keyboard
+  whose keymap was chosen is open and ticked, instead of ticking likely layouts from every keyboard.
+- Long file paths in the GitHub repository list are shortened in the middle, so the file name stays
+  visible, and hovering shows the whole path.
 - Every dialog has a ✕ in its corner and closes when you click outside it (like Cancel), just like the
   layer settings popover.
 - The layout picker in the status bar is labelled **Physical Layouts:**.
-- Long file paths in the GitHub repository list are shortened in the middle, so the file name stays
-  visible, and hovering shows the whole path.
 - The Combos list shows each combo's key positions as small keycaps joined by "+" (pressed together).
-- The Import dialog lists the files it accepts in two boxes (physical layouts; keymaps and saved
-  projects). Its main button is now **Load**: it imports pasted text or a file link, or lists a
-  repository's files, which you then import with **Import selected**.
 - Button labels use Title Case (e.g. **Try the Example**, **Close Keymap**, **+ Hold-Tap**).
 
 ### Fixed
@@ -71,5 +73,6 @@ First public release, at <https://ulkden.github.io/zmk-yakme/>.
 - Works in Chromium, Firefox and Safari, by mouse and keyboard. Nothing leaves your browser except
   the GitHub requests you ask for.
 
-[Unreleased]: https://github.com/ulkden/zmk-yakme/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/ulkden/zmk-yakme/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/ulkden/zmk-yakme/releases/tag/v0.2.0
 [0.1.0]: https://github.com/ulkden/zmk-yakme/releases/tag/v0.1.0
