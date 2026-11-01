@@ -62,7 +62,17 @@ function comboList(state, actions) {
         { class: ui.combo === i ? 'active' : '', onclick: () => actions.selectCombo(ui.combo === i ? null : i) },
         h('span.combo-name', {}, c.name),
         h('span.combo-out', {}, bindingLabel(c.binding, keymap.layers).tap || c.binding),
-        h('span.muted', {}, c.keyPositions.join(' + ') || 'no keys'),
+        c.keyPositions.length
+          ? h(
+              'span.combo-keys',
+              {},
+              // "+" between keys: they are pressed together.
+              c.keyPositions.flatMap((p, i) => [
+                i ? h('span.combo-plus', {}, '+') : null,
+                h('kbd.key-chip', {}, String(p)),
+              ]),
+            )
+          : h('span.muted', {}, 'no keys'),
       ),
     ),
     h('button.add-combo', { onclick: actions.addCombo }, '+ New combo'),
