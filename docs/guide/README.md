@@ -48,6 +48,8 @@ version's release notes.
 - A keymap without a layout is shown on an "Inferred grid" built from the file's rows. Import the
   layout later: it replaces the grid and keeps the keymap.
 - A layout without a keymap gets an empty keymap.
+- Every dialog closes with its ✕, <kbd>Esc</kbd> or a click outside it. Closing it that way is the same
+  as **Cancel**: nothing changes.
 
 ![Import dialog](img/import.png)
 
@@ -91,7 +93,8 @@ The dialog says why, e.g. "No physical layout or keymap found". Keymaps written 
 1. Select a key.
 2. Click a keycode in the palette below the keyboard, or simply type a letter or digit.
 
-- Type in **Filter keycodes…** to narrow the palette (e.g. `vol`). The ✕ or <kbd>Esc</kbd> clears it.
+- Type in **Filter keycodes…** to narrow the palette (e.g. `vol`). The ✕ or <kbd>Esc</kbd> clears it; the
+  key stays selected.
 - On a mod-tap or layer-tap key, a keycode sets the **tap** key and keeps the modifier or layer.
 - Tick **Advance to next key after picking a keycode** to fill a layer quickly. The setting is
   remembered.
@@ -137,7 +140,8 @@ A combo makes keys pressed together send something else.
 1. Open the **Combos** tab and click **+ New Combo**.
 2. Click two or more keys on the keyboard. They're highlighted, and listed as small keycaps.
 3. Set the output: click a keycode in the palette, or choose a behavior in the side panel.
-4. Optionally set **Timeout ms** (e.g. `40`) and pick **Layers**. No layers selected = all layers.
+4. Optionally set **Timeout ms** (e.g. `40`) and pick **Layers**. No layers selected = all layers. To
+   adjust a number, click the field and scroll: ±10, or ±1 with <kbd>Shift</kbd>.
 5. Click **Save Combo** (or press <kbd>Esc</kbd>) to finish. **Delete Combo** removes it.
 
 Key clicks only change a combo while one is selected.
@@ -147,7 +151,8 @@ Key clicks only change a combo while one is selected.
 ## Behaviors
 
 Custom behaviors are defined once in the **Behaviors** tab and then used on any key. Changes apply as
-you make them; **Save Behavior** takes you back to the key you were editing.
+you make them; **Save Behavior** takes you back to the key you were editing, and clicking any key on
+the keyboard takes you to that key.
 
 ### Home-row mods (hold-tap)
 
@@ -231,6 +236,7 @@ A macro sends a sequence of keys from one key press.
 | Clear a key | <kbd>Delete</kbd> or <kbd>Backspace</kbd>: `&none` on layer 0, `&trans` elsewhere |
 | Deselect a key | <kbd>Esc</kbd>, or click it again |
 | Finish a combo | <kbd>Esc</kbd> or **Save Combo** |
+| Back to keys from Behaviors | **Save Behavior**, or click a key |
 | Undo / redo | <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> (or <kbd>Ctrl</kbd>+<kbd>Y</kbd>) |
 | Layer settings | Double-click the active layer tab |
 | Change a number | Click the field, then scroll: ±10 for milliseconds (<kbd>Shift</kbd> for ±1) |
