@@ -9,14 +9,42 @@ function matches(key, q) {
 export function mountPalette(el, store, actions) {
   let query = '';
   const groupsEl = h('div.palette-groups');
+  const setQuery = (value) => {
+    query = value.trim().toLowerCase();
+    clear.hidden = !value;
+    renderGroups();
+  };
   const search = h('input.search', {
     type: 'search',
+    name: 'keycode-filter',
     placeholder: 'Filter keycodes…',
-    oninput: (e) => {
-      query = e.target.value.trim().toLowerCase();
-      renderGroups();
+    'aria-label': 'Filter keycodes',
+    oninput: (e) => setQuery(e.target.value),
+    onkeydown: (e) => {
+      // Esc clears the filter only; it must not also deselect the key.
+      if (e.key !== 'Escape' || !search.value) return;
+      e.preventDefault();
+      e.stopPropagation();
+      search.value = '';
+      setQuery('');
     },
   });
+  // Our own ✕, so it looks and works the same in every browser (Firefox draws none).
+  const clear = h(
+    'button.search-clear',
+    {
+      type: 'button',
+      title: 'Clear filter',
+      'aria-label': 'Clear filter',
+      hidden: true,
+      onclick: () => {
+        search.value = '';
+        setQuery('');
+        search.focus();
+      },
+    },
+    '✕',
+  );
 
   function renderGroups() {
     replace(
@@ -49,7 +77,7 @@ export function mountPalette(el, store, actions) {
     { id: 'keycode-list' },
     KEY_GROUPS.flatMap((g) => g.keys.map((k) => h('option', { value: k.code }, k.label))),
   );
-  replace(el, h('div.palette-head', {}, search), groupsEl, datalist);
+  replace(el, h('div.palette-head', {}, h('div.search-wrap', {}, search, clear)), groupsEl, datalist);
   renderGroups();
 
   // Nothing in the palette applies to behavior definitions, so it is hidden on that tab.

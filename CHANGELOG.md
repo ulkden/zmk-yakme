@@ -15,6 +15,7 @@ merged pull request.
   as you make them.
 - New warnings make the warning button pulse once, so they're hard to miss. **Clear Warnings** hides
   the current ones until something new comes up, and "N hidden" brings them back.
+- A ✕ inside the keycode filter clears it (Esc does too), in every browser.
 
 ### Changed
 
