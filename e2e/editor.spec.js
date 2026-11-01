@@ -217,6 +217,16 @@ test('the New dialog layer count steps by one with the wheel', async ({ page }) 
   await expect(layers).toHaveValue('32');
 });
 
+test('Save Combo keeps a value typed without pressing Enter', async ({ page }) => {
+  await loadExample(page);
+  await page.locator('.tab.combos').click();
+  await page.locator('.combo-item').first().click();
+  await page.locator('#inspector [name="combo-timeout"]').fill('70');
+  await page.getByRole('button', { name: 'Save Combo' }).click();
+  await page.getByRole('button', { name: 'Export…' }).click();
+  await expect(page.locator('dialog pre.preview')).toContainText('timeout-ms = <70>;');
+});
+
 test('Save Combo and Esc finish editing a combo', async ({ page }) => {
   await loadExample(page);
   await page.locator('.tab.combos').click();
