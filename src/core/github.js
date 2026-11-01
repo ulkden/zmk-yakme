@@ -42,7 +42,9 @@ function isLayoutCandidate(path) {
   return /layouts?\.dtsi$/.test(name) || name.includes('physical') || name === 'info.json' || name === 'keyboard.json';
 }
 
-// tree: GitHub git-tree entries. Returns [{ path, kind, selected }] for importable files under `base`.
+// tree: GitHub git-tree entries. Returns [{ path, kind, selected, relevant }] for importable files
+// under `base`. `relevant` marks keymaps and likely layouts: the picker lists only those at first,
+// since the rest (split-half overlays, shield .dtsi, editor settings) are rarely wanted.
 export function repoFiles(tree, base = '') {
   const prefix = base ? `${base.replace(/\/$/, '')}/` : '';
   const files = tree
@@ -54,6 +56,7 @@ export function repoFiles(tree, base = '') {
   return files.map((f) => ({
     ...f,
     selected: f.path === pickKeymap || (f.kind === 'layout' && isLayoutCandidate(f.path)),
+    relevant: f.kind === 'keymap' || isLayoutCandidate(f.path),
   }));
 }
 
