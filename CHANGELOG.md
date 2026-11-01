@@ -16,7 +16,8 @@ merged pull request.
   name, instead of shifting the rest of the layer and padding the export with extra `&trans`. Layers
   that use macro calls such as `HRML(A, S, D, F)`, which can stand for several keys, get a warning.
 - Combos limited to named layers (`layers = <BASE>` with a `#define`) keep that limit on export instead
-  of becoming active on every layer, and imported combo names keep their capital letters.
+  of becoming active on every layer, and imported combo names keep their capital letters. Projects and
+  autosaves now use format 3: a tab still open on an older version asks you to reload instead of opening them.
 
 ## [0.1.0] - 2026-10-28
 

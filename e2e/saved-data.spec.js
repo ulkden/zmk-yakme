@@ -1,5 +1,6 @@
 import { test, expect, keys, loadExample } from './helpers.js';
 import { V1_PROJECT } from '../tests/fixtures/saved/v1-project.js';
+import { V2_PROJECT } from '../tests/fixtures/saved/v2-project.js';
 
 const DOC_KEY = 'zmk-keymap-editor:v1';
 const BACKUP_KEY = 'zmk-keymap-editor:v1:unreadable';
@@ -14,6 +15,13 @@ test('an autosave in the old (version 1) format still opens', async ({ page }) =
   await expect(keys(page)).toHaveCount(4);
   await expect(page.locator('#status')).toContainText('4 keys · 1 layers · 1 combos');
   await expect(page.getByRole('button', { name: /^Behaviors \(0\)/ })).toBeVisible();
+});
+
+test('an autosave in the version 2 format still opens', async ({ page }) => {
+  await seedAutosave(page, JSON.stringify({ ...V2_PROJECT, dirty: false }));
+  await expect(keys(page)).toHaveCount(4);
+  await expect(page.locator('#status')).toContainText('4 keys · 2 layers · 1 combos');
+  await expect(page.getByRole('button', { name: /^Behaviors \(1\)/ })).toBeVisible();
 });
 
 test('an autosave from a newer version is explained and never overwritten', async ({ page }) => {

@@ -64,6 +64,7 @@ state = {
   keymap: {
     layers: [{ id, name, bindings: ['&kp A', ...], extra: [rawProp] }],
     combos: [{ name, keyPositions, binding, timeout, layers, requirePriorIdle, slowRelease, extra }],
+                                 // keyPositions, layers: numbers, or #define names as strings
     behaviors: [{ kind: 'hold-tap'|'mod-morph'|'macro', label, name, bindings, …kind fields, extra, orig, origLabel }],
     customBehaviors: [{ label, cells }],   // other behaviors in the file (not editable)
     rowHints: [n, ...],          // binding count per source line (layout fallback)

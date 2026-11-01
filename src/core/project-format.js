@@ -6,7 +6,7 @@
 // Never edit existing fixtures or migrations.
 
 export const APP_ID = 'zmk-keymap-editor';
-export const FORMAT_VERSION = 2;
+export const FORMAT_VERSION = 3;
 
 // v1 → v2: keymaps gained custom behaviors, combo prior-idle / slow-release, and layer `extra`.
 function v1ToV2(doc) {
@@ -30,7 +30,12 @@ function v1ToV2(doc) {
   return { ...doc, version: 2, keymap };
 }
 
-const MIGRATIONS = { 1: v1ToV2 };
+// v2 → v3: combo `layers` may hold #define names as strings (e.g. 'BASE'), as `keyPositions` already
+// could. v2 documents are already valid v3 ones; the bump only makes older apps refuse v3 files,
+// because they would turn a named layer into -1 when moving layers.
+const v2ToV3 = (doc) => ({ ...doc, version: 3 });
+
+const MIGRATIONS = { 1: v1ToV2, 2: v2ToV3 };
 
 const isNum = (n) => typeof n === 'number' && Number.isFinite(n);
 
