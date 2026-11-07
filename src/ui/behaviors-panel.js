@@ -135,7 +135,7 @@ function deleteRow(state, actions) {
   if (confirmingDelete !== b.label)
     return h(
       'button.danger',
-      { onclick: () => ((confirmingDelete = b.label), actions.refreshInspector()) },
+      { 'data-focus': 'behavior-delete', onclick: () => ((confirmingDelete = b.label), actions.refreshInspector()) },
       'Delete Behavior',
     );
   const uses = countBehaviorUses(state.keymap, b.label);
@@ -145,7 +145,12 @@ function deleteRow(state, actions) {
     'div.confirm-row',
     {},
     h('span', {}, `Delete &${b.label}?${uses ? ` Its ${uses} use(s) become &none${where}.` : ''}`),
-    h('button', { onclick: () => ((confirmingDelete = null), actions.refreshInspector()) }, 'Cancel'),
+    // Cancel shares Delete Behavior's focus name, so keyboard focus moves between them (focus-target.js).
+    h(
+      'button',
+      { 'data-focus': 'behavior-delete', onclick: () => ((confirmingDelete = null), actions.refreshInspector()) },
+      'Cancel',
+    ),
     h('button.danger.solid', { onclick: () => ((confirmingDelete = null), actions.removeBehavior()) }, 'Delete'),
   );
 }

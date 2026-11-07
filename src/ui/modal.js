@@ -10,10 +10,13 @@ export function dialog(title, body, buttons, className = '') {
     { type: 'button', title: 'Close (Esc)', 'aria-label': 'Close dialog', onclick: () => dlg.close() },
     '✕',
   );
+  // The page behind a modal dialog is inert, so its messages need a live region inside it (announce()).
+  const live = h('div.sr-only.dialog-announcer', { 'aria-live': 'polite', 'aria-atomic': 'true' });
   const dlg = h(
     'dialog.modal',
     { class: className },
     h('div.dialog-inner', {}, h('h2', {}, title), body, h('div.dialog-buttons', {}, buttons), x),
+    live,
   );
   closeOnBackdrop(dlg);
   document.body.append(dlg);

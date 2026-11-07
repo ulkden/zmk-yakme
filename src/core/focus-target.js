@@ -14,8 +14,10 @@ export function focusIds(names) {
 // Index in `after` to focus: the control that had focus (`before[index]`), or when it is gone or
 // unusable (e.g. a deleted combo, a disabled Move Left), its nearest neighbour that is still
 // there: first the ones after it, then the ones before. -1 when none is left.
-export function focusTarget(before, index, after, unusable = []) {
-  const usable = (i) => i >= 0 && !unusable.includes(i);
+// `unusable(j)` is asked only about candidates actually tried, since checking a control can force
+// a layout. A control and its replacement (Delete → its Cancel) share a name, so focus follows it.
+export function focusTarget(before, index, after, unusable = () => false) {
+  const usable = (j) => j >= 0 && !unusable(j);
   const all = before.map((_, i) => i);
   const order = [index, ...all.filter((i) => i > index), ...all.filter((i) => i < index).reverse()];
   for (const i of order) {

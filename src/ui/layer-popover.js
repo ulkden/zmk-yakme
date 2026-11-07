@@ -8,7 +8,11 @@ function deleteRow(layer, i, total, actions) {
   if (!confirming) {
     return h(
       'button.danger',
-      { disabled: total <= 1, onclick: () => ((confirming = true), actions.refreshLayerMenu()) },
+      {
+        disabled: total <= 1,
+        'data-focus': 'layer-delete',
+        onclick: () => ((confirming = true), actions.refreshLayerMenu()),
+      },
       'Delete Layer',
     );
   }
@@ -16,7 +20,12 @@ function deleteRow(layer, i, total, actions) {
     'div.confirm-row',
     {},
     h('span', {}, `Delete "${layer.name}"? References to it become &trans.`),
-    h('button', { onclick: () => ((confirming = false), actions.refreshLayerMenu()) }, 'Cancel'),
+    // Cancel shares Delete Layer's focus name, so keyboard focus moves between them (focus-target.js).
+    h(
+      'button',
+      { 'data-focus': 'layer-delete', onclick: () => ((confirming = false), actions.refreshLayerMenu()) },
+      'Cancel',
+    ),
     h('button.danger.solid', { onclick: () => ((confirming = false), actions.removeLayer(i)) }, 'Delete'),
   );
 }

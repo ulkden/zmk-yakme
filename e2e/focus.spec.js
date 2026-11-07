@@ -88,3 +88,36 @@ test('messages are announced to screen readers', async ({ page }) => {
   await expect(announcer).toHaveText('Project saved');
   await expect(page.locator('#toast')).toHaveAttribute('aria-hidden', 'true');
 });
+
+test('an inline delete confirmation keeps focus on its own buttons', async ({ page }) => {
+  await loadExample(page);
+  await page.locator('.layer-edit').click();
+  const del = page.getByRole('button', { name: 'Delete Layer' });
+  await del.focus();
+  await page.keyboard.press('Enter');
+  const cancel = page.locator('.layer-popover').getByRole('button', { name: 'Cancel' });
+  await expect(cancel).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(del).toBeFocused();
+  await expect(page.locator('.tab', { hasText: 'Base' })).toHaveCount(1);
+});
+
+test('mode tabs keep focus when their count changes', async ({ page }) => {
+  await loadExample(page);
+  await page.getByRole('button', { name: /^Combos/ }).click();
+  await page.getByRole('button', { name: '+ New Combo' }).click();
+  const tab = page.getByRole('button', { name: /^Combos/ });
+  await tab.focus();
+  await page.keyboard.press('Control+z');
+  await expect(tab).toHaveText('Combos (1)');
+  await expect(tab).toBeFocused();
+});
+
+test('messages raised inside a dialog are announced from within it', async ({ page }) => {
+  await loadExample(page);
+  await page.getByRole('button', { name: 'New', exact: true }).click();
+  const dialog = page.locator('dialog[open]');
+  await dialog.locator('input').first().fill('');
+  await dialog.getByRole('button', { name: 'Create Grid' }).click();
+  await expect(dialog.locator('.dialog-announcer')).toHaveText(/Enter keys per row/);
+});

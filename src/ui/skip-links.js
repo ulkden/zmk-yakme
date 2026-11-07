@@ -1,9 +1,9 @@
 // "Skip to" links (in index.html), shown on the first Tab press. Each moves focus to something
 // useful in its region instead of following the link, so the address bar keeps no #fragment.
+import { FOCUSABLE, unusable } from './dom.js';
 
-const FOCUSABLE = 'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea, a[href]';
-
-// keys: the selected key, else the first one. palette: the keycode filter. panel: its first control.
+// keys: the selected key, else the first one. palette: the keycode filter. panel: its first
+// usable control, else the panel itself.
 function target(name, state) {
   const $ = (id) => document.getElementById(id);
   if (name === 'keys') {
@@ -12,7 +12,7 @@ function target(name, state) {
   }
   if (name === 'palette') return $('palette').querySelector('input');
   const panel = $('inspector');
-  return panel.querySelector(FOCUSABLE) ?? panel;
+  return [...panel.querySelectorAll(FOCUSABLE)].find((el) => !unusable(el)) ?? panel;
 }
 
 export function mountSkipLinks(store) {

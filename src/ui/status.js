@@ -17,7 +17,7 @@ function warningItem(w, actions) {
 const PULSE_MS = 900;
 
 function warnButton(count, pulseStart, onclick) {
-  const btn = h('button.warn', { onclick }, `⚠ ${count} warning${count > 1 ? 's' : ''}`);
+  const btn = h('button.warn', { onclick, 'data-focus': 'warnings' }, `⚠ ${count} warning${count > 1 ? 's' : ''}`);
   const age = performance.now() - pulseStart;
   if (age < PULSE_MS) {
     btn.classList.add('pulse');
@@ -29,7 +29,11 @@ function warnButton(count, pulseStart, onclick) {
 
 function warningSummary(visible, hidden, pulseStart, ui) {
   const restore = hidden
-    ? h('button.link.muted', { onclick: ui.restore, title: 'Show the cleared warnings again' }, `${hidden} hidden`)
+    ? h(
+        'button.link.muted',
+        { onclick: ui.restore, title: 'Show the cleared warnings again', 'data-focus': 'warnings-hidden' },
+        `${hidden} hidden`,
+      )
     : null;
   if (visible.length) return [warnButton(visible.length, pulseStart, ui.toggle), restore];
   if (!hidden) return h('span.ok', {}, '✓ No issues');

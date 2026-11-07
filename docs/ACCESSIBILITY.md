@@ -102,8 +102,8 @@ Visual choices, made from previews on a real Corne (ASSUMPTIONS.md #38–#41):
 Agreed (ASSUMPTIONS.md #36), from previews on a real Corne: a **2 px light ring (`--focus`, #e8ecf2)
 with a 2 px gap**, on every control. It is the only light outline in the app, so focus never looks
 like the blue selection, and a selected key that also has focus shows both. Contrast is 13.8:1 on a
-key and 16.1:1 on the page (WCAG 1.4.11 needs 3:1). It shows for keyboard focus only (`:focus-visible`),
-not after mouse clicks. Rejected: the same ring in the accent blue (a key that only has focus still
+key and 16.1:1 on the page (WCAG 1.4.11 needs 3:1). It uses `:focus-visible`: buttons and keys
+show it for keyboard focus only, text fields whenever they are focused, as browsers do. Rejected: the same ring in the accent blue (a key that only has focus still
 read as selected) and a ring inside the keys (it covered the key numbers).
 
 ### Automated checks

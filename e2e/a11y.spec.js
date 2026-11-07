@@ -13,7 +13,7 @@ const KNOWN = [
   { rule: 'color-contrast', target: /\.info-box$/, row: 'A5', pr: 2 },
   { rule: 'color-contrast', target: /\.badge$/, row: 'A5', pr: 6 },
   { rule: 'color-contrast', target: /\.combo-item > \.muted$/, row: 'A5', pr: 6 },
-  { rule: 'scrollable-region-focusable', target: /pre/, row: 'A6', pr: 8 },
+  { rule: 'scrollable-region-focusable', target: /(^|[\s>])pre$/, row: 'A6', pr: 8 },
 ];
 
 async function scan(page, state, found) {

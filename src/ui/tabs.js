@@ -65,12 +65,20 @@ export function mountTabs(el, store, actions) {
         : null,
       h(
         'button.tab.combos',
-        { class: ui.mode === 'combos' ? 'active' : '', onclick: () => actions.setMode('combos') },
+        {
+          class: ui.mode === 'combos' ? 'active' : '',
+          'data-focus': 'mode-combos',
+          onclick: () => actions.setMode('combos'),
+        },
         `Combos (${keymap.combos.length})`,
       ),
       h(
         'button.tab',
-        { class: ui.mode === 'behaviors' ? 'active' : '', onclick: () => actions.setMode('behaviors') },
+        {
+          class: ui.mode === 'behaviors' ? 'active' : '',
+          'data-focus': 'mode-behaviors',
+          onclick: () => actions.setMode('behaviors'),
+        },
         `Behaviors (${keymap.behaviors?.length ?? 0})`,
       ),
     );

@@ -15,7 +15,7 @@ merged pull request.
 ### Changed
 
 - Keyboard focus shows a clear light ring that no longer looks like the selected key. It doesn't
-  appear after mouse clicks.
+  appear when you click a button or key.
 
 ### Fixed
 

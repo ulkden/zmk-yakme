@@ -35,7 +35,8 @@ corner, or a click outside it. Closing without a button counts as Cancel.
 The app targets WCAG 2.2 AA; plan and progress are in [ACCESSIBILITY.md](ACCESSIBILITY.md).
 
 - **Focus ring:** keyboard focus shows a 2 px light ring with a 2 px gap on every control. It never
-  looks like the blue selection, and it doesn't appear after mouse clicks.
+  looks like the blue selection. Buttons and keys show it for keyboard focus only, not after a click;
+  text fields show it whenever they are focused, as browsers do.
 - **Focus is kept:** when part of the screen updates, focus stays on the control you used. When
   that control is gone (a deleted combo) or disabled, focus moves to its nearest neighbour.
 - **Skip links:** the first Tab press shows *Skip to keys* (the selected key, else the first),

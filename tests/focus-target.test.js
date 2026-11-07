@@ -21,7 +21,15 @@ test('a control that is gone or disabled hands focus to its next neighbour, then
   const before = focusIds(['combo-0', 'combo-1', 'combo-2', 'add']);
   assert.equal(focusTarget(before, 1, focusIds(['combo-0', 'combo-2', 'add'])), 1);
   assert.equal(focusTarget(before, 3, focusIds(['combo-0', 'combo-1', 'combo-2'])), 2);
-  assert.equal(focusTarget(before, 1, focusIds(['combo-0', 'combo-1', 'combo-2', 'add']), [1]), 2);
+  const disabled = (j) => j === 1;
+  assert.equal(focusTarget(before, 1, focusIds(['combo-0', 'combo-1', 'combo-2', 'add']), disabled), 2);
+});
+
+test('only the candidates tried are checked for usability', () => {
+  const ids = focusIds(['a', 'b', 'c', 'd']);
+  const checked = [];
+  focusTarget(ids, 1, ids, (j) => (checked.push(j), false));
+  assert.deepEqual(checked, [1]);
 });
 
 test('nothing to focus when no control is left', () => {

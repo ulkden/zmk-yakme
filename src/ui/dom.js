@@ -68,12 +68,14 @@ export function download(name, text) {
 }
 
 // Screen readers read messages from #announcer, a live region present from page load (regions
-// added later are often not watched). It is cleared first and filled a moment later, so the same
-// message twice in a row is read twice.
+// added later are often not watched). While a modal dialog is open the rest of the page is inert,
+// #announcer included, so messages go to the dialog's own region instead (see modal.js). A region
+// is cleared first and filled a moment later, so the same message twice in a row is read twice.
 const ANNOUNCE_DELAY_MS = 50;
 let announceTimer;
 export function announce(message) {
-  const el = document.getElementById('announcer');
+  const dialog = [...document.querySelectorAll('dialog[open]')].at(-1);
+  const el = dialog?.querySelector('.dialog-announcer') ?? document.getElementById('announcer');
   if (!el) return;
   el.textContent = '';
   clearTimeout(announceTimer);
@@ -96,7 +98,7 @@ export function toast(message, kind = 'info') {
   announce(message);
 }
 
-const FOCUSABLE = 'button, input, select, textarea, a[href], summary, [tabindex]:not([tabindex="-1"])';
+export const FOCUSABLE = 'button, input, select, textarea, a[href], summary, [tabindex]:not([tabindex="-1"])';
 
 // A control's identity across re-renders: `data-focus` for items whose text changes (keys, tabs,
 // list items), else its field name, else its label or text.
@@ -108,7 +110,8 @@ export function focusName(el) {
   );
 }
 
-const unusable = (el) => el.disabled || !el.getClientRects().length;
+// Disabled or not rendered (hidden, or inside a closed <details>), so focus() would do nothing.
+export const unusable = (el) => el.disabled || !el.getClientRects().length;
 
 function restoreField(next, { caret, pending }) {
   if (pending !== null) {
@@ -143,12 +146,7 @@ export function renderKeepingFocus(el, render) {
   if (active.isConnected && el.contains(active)) return;
   const afterEls = controls();
   const after = focusIds(afterEls.map(focusName));
-  const j = focusTarget(
-    before,
-    index,
-    after,
-    afterEls.flatMap((c, i) => (unusable(c) ? [i] : [])),
-  );
+  const j = focusTarget(before, index, after, (k) => unusable(afterEls[k]));
   if (j < 0) return;
   const next = afterEls[j];
   const same = after[j] === before[index];
