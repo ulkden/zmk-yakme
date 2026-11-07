@@ -59,8 +59,11 @@ The app targets WCAG 2.2 AA; plan and progress are in [ACCESSIBILITY.md](ACCESSI
 - **Keycode palette:** one Tab stop after the filter. ←/→ move through the keycodes, ↑/↓ to the
   nearest one above or below, Home/End to the ends. Group names are headings; symbol keycaps (⇥, ⏯)
   have spoken names that start with their visible letters.
-- **High contrast:** in forced-colours mode the selected key and the keys of the selected combo fill
-  with the theme's Highlight colour.
+- **Layer tabs:** a tablist with one Tab stop; ←/→ (wrapping) and Home/End switch layers. Combos and
+  Behaviors are mode buttons that say whether they are pressed. ✎ opens the layer settings and
+  moves focus to the display name; Esc closes them and returns focus to ✎.
+- **High contrast:** in forced-colours mode the selected key, the keys of the selected combo and the
+  active layer tab fill with the theme's Highlight colour.
 
 ## Click budget (≤ 3 clicks)
 

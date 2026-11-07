@@ -10,7 +10,7 @@ test('close returns to the welcome screen and stays closed after reload', async 
   await expect(dlg).not.toContainText('will be lost');
   await dlg.getByRole('button', { name: 'Close Keymap' }).click();
   await expect(page.getByRole('heading', { level: 2, name: 'ZMK Keymap Editor' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '↶' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Undo' })).toBeDisabled();
   await page.reload();
   await expect(page.getByRole('button', { name: 'Try the Example' })).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem('zmk-keymap-editor:v1'))).toBeNull();

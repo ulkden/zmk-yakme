@@ -4,7 +4,7 @@ test('welcome screen, then example loads with layers and status', async ({ page 
   await expect(page.getByRole('heading', { level: 2, name: 'ZMK Keymap Editor' })).toBeVisible();
   await expect(page.locator('#inspector')).toBeHidden();
   await loadExample(page);
-  await expect(page.locator('.tab-list .tab:not(.add)')).toHaveText(['0Base', '1Lower', '2Raise']);
+  await expect(page.locator('.tab-list .tab:not(.add)')).toHaveText(['0 Base', '1 Lower', '2 Raise']);
   await expect(page.locator('#status')).toContainText('42 keys · 3 layers · 1 combos');
   await expect(page.locator('#status .status-layout')).toContainText('Physical Layouts:');
   await expect(page.locator('#status')).toContainText('No issues');
@@ -88,22 +88,22 @@ test('type-to-assign follows the auto-advance setting', async ({ page }) => {
 test('layer settings popover: rename, node name, move and delete', async ({ page }) => {
   await loadExample(page);
   await page.getByTitle('Add layer').click();
-  await expect(page.locator('.tab-list .tab.active')).toHaveText('3Layer 3');
+  await expect(page.locator('.tab-list .tab.active')).toHaveText('3 Layer 3');
   await page.getByTitle('Layer settings', { exact: true }).click();
   const pop = page.locator('.layer-popover');
   await pop.locator('[name="layer-name"]').fill('Nav');
   await pop.locator('[name="layer-id"]').click();
-  await expect(page.locator('.tab-list .tab.active')).toHaveText('3Nav');
+  await expect(page.locator('.tab-list .tab.active')).toHaveText('3 Nav');
   await expect(pop.locator('[name="layer-id"]')).toBeFocused();
   await pop.locator('[name="layer-id"]').fill('Nav Layer!');
   await pop.locator('[name="layer-id"]').press('Enter');
   await expect(pop.locator('[name="layer-id"]')).toHaveValue('nav_layer');
   await pop.getByRole('button', { name: '‹ Move Left' }).click();
-  await expect(page.locator('.tab-list .tab.active')).toHaveText('2Nav');
+  await expect(page.locator('.tab-list .tab.active')).toHaveText('2 Nav');
   await pop.getByRole('button', { name: 'Delete Layer' }).click();
   await expect(pop).toContainText('Delete "Nav"?');
   await pop.getByRole('button', { name: 'Delete', exact: true }).click();
-  await expect(page.locator('.tab-list .tab:not(.add)')).toHaveText(['0Base', '1Lower', '2Raise']);
+  await expect(page.locator('.tab-list .tab:not(.add)')).toHaveText(['0 Base', '1 Lower', '2 Raise']);
   await page.getByRole('button', { name: 'Export…' }).click();
   await expect(page.locator('dialog pre.preview')).not.toContainText('nav_layer');
 });
