@@ -52,10 +52,12 @@ test('in high-contrast mode the selected combo and on-chips fill with the highli
     probe.remove();
     return colour;
   });
-  const bg = (loc) => loc.evaluate((el) => getComputedStyle(el).backgroundColor);
-  expect(await bg(combo(page))).toBe(highlight);
-  expect(await bg(page.getByRole('button', { name: 'Base', pressed: true }))).toBe(highlight);
-  expect(await bg(page.getByRole('button', { name: 'Lower', pressed: false }))).not.toBe(highlight);
+  // The side panel re-renders a frame after the chip click, so a style read can hit the element being
+  // replaced (an empty string): poll until the rendered state settles.
+  const bg = (loc) => () => loc.evaluate((el) => getComputedStyle(el).backgroundColor);
+  await expect.poll(bg(combo(page))).toBe(highlight);
+  await expect.poll(bg(page.getByRole('button', { name: 'Base', pressed: true }))).toBe(highlight);
+  await expect.poll(bg(page.getByRole('button', { name: 'Lower', pressed: false }))).not.toBe(highlight);
 });
 
 test('Esc from the combo editor also returns focus to the combo', async ({ page }) => {
