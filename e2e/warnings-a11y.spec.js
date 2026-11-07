@@ -37,3 +37,25 @@ test('Clear Warnings and "N hidden" hand focus to what replaces them', async ({ 
   await expect(warnButton(page)).toBeFocused();
   await expect(warnButton(page)).toHaveAttribute('aria-expanded', 'true');
 });
+
+test('warnings a keymap already has are not read out when it opens', async ({ page }) => {
+  await loadExample(page);
+  await addEmptyCombo(page);
+  await expect(announcer(page)).toHaveText(/New warning/);
+  await page.reload();
+  await expect(warnButton(page)).toBeVisible();
+  await expect(announcer(page)).toHaveText('');
+});
+
+test('fixing the last warning of its kind keeps focus in the status bar', async ({ page }) => {
+  await loadExample(page);
+  // A two-key layout leaves the example's layers with extra bindings, which Trim fixes.
+  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  await page.getByLabel('Or paste file contents').fill('["Q","W"]');
+  await page.getByRole('button', { name: 'Load' }).click();
+  await warnButton(page).click();
+  await page.getByRole('button', { name: 'Trim Extra Bindings' }).first().focus();
+  await page.keyboard.press('Enter');
+  await expect(announcer(page)).toHaveText(/Extra bindings trimmed/);
+  expect(await page.evaluate(() => !!document.activeElement.closest('#status'))).toBe(true);
+});

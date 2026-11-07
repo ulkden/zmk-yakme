@@ -14,8 +14,18 @@ export function stillDismissed(dismissed, current) {
 }
 
 // What screen readers hear when warnings appear: the warning itself, or how many there are.
-export function newWarningsMessage(added) {
+export function newWarningsMessage(added, { open = false } = {}) {
   if (!added.length) return null;
   if (added.length === 1) return `New warning: ${added[0]}`;
+  if (open) return `${added.length} new warnings in the warnings list.`;
   return `${added.length} new warnings. Open the warnings in the status bar to read them.`;
+}
+
+// Several messages sent at once, read as one: in order, without repeats, the last few only, each
+// ending in punctuation so screen readers pause between them.
+const MAX_JOINED = 3;
+export function joinMessages(messages) {
+  const unique = messages.filter((m, i) => m && messages.indexOf(m) === i).slice(-MAX_JOINED);
+  if (unique.length === 1) return unique[0];
+  return unique.map((m) => (/[.!?:…]$/.test(m) ? m : `${m}.`)).join(' ');
 }

@@ -1,5 +1,6 @@
 // Tiny DOM helpers.
 import { focusIds, focusTarget } from '../core/focus-target.js';
+import { joinMessages } from '../core/warning-diff.js';
 
 // h('button.primary', { onclick, title }, 'Text', childEl)
 export function h(spec, props = {}, ...children) {
@@ -73,24 +74,27 @@ export function download(name, text) {
 // is cleared first and filled a moment later, so the same message twice in a row is read twice.
 // The region is chosen when the message is written, not when it is sent: a dialog that closes
 // right after (Import after a successful import) takes its region with it.
-// Messages sent within the delay are read together ("Imported keymap. New warning: …"), so a
-// warning that follows an import doesn't silence the import's own message.
+// Messages sent within the delay are read together, in order ("Imported keymap. New warning: …"),
+// so a warning doesn't silence the message of the action that caused it. Messages marked `last`
+// (warnings) come after the others. The delay starts with the first message and isn't extended.
 const ANNOUNCE_DELAY_MS = 50;
-let announceTimer;
-let pending = [];
+let batch = null;
 const region = () =>
   [...document.querySelectorAll('dialog[open]')].at(-1)?.querySelector('.dialog-announcer') ??
   document.getElementById('announcer');
-export function announce(message) {
-  const before = region();
-  if (before) before.textContent = '';
-  clearTimeout(announceTimer);
-  pending.push(message);
-  announceTimer = setTimeout(() => {
-    const el = region();
-    if (el) el.textContent = pending.join('. ').replace(/\.\. /g, '. ');
-    pending = [];
-  }, ANNOUNCE_DELAY_MS);
+export function announce(message, { last = false } = {}) {
+  if (!message) return;
+  if (!batch) {
+    batch = { first: [], last: [] };
+    const before = region();
+    if (before) before.textContent = '';
+    setTimeout(() => {
+      const el = region();
+      if (el) el.textContent = joinMessages([...batch.first, ...batch.last]);
+      batch = null;
+    }, ANNOUNCE_DELAY_MS);
+  }
+  (last ? batch.last : batch.first).push(message);
 }
 
 // Show a message in `el` (e.g. a dialog's error line) and read it out to screen readers.
