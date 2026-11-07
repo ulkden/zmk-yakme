@@ -13,6 +13,9 @@ import { parseBinding } from '../core/bindings.js';
 import { allCustomBehaviors } from '../core/behavior-ops.js';
 
 const MAX_UNIT = 64;
+// On a narrow screen keys stay 36 px with readable legends (well over WCAG 2.5.8's 24 px target
+// size); the diagram then scrolls sideways inside its own box instead of shrinking (ASSUMPTIONS.md #43).
+const MIN_UNIT = 40;
 const GAP = 4;
 const ARROWS = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down' };
 
@@ -160,7 +163,7 @@ export function mountKeyboard(el, store, actions) {
     const width = Math.max(1, b.maxX - b.minX);
     const height = Math.max(1, b.maxY - b.minY);
     const avail = Math.max(200, el.clientWidth - 32);
-    view.unit = Math.min(MAX_UNIT, avail / width);
+    view.unit = Math.min(MAX_UNIT, Math.max(MIN_UNIT, avail / width));
     view.origin = { x: b.minX, y: b.minY };
     view.roving = rovingIndex(state, view.last);
     view.custom = allCustomBehaviors(state.keymap);

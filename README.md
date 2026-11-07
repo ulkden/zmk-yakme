@@ -31,10 +31,12 @@ local storage; **Close Keymap** clears it.
 
 ## Accessibility
 
-zmk-yakme is working towards [WCAG 2.2](https://www.w3.org/TR/WCAG22/) Level AA: full keyboard use,
-screen-reader support (NVDA, VoiceOver, Narrator, Orca) and sufficient contrast. It doesn't meet that
-yet. [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md) lists what is still missing and the plan.
-Problems are welcome as [issues](https://github.com/ulkden/zmk-yakme/issues/new).
+zmk-yakme is built to [WCAG 2.2](https://www.w3.org/TR/WCAG22/) Level AA: it works fully by keyboard
+(with skip links and arrow keys in the keyboard, palette and layer tabs), works with screen readers,
+supports Windows high-contrast mode and reflows down to 320 px. Automated checks run on every change.
+Testing with NVDA, VoiceOver, Narrator and Orca comes before the claim is made official, with release
+0.3.0. See the [accessibility statement](docs/ACCESSIBILITY.md), and report problems as
+[issues](https://github.com/ulkden/zmk-yakme/issues/new).
 
 ## How it compares
 

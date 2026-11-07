@@ -30,6 +30,9 @@ merged pull request.
   After **Clear Warnings** or "N hidden", keyboard focus stays in the status bar.
 - The Export preview can be scrolled with the keyboard, and screen readers say when a download starts.
   **Save Project** now names the file it saved.
+- On narrow screens (down to 320 px) the page no longer scrolls sideways; the keyboard keeps readable
+  keys and scrolls inside its own area.
+- An **Accessibility** link on the welcome screen leads to the accessibility statement.
 - In Windows high-contrast mode, the selected key, the keys of a combo, the active layer tab, selected
   layer chips and the selected combo are filled with the highlight colour.
 

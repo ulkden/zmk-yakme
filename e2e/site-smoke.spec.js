@@ -23,7 +23,7 @@ test('@smoke the app loads, edits and exports', async ({ page }) => {
 
 test('@smoke the version is shown and links to its release notes', async ({ page }) => {
   const welcome = page.locator('.version-line');
-  await expect(welcome).toHaveText(`v${VERSION} · Release notes · User guide`);
+  await expect(welcome).toHaveText(`v${VERSION} · Release notes · User guide · Accessibility`);
   await expect(welcome.getByRole('link', { name: 'Release notes' })).toHaveAttribute('href', releaseUrl());
   await expect(welcome.getByRole('link', { name: 'User guide' })).toHaveAttribute('href', GUIDE_URL);
   await loadExample(page);
