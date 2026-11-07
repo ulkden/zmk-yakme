@@ -46,6 +46,7 @@ if (notice) {
     h('p', {}, notice),
     [h('button.primary', { onclick: () => dlg.close() }, 'OK')],
     'notice',
+    { describe: true },
   );
 }
 

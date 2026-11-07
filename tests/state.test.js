@@ -1,7 +1,16 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createStore } from '../src/core/store.js';
-import { initialState, serialize, deserialize, normalizeUi, keyCount, isDirty } from '../src/core/state.js';
+import {
+  initialState,
+  serialize,
+  deserialize,
+  normalizeUi,
+  keyCount,
+  isDirty,
+  plural,
+  sizeSummary,
+} from '../src/core/state.js';
 import { importText, applyImport, looseJson } from '../src/core/import.js';
 import { validate } from '../src/core/validate.js';
 import { ELVN_KEYMAP, ELVN_LAYOUT } from './fixtures/elvn.js';
@@ -166,4 +175,16 @@ describe('validate', () => {
       ['Combo "c" uses named position(s) PAIR that can\'t be shown on the keyboard.'],
     );
   });
+});
+
+test('plural counts', () => {
+  assert.equal(plural(1, 'key'), '1 key');
+  assert.equal(plural(0, 'file'), '0 files');
+  assert.equal(plural(3, 'layer'), '3 layers');
+});
+
+test('a keymap is summarised by its size', () => {
+  const state = { ...initialState(), layouts: [{ name: 'g', keys: [{ x: 0, y: 0, w: 1, h: 1 }] }] };
+  state.keymap = { layers: [{ bindings: ['&none'] }] };
+  assert.equal(sizeSummary(state), '1 key, 1 layer');
 });
