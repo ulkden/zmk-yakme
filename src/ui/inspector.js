@@ -1,9 +1,17 @@
 // Side panel: edits the selected key's binding, or combos in combos mode.
-import { h, replace, renderKeepingFocus, frameScheduler } from './dom.js';
+import {
+  h,
+  replace,
+  renderKeepingFocus,
+  frameScheduler,
+  requestFocus,
+  takeFocusRequest,
+  focusRequested,
+} from './dom.js';
 import { bindingEditor } from './binding-editor.js';
 import { bindingLabel } from '../core/labels.js';
 import { allCustomBehaviors } from '../core/behavior-ops.js';
-import { behaviorsPanel } from './behaviors-panel.js';
+import { behaviorsPanel, resetBehaviorConfirm } from './behaviors-panel.js';
 import { numberField, chips } from './fields.js';
 
 function ctxOf(state) {
@@ -162,12 +170,19 @@ function comboEditor(state, actions) {
       h(
         'button.primary',
         {
-          onclick: actions.finishCombo,
+          onclick: () => (requestFocus(`combo-${state.ui.combo}`, '#inspector .add-combo'), actions.finishCombo()),
           title: 'Changes are already applied; this returns to the combo list (Esc)',
         },
         'Save Combo',
       ),
-      h('button.danger', { onclick: actions.removeCombo }, 'Delete Combo'),
+      // After deleting, focus goes to the combo that takes its place in the list, or + New Combo.
+      h(
+        'button.danger',
+        {
+          onclick: () => (requestFocus(`combo-${state.ui.combo}`, '#inspector .add-combo'), actions.removeCombo()),
+        },
+        'Delete Combo',
+      ),
     ),
   );
 }
@@ -176,38 +191,18 @@ export function mountInspector(el, store, actions) {
   const render = () => {
     const state = store.get();
     if (!state.keymap) return replace(el);
+    if (state.ui.mode !== 'behaviors') resetBehaviorConfirm();
     if (state.ui.mode === 'combos')
       replace(el, h('h3', {}, 'Combos'), comboList(state, actions), comboEditor(state, actions));
     else if (state.ui.mode === 'behaviors') replace(el, behaviorsPanel(state, actions));
     else replace(el, keyPanel(state, actions));
   };
-  // Where focus goes when the panel's content is replaced by finishing something from inside it:
-  // - a combo (Save Combo, Esc, Delete): that combo in the list, or the next, or + New Combo;
-  // - a behavior (Save Behavior): the key's Behavior list, to assign it, or the diagram.
-  // Otherwise focus follows renderKeepingFocus.
-  const last = { mode: null, combo: null };
-  const finishedTarget = (ui) => {
-    if (!el.contains(document.activeElement) || document.activeElement === el) return null;
-    const combo = last.combo; // read now: `last` is updated before the target is focused
-    if (
-      last.mode === 'combos' &&
-      combo !== null &&
-      ui.combo === null &&
-      document.activeElement.closest('.combo-editor')
-    )
-      return () => el.querySelector(`[data-focus="combo-${combo}"]`) ?? el.querySelector('.add-combo');
-    if (last.mode === 'behaviors' && ui.mode === 'layers')
-      return () =>
-        el.querySelector('select[name="behavior"]') ?? document.querySelector('#keyboard .key[tabindex="0"]');
-    return null;
-  };
+  // A control that finished something (Save Combo, Delete Combo, Save Behavior, Esc) asked where
+  // focus goes next; that wins over keeping focus near the removed control.
   const update = () => {
-    const { ui } = store.get();
-    const target = finishedTarget(ui);
-    Object.assign(last, { mode: ui.mode, combo: ui.mode === 'combos' ? ui.combo : null });
-    if (!target) return renderKeepingFocus(el, render);
-    render();
-    target()?.focus();
+    const request = takeFocusRequest();
+    renderKeepingFocus(el, render);
+    if (request) focusRequested(el, request);
   };
   const schedule = frameScheduler(update);
   actions.refreshInspector = schedule;

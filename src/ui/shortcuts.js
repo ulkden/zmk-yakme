@@ -1,8 +1,13 @@
 // Page-wide keyboard shortcuts and drag-and-drop import. Keys on the keyboard diagram (arrows,
 // typing, Delete, Esc) are handled by the diagram itself, only while a key has focus (keyboard.js).
 import { importFiles } from './import-flow.js';
+import { requestFocus } from './dom.js';
 
-const typing = (el) => el && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName));
+// Fields where keys type text, so shortcuts leave them alone. Selects and checkboxes don't, so
+// Ctrl+Z still undoes there (e.g. right after Save Behavior focuses the Behavior list).
+const TEXT_INPUTS = new Set(['text', 'search', 'url', 'email', 'number', 'password', 'tel']);
+const typing = (el) =>
+  el && (el.isContentEditable || el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && TEXT_INPUTS.has(el.type)));
 
 export function mountShortcuts(store, actions) {
   document.addEventListener('keydown', (e) => {
@@ -18,7 +23,12 @@ export function mountShortcuts(store, actions) {
     const s = store.get();
     if (e.key === 'Escape' && s.ui.layerMenu) return actions.closeLayerMenu();
     if (typing(document.activeElement) || mod || document.querySelector('dialog[open]')) return;
-    if (e.key === 'Escape' && s.ui.mode === 'combos' && s.ui.combo !== null) return actions.finishCombo();
+    if (e.key === 'Escape' && s.ui.mode === 'combos' && s.ui.combo !== null) {
+      // From inside the combo editor, focus goes back to the combo in the list (inspector.js).
+      if (document.activeElement?.closest('.combo-editor'))
+        requestFocus(`combo-${s.ui.combo}`, '#inspector .add-combo');
+      return actions.finishCombo();
+    }
   });
 }
 

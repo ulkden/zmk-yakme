@@ -1,6 +1,6 @@
 // Side panel for the Behaviors tab: list, add and edit hold-taps, mod-morphs and macros.
-import { h } from './dom.js';
-import { numberField, textField, selectField, chips, confirmRow } from './fields.js';
+import { h, requestFocus } from './dom.js';
+import { numberField, textField, selectField, chips, deleteControl } from './fields.js';
 import { FLAVORS, MOD_FLAGS, countBehaviorUses } from '../core/behavior-ops.js';
 import { normalizeBinding } from '../core/bindings.js';
 import { refHolders } from '../core/source-refs.js';
@@ -35,7 +35,7 @@ function list(state, actions) {
           // Pressing the selected behavior again deselects it, so this is a toggle.
           'aria-pressed': String(ui.behavior === i),
           'data-focus': `behavior-${i}`,
-          onclick: () => actions.selectBehavior(ui.behavior === i ? null : i),
+          onclick: () => (resetBehaviorConfirm(), actions.selectBehavior(ui.behavior === i ? null : i)),
         },
         h('span.combo-name.mono', {}, `&${b.label}`),
         h('span.badge', {}, KIND_LABEL[b.kind]),
@@ -134,21 +134,23 @@ function macroFields(b, update) {
 
 function deleteRow(state, actions) {
   const b = state.keymap.behaviors[state.ui.behavior];
-  if (confirmingDelete !== b.label)
-    return h(
-      'button.danger',
-      { 'data-focus': 'behavior-delete', onclick: () => ((confirmingDelete = b.label), actions.refreshInspector()) },
-      'Delete Behavior',
-    );
   const uses = countBehaviorUses(state.keymap, b.label);
-  const holders = refHolders(state.keymap.source, b.label);
+  const holders = confirmingDelete === b.label ? refHolders(state.keymap.source, b.label) : [];
   const where = holders.length ? `, including in ${holders.join(', ')}` : '';
-  return confirmRow(
-    `Delete &${b.label}?${uses ? ` Its ${uses} use(s) become &none${where}.` : ''}`,
-    'behavior-delete',
-    () => ((confirmingDelete = null), actions.refreshInspector()),
-    () => ((confirmingDelete = null), actions.removeBehavior()),
-  );
+  return deleteControl({
+    label: 'Delete Behavior',
+    name: 'behavior-delete',
+    confirming: confirmingDelete === b.label,
+    question: `Delete &${b.label}?${uses ? ` Its ${uses} use(s) become &none${where}.` : ''}`,
+    onAsk: () => ((confirmingDelete = b.label), actions.refreshInspector()),
+    onCancel: () => ((confirmingDelete = null), actions.refreshInspector()),
+    onConfirm: () => ((confirmingDelete = null), actions.removeBehavior()),
+  });
+}
+
+// A confirmation left open is dropped when the user moves on, so it never comes back pre-armed.
+export function resetBehaviorConfirm() {
+  confirmingDelete = null;
 }
 
 function editor(state, actions) {
@@ -176,7 +178,11 @@ function editor(state, actions) {
       h(
         'button.primary',
         {
-          onclick: actions.finishBehavior,
+          onclick: () => {
+            // Back to the key, focused on its Behavior list to assign this behavior (or the diagram).
+            requestFocus(null, '#inspector select[name="behavior"]', '#keyboard .key[tabindex="0"]');
+            actions.finishBehavior();
+          },
           title: 'Changes are already applied; this returns to the key you were editing',
         },
         'Save Behavior',

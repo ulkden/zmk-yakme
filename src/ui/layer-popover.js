@@ -1,28 +1,21 @@
 // Settings panel for the active layer: display name, node name, move and delete.
 import { h } from './dom.js';
-import { confirmRow } from './fields.js';
+import { deleteControl } from './fields.js';
 import { layerIds } from '../core/keymap-write.js';
 
 let confirming = false;
 
 function deleteRow(layer, i, total, actions) {
-  if (!confirming) {
-    return h(
-      'button.danger',
-      {
-        disabled: total <= 1,
-        'data-focus': 'layer-delete',
-        onclick: () => ((confirming = true), actions.refreshLayerMenu()),
-      },
-      'Delete Layer',
-    );
-  }
-  return confirmRow(
-    `Delete "${layer.name}"? References to it become &trans.`,
-    'layer-delete',
-    () => ((confirming = false), actions.refreshLayerMenu()),
-    () => ((confirming = false), actions.removeLayer(i)),
-  );
+  return deleteControl({
+    label: 'Delete Layer',
+    name: 'layer-delete',
+    confirming,
+    disabled: total <= 1,
+    question: `Delete "${layer.name}"? References to it become &trans.`,
+    onAsk: () => ((confirming = true), actions.refreshLayerMenu()),
+    onCancel: () => ((confirming = false), actions.refreshLayerMenu()),
+    onConfirm: () => ((confirming = false), actions.removeLayer(i)),
+  });
 }
 
 export function layerPopover(state, actions) {

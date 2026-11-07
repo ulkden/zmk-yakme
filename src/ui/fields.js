@@ -118,16 +118,18 @@ export function chips(items, selected, labelOf, onChange, { group = null, before
   );
 }
 
-// An inline "are you sure?" row in place of a Delete button. Both buttons are described by the
-// question, so screen readers read it when focus lands on Cancel. Cancel takes the Delete button's
-// focus name, so keyboard focus moves between them (focus-target.js).
-export function confirmRow(question, focusName, onCancel, onConfirm) {
-  const id = `confirm-${focusName}`;
+// A Delete button that turns into an inline "are you sure?" row. Both of the row's buttons are
+// described by the question, so screen readers read it when focus lands on Cancel. The button and
+// Cancel share one focus name, so keyboard focus moves between them (focus-target.js).
+let confirmCount = 0;
+export function deleteControl({ label, name, confirming, question, disabled = false, onAsk, onCancel, onConfirm }) {
+  if (!confirming) return h('button.danger', { disabled, 'data-focus': name, onclick: onAsk }, label);
+  const id = `confirm-${++confirmCount}`;
   return h(
     'div.confirm-row',
     {},
     h('span', { id }, question),
-    h('button', { 'data-focus': focusName, 'aria-describedby': id, onclick: onCancel }, 'Cancel'),
+    h('button', { 'data-focus': name, 'aria-describedby': id, onclick: onCancel }, 'Cancel'),
     h('button.danger.solid', { 'aria-describedby': id, onclick: onConfirm }, 'Delete'),
   );
 }
