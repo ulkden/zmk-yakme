@@ -23,7 +23,7 @@ merged pull request.
   The layer settings (✎) take keyboard focus when they open and give it back when closed with
   <kbd>Esc</kbd>. Undo, Redo, ✎ and + have names for screen readers.
 - Combos: screen readers say which combo and which layers are selected, and you can add keys with
-  the arrow keys and <kbd>Space</kbd>. **Save Combo** returns focus to the combo in the list.
+  the arrow keys and <kbd>Space</kbd>. **Save Combo** (or <kbd>Esc</kbd>) returns focus to the combo in the list.
 - In Windows high-contrast mode, the selected key, the keys of a combo, the active layer tab, selected
   layer chips and the selected combo are filled with the highlight colour.
 

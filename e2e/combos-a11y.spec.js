@@ -57,3 +57,19 @@ test('in high-contrast mode the selected combo and on-chips fill with the highli
   expect(await bg(page.getByRole('button', { name: 'Base', pressed: true }))).toBe(highlight);
   expect(await bg(page.getByRole('button', { name: 'Lower', pressed: false }))).not.toBe(highlight);
 });
+
+test('Esc from the combo editor also returns focus to the combo', async ({ page }) => {
+  await loadExample(page);
+  await openCombos(page);
+  await combo(page).click();
+  await page.getByRole('group', { name: 'Layers' }).getByRole('button', { name: 'Lower' }).focus();
+  await page.keyboard.press('Escape');
+  await expect(combo(page)).toBeFocused();
+});
+
+test('the behaviors list says which behavior is selected', async ({ page }) => {
+  await loadExample(page);
+  await page.getByRole('button', { name: /^Behaviors/ }).click();
+  await page.getByRole('button', { name: '+ Hold-Tap' }).click();
+  await expect(page.locator('#inspector .combo-item').first()).toHaveAttribute('aria-pressed', 'true');
+});
