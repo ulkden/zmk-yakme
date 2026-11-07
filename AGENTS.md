@@ -115,6 +115,11 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
 
 - Branch from `main` for every change: `feat/…`, `fix/…`, `docs/…`, `chore/…`. Keep PRs small and focused.
 - `main` is protected: changes land only by **squash merge** of a PR with green CI. Never push to `main`.
+- **Exception, the accessibility initiative only** (`ASSUMPTIONS.md` #37): its PRs branch from and
+  target `initiative/accessibility`. The agent merges each one (squash) after a clean local run, green CI
+  and its own code review; the maintainer reviews each PR as step 0 of its QA. At the end, every PR is
+  re-landed on `main` in order, and then the branch is deleted. Keep it in step by merging `main` into it
+  whenever `main` changes.
 - Commit in small steps. Messages: imperative subject, a body explaining *why*. AI-assisted commits
   carry a `Co-Authored-By:` trailer.
 - Formatting-only or mechanical changes (reformatting, renames) go in their **own PR**, so the squash

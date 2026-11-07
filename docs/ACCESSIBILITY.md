@@ -51,8 +51,13 @@ two-dimensional layout, which covers the keyboard diagram but not the page as a 
 
 ## Rollout
 
-Agreed: **foundation first, then area by area**, in small PRs. Every merge deploys, so improvements
-reach users as they land. The app claims WCAG 2.2 AA only after the final pass.
+Agreed: **foundation first, then area by area**, in small PRs. The app claims WCAG 2.2 AA only after
+the final pass.
+
+The PRs land on `initiative/accessibility`, not `main` (ASSUMPTIONS.md #37). The agent merges each one
+after a clean local run, green CI and its own code review. The maintainer reviews each PR as step 0 of
+its QA, and changes are handled in QA. The live site stays at v0.2.0 until every PR is re-landed on
+`main` in order.
 
 1. **Foundation:** focus survives re-renders (A1), one shared screen-reader announcer (A4), and
    automated accessibility checks in the browser tests.
@@ -80,8 +85,11 @@ cheatsheet, `CHANGELOG.md`).
 | 8 | Export and saving | Preview reachable by keyboard (A6); Copy, Download and Save announced (A4) |
 | 9 | Final pass | Reflow at 320 px; the full manual screen-reader pass; this file finished as the statement; welcome-screen link; release 0.3.0 |
 
-To be chosen when their PR comes up, from side-by-side previews of a real board: the key-number
-colour (PR 3), forced-colours styling (PRs 3 and 4), and how a screen reader reads a key (PR 3).
+Visual choices, made from previews on a real Corne (ASSUMPTIONS.md #38–#41):
+- **Key numbers:** #8a919c, always shown.
+- **Secondary grey text:** #959ca7 everywhere.
+- **Forced colours:** selected, active and "on" items fill with `Highlight`.
+- **How a screen reader reads a key:** its label, then its position ("A, key 13").
 
 ### Progress
 
