@@ -829,6 +829,8 @@ dialog h2 {
   gap: 8px;
 }
 .accept-box {
+  min-width: 0; /* long file names wrap instead of widening the dialog at 320 px (reflow) */
+  overflow-wrap: anywhere;
   padding: 8px 12px;
   border: 1px solid var(--border);
   border-left: 3px solid var(--box-tint);
@@ -1092,6 +1094,10 @@ dialog:has(pre.preview) {
   .toolbar {
     flex-wrap: wrap;
     min-width: 0;
+  }
+  /* Dividers and the spacer would start or pad out a wrapped row. */
+  .toolbar :is(.sep, .grow) {
+    display: none;
   }
   .keyboard {
     overflow-x: auto;
