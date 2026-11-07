@@ -60,3 +60,7 @@ test('a successful import from the Import dialog is read out after it closes', a
   await expect(page.locator('dialog[open]')).toHaveCount(0);
   await expect(page.locator('#announcer')).toHaveText('Imported keymap');
 });
+
+test('the welcome screen links to the accessibility statement', async ({ page }) => {
+  await expect(page.getByRole('link', { name: 'Accessibility' })).toHaveAttribute('href', /docs\/ACCESSIBILITY\.md$/);
+});

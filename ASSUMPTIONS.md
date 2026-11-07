@@ -192,3 +192,8 @@ Decisions made while building unattended. Each one can be changed. Review and te
     and a test checks every key on every layer. The palette had a real 2.5.3 gap: spoken names such as
     "Right Ctrl" for "RCtrl" left out the visible text. Its names now start with the label's own
     letters ("R Shift", "Vol up", "kp Enter"), and plain-text labels keep their text.
+43. ⏳ **Assumed (review at QA 54):** On narrow screens (at 320 px) the keyboard diagram keeps keys at
+    36 px (40 px per key unit) and scrolls sideways inside its own box, instead of shrinking to fit.
+    WCAG 1.4.10 (Reflow) exempts content that needs two dimensions, and 2.5.8 needs targets of at
+    least 24 px. At 24 px the 13 px legends overlapped, so 36 px was chosen for legibility. The page
+    itself no longer scrolls sideways: the top bar wraps.

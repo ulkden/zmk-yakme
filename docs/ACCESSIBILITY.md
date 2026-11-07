@@ -1,8 +1,41 @@
 # Accessibility
 
+## Accessibility statement (draft)
+
 zmk-yakme aims to conform to **[WCAG 2.2](https://www.w3.org/TR/WCAG22/) Level AA** (ASSUMPTIONS.md #30).
-This file records why that target was chosen, where the app stood when the work began, and how the
-changes are rolled out. Once the work is done, it becomes the app's accessibility statement.
+
+**Status:** every gap found in the audit of v0.2.0 has been fixed. Automated checks (axe-core,
+WCAG 2.2 A/AA rules) pass in every state and dialog on Chromium, Firefox and WebKit, together with
+keyboard tests for focus, names, states and announcements. Conformance will only be claimed after
+manual testing with screen readers, with release 0.3.0. Until then this is a draft.
+
+**Tested with:** to be filled in after the manual pass, from NVDA with Firefox and Chrome, VoiceOver
+with Safari (macOS), Narrator with Edge, and Orca with Firefox.
+
+**What to expect:**
+- Everything works by keyboard. The first Tab press offers *Skip to keys*, *Skip to keycodes* and
+  *Skip to side panel*. The keyboard diagram, the keycode palette and the layer tabs are one Tab stop
+  each, and arrow keys move inside them.
+- Screen readers hear each key as what it does, then where it is ("Esc, hold Ctrl, key 12"), along
+  with which items are selected, and messages such as imports, warnings and downloads.
+- Keyboard focus shows as a light ring that never looks like a selected key. Windows high-contrast
+  mode is supported.
+- At 320 px wide the page doesn't scroll sideways. The keyboard diagram needs two dimensions, so on
+  narrow screens it scrolls sideways inside its own box, with keys kept at a readable size (#43).
+
+**Known limitations:**
+- axe's *label in name* check flags keys whose small hold legend or corner number isn't in screen
+  order in the name. Names start with the key's main legend on purpose (#42, awaiting review).
+- The app is dark only. In Windows high-contrast mode the user's own colours are used.
+
+**Feedback:** report accessibility problems as a
+[GitHub issue](https://github.com/ulkden/zmk-yakme/issues/new) labelled `accessibility`, with your
+browser and screen reader.
+
+## How we got here
+
+The rest of this file records why the target was chosen, where the app stood when the work began, and
+how the changes were rolled out.
 
 ## Standards (researched November 2026)
 
@@ -106,6 +139,7 @@ Visual choices, made from previews on a real Corne (ASSUMPTIONS.md #38–#41):
 | 6 | Inline delete confirmations (behaviors and layers) describe their buttons with the question, so it is read when focus lands on Cancel (A3). The Mods and Keep mods chips are labelled groups. Save Behavior returns focus to the key's Behavior list, ready to assign it, or to the diagram when no key is selected. The list state, chips and badge contrast were done in PRs 2 and 5 |
 | 7 | Warnings that appear while editing are read out, after the message of the action that caused them: the warning itself, or how many (A4). Warnings a keymap already has when it opens are not. Messages sent together are read together (in order, without repeats, the last three at most). The warnings button has aria-expanded and aria-controls, and the list is named "Warnings". Clear Warnings hands focus to "N hidden", which hands it back to the warnings button; Trim Extra Bindings is announced |
 | 8 | The Export preview is a focusable, named region, reached with Tab and scrolled by keyboard (A6); the axe known-gaps list is now empty. Toggling layer diagrams keeps focus on the checkbox. A download is read out as started ("Download started: keymap.keymap"), since the browser may still ask where to save; Save Project names its file ("Project saved: corne.zmk-project.json"); Copy was already read out (A4) |
+| 9 (part 1) | Reflow at 320 px: the top bar wraps and only the keyboard diagram scrolls sideways, inside its own box; keys stay 36 px (#43; WCAG 1.4.10, 2.5.8). The draft accessibility statement above, and an *Accessibility* link on the welcome screen. Still to do: the manual screen-reader pass, completing the statement, release 0.3.0 |
 
 ### Focus ring (A8)
 

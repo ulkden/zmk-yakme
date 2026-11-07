@@ -13,6 +13,11 @@ import { parseBinding } from '../core/bindings.js';
 import { allCustomBehaviors } from '../core/behavior-ops.js';
 
 const MAX_UNIT = 64;
+// On a narrow screen (the CSS breakpoint) keys stay 36 px with readable legends, well over WCAG
+// 2.5.8's 24 px target size; the diagram then scrolls sideways inside its own box instead of
+// shrinking (ASSUMPTIONS.md #43). Wider windows shrink the board to fit, as before.
+const MIN_UNIT = 40;
+const NARROW = '(max-width: 800px)';
 const GAP = 4;
 const ARROWS = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down' };
 
@@ -149,6 +154,16 @@ function keyHandlers(el, store, actions, view) {
   });
 }
 
+// On a narrow screen the diagram scrolls sideways, so a key selected from elsewhere (the side panel,
+// the combo list) is scrolled into view when the selection changes.
+function revealSelection(el, state, view) {
+  const selection = `${state.ui.mode}|${state.ui.key}|${state.ui.combo}|${state.ui.behavior}`;
+  if (selection === view.selection) return;
+  view.selection = selection;
+  if (el.scrollWidth > el.clientWidth)
+    el.querySelector('.key[aria-selected="true"]')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+
 export function mountKeyboard(el, store, actions) {
   const view = { last: 0, custom: [], onClick: () => {} };
   keyHandlers(el, store, actions, view);
@@ -160,7 +175,8 @@ export function mountKeyboard(el, store, actions) {
     const width = Math.max(1, b.maxX - b.minX);
     const height = Math.max(1, b.maxY - b.minY);
     const avail = Math.max(200, el.clientWidth - 32);
-    view.unit = Math.min(MAX_UNIT, avail / width);
+    const fit = avail / width;
+    view.unit = Math.min(MAX_UNIT, matchMedia(NARROW).matches ? Math.max(MIN_UNIT, fit) : fit);
     view.origin = { x: b.minX, y: b.minY };
     view.roving = rovingIndex(state, view.last);
     view.custom = allCustomBehaviors(state.keymap);
@@ -172,6 +188,7 @@ export function mountKeyboard(el, store, actions) {
     });
     layout.keys.forEach((key, i) => board.append(renderKey(state, key, i, view)));
     replace(el, board);
+    revealSelection(el, state, view);
   };
   const render = () => renderKeepingFocus(el, draw);
   store.subscribe(render);

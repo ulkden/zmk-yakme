@@ -381,11 +381,14 @@ input.mono {
 .keyboard {
   padding: 28px 16px;
   display: flex;
-  justify-content: center;
+  /* The board centres with auto margins, which drop to 0 when it is wider than the box, so a
+     scrolled diagram starts at its left edge instead of being cut off. */
+  justify-content: flex-start;
 }
 .board {
   position: relative;
   flex: none;
+  margin-inline: auto;
 }
 .key {
   position: absolute;
@@ -826,6 +829,8 @@ dialog h2 {
   gap: 8px;
 }
 .accept-box {
+  min-width: 0; /* long file names wrap instead of widening the dialog at 320 px (reflow) */
+  overflow-wrap: anywhere;
   padding: 8px 12px;
   border: 1px solid var(--border);
   border-left: 3px solid var(--box-tint);
@@ -1080,8 +1085,23 @@ dialog:has(pre.preview) {
 }
 
 @media (max-width: 800px) {
+  /* Reflow (WCAG 1.4.10): at 320 px nothing but the keyboard diagram, which needs two dimensions,
+     may scroll sideways, and the diagram scrolls inside its own box. */
   .workspace {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .topbar,
+  .toolbar {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  /* Dividers and the spacer would start or pad out a wrapped row. */
+  .toolbar :is(.sep, .grow) {
+    display: none;
+  }
+  .keyboard {
+    overflow-x: auto;
+    flex-shrink: 0;
   }
   .inspector {
     border-left: 0;

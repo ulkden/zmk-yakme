@@ -2,6 +2,7 @@
 export const REPO_URL = 'https://github.com/ulkden/zmk-yakme';
 export const ISSUES_URL = `${REPO_URL}/issues/new`;
 export const GUIDE_URL = `${REPO_URL}/blob/main/docs/guide/README.md`;
+export const ACCESSIBILITY_URL = `${REPO_URL}/blob/main/docs/ACCESSIBILITY.md`;
 
 // The released version (SemVer), kept equal to package.json's (a unit test checks).
 export const VERSION = '0.2.0';

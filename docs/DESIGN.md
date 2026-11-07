@@ -72,6 +72,8 @@ The app targets WCAG 2.2 AA; plan and progress are in [ACCESSIBILITY.md](ACCESSI
   the message of the action that caused them. The warnings button says
   whether its list is open. Clear Warnings moves focus to "N hidden", and that moves it back to the
   warnings button.
+- **Narrow screens:** at 320 px the top bar wraps and the page doesn't scroll sideways. The keyboard
+  diagram keeps 36 px keys and scrolls sideways inside its own box.
 - **High contrast:** in forced-colours mode the selected key, the keys of the selected combo, the
   active layer tab, on-chips and the selected list item fill with the theme's Highlight colour.
 
