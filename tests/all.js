@@ -22,3 +22,4 @@ import './source-refs.test.js';
 import './number-step.test.js';
 import './warning-diff.test.js';
 import './focus-target.test.js';
+import './key-names.test.js';

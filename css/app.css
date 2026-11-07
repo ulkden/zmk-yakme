@@ -430,7 +430,7 @@ input.mono {
   bottom: 1px;
   right: 3px;
   font-size: 8px;
-  color: #4b525d;
+  color: #8a919c; /* the dimmest grey at 4.5:1 on every key state (ASSUMPTIONS.md #38) */
   font-family: var(--mono);
 }
 .key.kind-trans .tap,
@@ -457,6 +457,22 @@ input.mono {
 }
 .key.combo-other {
   border-style: dashed;
+}
+
+/* Forced colours (Windows high contrast) replace the app's colours, so "on" keys fill with the
+   theme's Highlight colour, like a selected item in any list (ASSUMPTIONS.md #40). */
+@media (forced-colors: active) {
+  .key.selected,
+  .key.combo-on {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .key.selected *,
+  .key.combo-on * {
+    color: HighlightText;
+  }
 }
 
 /* Palette */
@@ -502,11 +518,12 @@ input.mono {
   gap: 12px 22px;
 }
 .group-name {
+  margin: 0 0 4px; /* an h3, styled as before */
+  font-weight: normal;
   font-size: 11px;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  margin-bottom: 4px;
 }
 .group-keys {
   display: flex;

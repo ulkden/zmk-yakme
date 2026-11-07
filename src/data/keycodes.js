@@ -189,6 +189,35 @@ export const ALIASES = {
   ...Object.fromEntries(range(10, (i) => [`NUMBER_${i}`, `N${i}`])),
 };
 
+// Words for screen readers where a keycap label is a symbol (⇥, ⏯) or partly one (R⇧, Vol−). Each
+// starts with the label's own letters, so the visible text stays part of the name (WCAG 2.5.3) and
+// speech input ("click R Shift") still matches. Labels that are plain text (RCtrl, kp0) need none.
+export const SPOKEN = {
+  LSHIFT: 'Shift',
+  RSHIFT: 'R Shift',
+  TAB: 'Tab',
+  SPACE: 'Space',
+  RET: 'Enter',
+  BSPC: 'Backspace',
+  LEFT: 'Left arrow',
+  DOWN: 'Down arrow',
+  UP: 'Up arrow',
+  RIGHT: 'Right arrow',
+  C_VOL_UP: 'Vol up',
+  C_VOL_DN: 'Vol down',
+  C_PP: 'Play/pause',
+  C_NEXT: 'Next track',
+  C_PREV: 'Previous track',
+  C_BRI_UP: 'Bri up',
+  C_BRI_DN: 'Bri down',
+  KP_PLUS: 'kp plus',
+  KP_MINUS: 'kp minus',
+  KP_MULTIPLY: 'kp times',
+  KP_DIVIDE: 'kp divide',
+  KP_ENTER: 'kp Enter',
+  KP_DOT: 'kp dot',
+};
+
 export const LABELS = Object.fromEntries(KEY_GROUPS.flatMap((g) => g.keys.map((k) => [k.code, k.label])));
 
 export const ALL_CODES = KEY_GROUPS.flatMap((g) => g.keys.map((k) => k.code));

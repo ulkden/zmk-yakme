@@ -51,6 +51,16 @@ The app targets WCAG 2.2 AA; plan and progress are in [ACCESSIBILITY.md](ACCESSI
   by its title; confirmations, errors and notices also read their message when they open.
 - **Focus between screens:** opening a keymap removes the welcome screen, so focus moves to the first
   key; closing it moves focus to **Import Files**.
+- **Keyboard diagram:** a listbox with one Tab stop. ←↑→↓ move to the physically nearest key,
+  Home/End to the first/last. On the Layers tab selection follows focus; Enter on the selected key
+  moves to the side panel to edit it. In Combos, Enter or Space adds or removes the focused key.
+  Typing a letter or digit, Delete and Esc act only while a key has focus. Screen readers hear the
+  key's legend first, then its position ("Esc, hold Ctrl, key 12"), and whether it is selected.
+- **Keycode palette:** one Tab stop after the filter. ←/→ move through the keycodes, ↑/↓ to the
+  nearest one above or below, Home/End to the ends. Group names are headings; symbol keycaps (⇥, ⏯)
+  have spoken names that start with their visible letters.
+- **High contrast:** in forced-colours mode the selected key and the keys of the selected combo fill
+  with the theme's Highlight colour.
 
 ## Click budget (≤ 3 clicks)
 

@@ -13,12 +13,22 @@ merged pull request.
 - Screen readers read out the app's short messages (such as "Project saved"), including errors in
   the Import dialog, and say when an example or blank keymap opens.
 - The Import dialog's paste box and link field have visible labels.
+- The keyboard and the keycode palette are each one <kbd>Tab</kbd> stop: use the arrow keys inside them,
+  and <kbd>Home</kbd> / <kbd>End</kbd> for the first and last. <kbd>Enter</kbd> on the selected key
+  moves to the side panel to edit it; in Combos, <kbd>Enter</kbd> or <kbd>Space</kbd> adds or removes
+  a key.
+- Screen readers read each key as what it does, then where it is ("Esc, hold Ctrl, key 12"), and say
+  which keys are selected. Symbol keycodes such as ⇥ and ⏯ have spoken names.
+- In Windows high-contrast mode, the selected key and the keys of a combo are filled with the
+  highlight colour.
 
 ### Changed
 
 - Keyboard focus shows a clear light ring that no longer looks like the selected key. It doesn't
   appear when you click a button or key.
-- Secondary grey text is slightly lighter, so it is easier to read everywhere.
+- Secondary grey text is slightly lighter, so it is easier to read everywhere. Key numbers are too.
+- Typing a letter or digit, <kbd>Delete</kbd> and <kbd>Esc</kbd> change a key only while that key has
+  keyboard focus, so typing elsewhere can't change a key by accident.
 
 ### Fixed
 

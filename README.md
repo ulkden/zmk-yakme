@@ -64,9 +64,9 @@ Step-by-step instructions with screenshots are in the **[user guide](docs/guide/
 | Do this | How |
 |---|---|
 | Import | **Import** → *Choose Files…*, or paste text or a URL and click **Load**. A GitHub repo URL lists its keymaps and likely layouts (**Show all files** for the rest; **Deselect All** to start over) so you can pick which to import. You can also drop files anywhere. |
-| Edit a key | Click the key, then click a keycode in the palette, choose a behavior in the side panel, or just type a letter or digit. |
+| Edit a key | Click the key, then click a keycode in the palette, choose a behavior in the side panel, or just type a letter or digit (while the key has focus). |
 | Clear a key | Select it and press <kbd>Delete</kbd>, or use *Transparent* / *None*. |
-| Move between keys | Arrow keys (they follow the physical layout) |
+| Move between keys | Arrow keys on a focused key (they follow the physical layout); <kbd>Home</kbd> / <kbd>End</kbd> for the first / last. <kbd>Enter</kbd> on the selected key edits it in the side panel. |
 | Layers | `+` adds a layer. ✎ (or double-click the active tab) opens layer settings: display name, node name, move, delete. |
 | Combos | **Combos** tab → **+ New Combo**, then click keys. Set the binding, timeout, prior-idle, slow-release and layers in the side panel. **Save Combo** (or <kbd>Esc</kbd>) finishes. |
 | Behaviors | **Behaviors** tab → add a hold-tap, mod-morph or macro. **Save Behavior** (or clicking a key) goes back to editing keys, where you pick it from the Behavior list. |

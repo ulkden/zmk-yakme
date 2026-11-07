@@ -1,9 +1,6 @@
-// Keyboard shortcuts and drag-and-drop import.
-import { keyCount, activeLayout } from '../core/state.js';
-import { nearestKey } from '../core/layout-ops.js';
+// Page-wide keyboard shortcuts and drag-and-drop import. Keys on the keyboard diagram (arrows,
+// typing, Delete, Esc) are handled by the diagram itself, only while a key has focus (keyboard.js).
 import { importFiles } from './import-flow.js';
-
-const ARROWS = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down' };
 
 const typing = (el) => el && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName));
 
@@ -22,23 +19,6 @@ export function mountShortcuts(store, actions) {
     if (e.key === 'Escape' && s.ui.layerMenu) return actions.closeLayerMenu();
     if (typing(document.activeElement) || mod || document.querySelector('dialog[open]')) return;
     if (e.key === 'Escape' && s.ui.mode === 'combos' && s.ui.combo !== null) return actions.finishCombo();
-    if (!s.keymap || s.ui.mode !== 'layers') return;
-    const n = keyCount(s);
-    const dir = ARROWS[e.key];
-    if (e.key === 'Escape') actions.selectKey(null);
-    else if (dir) {
-      e.preventDefault();
-      const keys = activeLayout(s)?.keys;
-      if (s.ui.key === null || !keys?.[s.ui.key]) actions.selectKey(0);
-      else actions.selectKey(nearestKey(keys, s.ui.key, dir));
-    } else if ((e.key === 'Delete' || e.key === 'Backspace') && s.ui.key !== null) {
-      e.preventDefault();
-      actions.setKeyBinding(s.ui.layer === 0 ? '&none' : '&trans');
-    } else if (/^[a-z0-9]$/i.test(e.key) && !e.altKey && s.ui.key !== null) {
-      e.preventDefault();
-      actions.setKeyBinding(`&kp ${/\d/.test(e.key) ? 'N' + e.key : e.key.toUpperCase()}`);
-      if (s.ui.advance) actions.selectKey(Math.min(s.ui.key + 1, n - 1));
-    }
   });
 }
 

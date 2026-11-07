@@ -8,15 +8,26 @@ import { test, expect, loadExample } from './helpers.js';
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'];
 
 // { rule, target: pattern for the element's CSS selector, row: audit row, pr: the PR that fixes it }
-const KNOWN = [
-  { rule: 'color-contrast', target: /\.idx$/, row: 'A5', pr: 3 },
-  { rule: 'scrollable-region-focusable', target: /(^|[\s>])pre$/, row: 'A6', pr: 8 },
-];
+const KNOWN = [{ rule: 'scrollable-region-focusable', target: /(^|[\s>])pre$/, row: 'A6', pr: 8 }];
+
+// ASSUMPTIONS.md #42: a key on the diagram is named legend first ("Esc, hold Ctrl, key 12"), while
+// axe's label-in-name check also wants its hold legend and corner number in screen order. Such a
+// finding is accepted only when that key's name really starts with its visible legend.
+const legendFirst = (page, selector) =>
+  page.evaluate((sel) => {
+    const el = document.querySelector(sel);
+    if (!el?.matches('#keyboard .key')) return false;
+    const tap = el.querySelector('.tap').textContent;
+    return !/^[\p{L}\p{N}]/u.test(tap) || el.getAttribute('aria-label').startsWith(tap);
+  }, selector);
 
 async function scan(page, state, found) {
   const { violations } = await new AxeBuilder({ page }).withTags(TAGS).analyze();
   for (const v of violations)
-    for (const node of v.nodes) found.push({ state, rule: v.id, target: node.target.join(' '), help: v.help });
+    for (const node of v.nodes) {
+      if (v.id === 'label-content-name-mismatch' && (await legendFirst(page, node.target[0]))) continue;
+      found.push({ state, rule: v.id, target: node.target.join(' '), help: v.help });
+    }
 }
 
 const STATES = [
