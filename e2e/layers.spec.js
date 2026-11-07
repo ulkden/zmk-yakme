@@ -23,16 +23,25 @@ test('layer tabs are a tablist with one Tab stop; arrows switch layers and wrap'
   await expect(tab(page, '2 Raise')).toBeFocused();
 });
 
-test('icon buttons have names, and mode buttons say whether they are pressed', async ({ page }) => {
+test('icon buttons have names, and the mode buttons say which view is current', async ({ page }) => {
   await loadExample(page);
   await expect(page.getByRole('button', { name: 'Undo' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Redo' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Add layer' })).toBeVisible();
   const combos = page.getByRole('button', { name: /^Combos/ });
-  await expect(combos).toHaveAttribute('aria-pressed', 'false');
+  await expect(combos).not.toHaveAttribute('aria-current');
   await combos.click();
-  await expect(combos).toHaveAttribute('aria-pressed', 'true');
+  await expect(combos).toHaveAttribute('aria-current', 'true');
+  await expect(tab(page, '0 Base')).toHaveAttribute('aria-controls', 'keyboard');
   await expect(tab(page, '0 Base')).toHaveAttribute('aria-selected', 'false');
+});
+
+test('a click elsewhere closes the layer settings without moving focus to ✎', async ({ page }) => {
+  await loadExample(page);
+  await page.getByRole('button', { name: 'Layer settings' }).click();
+  await page.locator('#status').click({ position: { x: 5, y: 5 } });
+  await expect(page.getByRole('dialog', { name: 'Layer settings' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Layer settings' })).not.toBeFocused();
 });
 
 test('layer settings take focus when opened and give it back to ✎ on Esc', async ({ page }) => {
@@ -52,5 +61,13 @@ test('in high-contrast mode the active layer tab fills with the highlight colour
   await page.emulateMedia({ forcedColors: 'active' });
   await loadExample(page);
   const bg = (name) => tab(page, name).evaluate((el) => getComputedStyle(el).backgroundColor);
-  expect(await bg('0 Base')).not.toBe(await bg('1 Lower'));
+  const highlight = await page.evaluate(() => {
+    const probe = document.body.appendChild(document.createElement('div'));
+    probe.style.cssText = 'forced-color-adjust: none; background: Highlight';
+    const colour = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return colour;
+  });
+  expect(await bg('0 Base')).toBe(highlight);
+  expect(await bg('1 Lower')).not.toBe(highlight);
 });

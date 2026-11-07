@@ -485,6 +485,12 @@ input.mono {
     background: Highlight;
     border-color: Highlight;
   }
+  /* These keep their own colours, so their focus ring needs a system colour to show on any theme. */
+  .key.selected:focus-visible,
+  .key.combo-on:focus-visible,
+  .tab.active:focus-visible {
+    outline-color: CanvasText;
+  }
 }
 
 /* Palette */

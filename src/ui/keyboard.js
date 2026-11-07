@@ -8,6 +8,7 @@ import { activeLayout, keyCount } from '../core/state.js';
 import { layoutBounds, nearestKey } from '../core/layout-ops.js';
 import { bindingLabel } from '../core/labels.js';
 import { keyName } from '../core/key-names.js';
+import { rovingStep } from '../core/focus-target.js';
 import { parseBinding } from '../core/bindings.js';
 import { allCustomBehaviors } from '../core/behavior-ops.js';
 
@@ -68,6 +69,7 @@ function renderKey(state, key, i, view) {
       'aria-label': keyName(binding, state.keymap.layers, custom, i),
       tabindex: i === view.roving ? '0' : '-1',
       'data-focus': `key-${i}`,
+      'data-index': i,
       onclick: () => view.onClick(i),
     },
     h('span.hold', { 'aria-hidden': 'true' }, label.hold),
@@ -118,13 +120,13 @@ function keyHandlers(el, store, actions, view) {
   el.addEventListener('focusin', (e) => {
     const k = e.target.closest?.('.key');
     if (!k) return;
-    view.last = Number(k.dataset.focus.slice(4));
+    view.last = Number(k.dataset.index);
     el.querySelectorAll('.key').forEach((key) => (key.tabIndex = key === k ? 0 : -1));
   });
   el.addEventListener('keydown', (e) => {
     const k = e.target.closest?.('.key');
     if (!k || e.ctrlKey || e.metaKey || e.altKey) return;
-    const i = Number(k.dataset.focus.slice(4));
+    const i = Number(k.dataset.index);
     const { ui } = store.get();
     // Enter on the key that is already selected opens it for editing in the side panel. Space and
     // other activations (clicks, assistive technology) still toggle it, as a click does.
@@ -133,7 +135,12 @@ function keyHandlers(el, store, actions, view) {
       return focusPanel();
     }
     const keys = activeLayout(store.get())?.keys ?? [];
-    const next = ARROWS[e.key] ? nearestKey(keys, i, ARROWS[e.key]) : { Home: 0, End: keys.length - 1 }[e.key];
+    // Arrows follow the physical layout; Home/End are the list's ends.
+    const next = ARROWS[e.key]
+      ? nearestKey(keys, i, ARROWS[e.key])
+      : ['Home', 'End'].includes(e.key)
+        ? rovingStep(e.key, i, keys.length)
+        : undefined;
     if (next !== undefined) {
       e.preventDefault();
       return moveTo(next);
