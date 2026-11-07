@@ -8,7 +8,7 @@ import { test, expect, loadExample } from './helpers.js';
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'];
 
 // { rule, target: pattern for the element's CSS selector, row: audit row, pr: the PR that fixes it }
-// Empty since PR 8: every gap from the v0.2.0 audit is fixed.
+// Empty since PR 8: every gap from the v0.2.0 audit is fixed. Kept for gaps found by later audits.
 const KNOWN = [];
 
 // ASSUMPTIONS.md #42: a key on the diagram is named legend first ("Esc, hold Ctrl, key 12"), while

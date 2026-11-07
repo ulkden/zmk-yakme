@@ -11,9 +11,10 @@ function projectButtons(store, actions, dialogs) {
     {
       title: 'Save layout + keymap as a project file to back up or move between browsers',
       onclick: () => {
-        download(projectFileName(store.get()), serialize(store.get()));
+        const file = projectFileName(store.get());
+        download(file, serialize(store.get()));
         actions.markClean();
-        toast('Project saved');
+        toast(`Project saved: ${file}`);
       },
     },
     'Save Project',
