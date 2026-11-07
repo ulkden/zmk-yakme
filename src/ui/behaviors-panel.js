@@ -1,6 +1,6 @@
 // Side panel for the Behaviors tab: list, add and edit hold-taps, mod-morphs and macros.
 import { h } from './dom.js';
-import { numberField, textField, selectField, chips } from './fields.js';
+import { numberField, textField, selectField, chips, confirmRow } from './fields.js';
 import { FLAVORS, MOD_FLAGS, countBehaviorUses } from '../core/behavior-ops.js';
 import { normalizeBinding } from '../core/bindings.js';
 import { refHolders } from '../core/source-refs.js';
@@ -101,14 +101,14 @@ function modMorphFields(b, update) {
     h(
       'div.field',
       {},
-      h('span', {}, 'Mods'),
-      chips(MOD_FLAGS, b.mods, modLabel, (mods) => update({ mods })),
+      h('span', { id: 'bh-mods-label' }, 'Mods'),
+      chips(MOD_FLAGS, b.mods, modLabel, (mods) => update({ mods }), { group: 'bh-mods-label' }),
     ),
     h(
       'div.field',
       {},
-      h('span', {}, 'Keep mods'),
-      chips(MOD_FLAGS, b.keepMods, modLabel, (keepMods) => update({ keepMods })),
+      h('span', { id: 'bh-keep-label' }, 'Keep mods'),
+      chips(MOD_FLAGS, b.keepMods, modLabel, (keepMods) => update({ keepMods }), { group: 'bh-keep-label' }),
     ),
   ];
 }
@@ -143,17 +143,11 @@ function deleteRow(state, actions) {
   const uses = countBehaviorUses(state.keymap, b.label);
   const holders = refHolders(state.keymap.source, b.label);
   const where = holders.length ? `, including in ${holders.join(', ')}` : '';
-  return h(
-    'div.confirm-row',
-    {},
-    h('span', {}, `Delete &${b.label}?${uses ? ` Its ${uses} use(s) become &none${where}.` : ''}`),
-    // Cancel shares Delete Behavior's focus name, so keyboard focus moves between them (focus-target.js).
-    h(
-      'button',
-      { 'data-focus': 'behavior-delete', onclick: () => ((confirmingDelete = null), actions.refreshInspector()) },
-      'Cancel',
-    ),
-    h('button.danger.solid', { onclick: () => ((confirmingDelete = null), actions.removeBehavior()) }, 'Delete'),
+  return confirmRow(
+    `Delete &${b.label}?${uses ? ` Its ${uses} use(s) become &none${where}.` : ''}`,
+    'behavior-delete',
+    () => ((confirmingDelete = null), actions.refreshInspector()),
+    () => ((confirmingDelete = null), actions.removeBehavior()),
   );
 }
 

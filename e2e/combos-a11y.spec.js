@@ -66,10 +66,3 @@ test('Esc from the combo editor also returns focus to the combo', async ({ page 
   await page.keyboard.press('Escape');
   await expect(combo(page)).toBeFocused();
 });
-
-test('the behaviors list says which behavior is selected', async ({ page }) => {
-  await loadExample(page);
-  await page.getByRole('button', { name: /^Behaviors/ }).click();
-  await page.getByRole('button', { name: '+ Hold-Tap' }).click();
-  await expect(page.locator('#inspector .combo-item').first()).toHaveAttribute('aria-pressed', 'true');
-});

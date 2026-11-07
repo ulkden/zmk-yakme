@@ -181,17 +181,33 @@ export function mountInspector(el, store, actions) {
     else if (state.ui.mode === 'behaviors') replace(el, behaviorsPanel(state, actions));
     else replace(el, keyPanel(state, actions));
   };
-  // Finishing a combo (Save Combo, Esc, Delete) from inside its editor returns focus to that combo
-  // in the list, or the next one, or + New Combo; otherwise focus follows renderKeepingFocus.
-  let editing = null;
+  // Where focus goes when the panel's content is replaced by finishing something from inside it:
+  // - a combo (Save Combo, Esc, Delete): that combo in the list, or the next, or + New Combo;
+  // - a behavior (Save Behavior): the key's Behavior list, to assign it, or the diagram.
+  // Otherwise focus follows renderKeepingFocus.
+  const last = { mode: null, combo: null };
+  const finishedTarget = (ui) => {
+    if (!el.contains(document.activeElement) || document.activeElement === el) return null;
+    const combo = last.combo; // read now: `last` is updated before the target is focused
+    if (
+      last.mode === 'combos' &&
+      combo !== null &&
+      ui.combo === null &&
+      document.activeElement.closest('.combo-editor')
+    )
+      return () => el.querySelector(`[data-focus="combo-${combo}"]`) ?? el.querySelector('.add-combo');
+    if (last.mode === 'behaviors' && ui.mode === 'layers')
+      return () =>
+        el.querySelector('select[name="behavior"]') ?? document.querySelector('#keyboard .key[tabindex="0"]');
+    return null;
+  };
   const update = () => {
     const { ui } = store.get();
-    const finished = editing !== null && ui.combo === null && document.activeElement?.closest('.combo-editor');
-    const idx = editing;
-    editing = ui.mode === 'combos' ? ui.combo : null;
-    if (!finished) return renderKeepingFocus(el, render);
+    const target = finishedTarget(ui);
+    Object.assign(last, { mode: ui.mode, combo: ui.mode === 'combos' ? ui.combo : null });
+    if (!target) return renderKeepingFocus(el, render);
     render();
-    (el.querySelector(`[data-focus="combo-${idx}"]`) ?? el.querySelector('.add-combo'))?.focus();
+    target()?.focus();
   };
   const schedule = frameScheduler(update);
   actions.refreshInspector = schedule;
