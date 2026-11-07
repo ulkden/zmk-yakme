@@ -464,35 +464,6 @@ input.mono {
   border-style: dashed;
 }
 
-/* Forced colours (Windows high contrast) replace the app's colours, so "on" keys fill with the
-   theme's Highlight colour, like a selected item in any list (ASSUMPTIONS.md #40). */
-@media (forced-colors: active) {
-  .key.selected,
-  .key.combo-on {
-    forced-color-adjust: none;
-    background: Highlight;
-    border-color: Highlight;
-    color: HighlightText;
-  }
-  .key.selected *,
-  .key.combo-on *,
-  .tab.active,
-  .tab.active * {
-    color: HighlightText;
-  }
-  .tab.active {
-    forced-color-adjust: none;
-    background: Highlight;
-    border-color: Highlight;
-  }
-  /* These keep their own colours, so their focus ring needs a system colour to show on any theme. */
-  .key.selected:focus-visible,
-  .key.combo-on:focus-visible,
-  .tab.active:focus-visible {
-    outline-color: CanvasText;
-  }
-}
-
 /* Palette */
 .palette {
   border-top: 1px solid var(--border);
@@ -1127,5 +1098,30 @@ dialog:has(pre.preview) {
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
+  }
+}
+
+/* Forced colours (Windows high contrast) replace the app's colours, so "on" items (selected key,
+   combo keys, active tab, chips, the selected list item) fill with the theme's Highlight colour, like
+   a selected item in any list (ASSUMPTIONS.md #40). Last in the file so it overrides the rules above. */
+@media (forced-colors: active) {
+  /* :hover too, so the fill holds under the pointer (button:hover is more specific than .chip.on). */
+  :is(.key.selected, .key.combo-on, .tab.active, .chip.on, .combo-item.active),
+  :is(.key.selected, .key.combo-on, .tab.active, .chip.on, .combo-item.active):hover {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  :is(.key.selected, .key.combo-on, .tab.active, .chip.on, .combo-item.active) * {
+    color: HighlightText;
+  }
+  /* These keep their own colours, so their focus ring needs a system colour to show on any theme. */
+  .key.selected:focus-visible,
+  .key.combo-on:focus-visible,
+  .tab.active:focus-visible,
+  .chip.on:focus-visible,
+  .combo-item.active:focus-visible {
+    outline-color: CanvasText;
   }
 }

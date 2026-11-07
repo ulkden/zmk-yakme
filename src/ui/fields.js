@@ -106,7 +106,15 @@ export function chips(items, selected, labelOf, onChange) {
     'div.chips',
     {},
     items.map((item) =>
-      h('button.chip', { class: selected.includes(item) ? 'on' : '', onclick: () => toggle(item) }, labelOf(item)),
+      h(
+        'button.chip',
+        {
+          class: selected.includes(item) ? 'on' : '',
+          'aria-pressed': String(selected.includes(item)),
+          onclick: () => toggle(item),
+        },
+        labelOf(item),
+      ),
     ),
   );
 }

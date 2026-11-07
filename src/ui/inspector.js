@@ -61,6 +61,8 @@ function comboList(state, actions) {
         'button.combo-item',
         {
           class: ui.combo === i ? 'active' : '',
+          // Pressing the selected combo again deselects it, so this is a toggle.
+          'aria-pressed': String(ui.combo === i),
           'data-focus': `combo-${i}`,
           onclick: () => actions.selectCombo(ui.combo === i ? null : i),
         },
@@ -93,12 +95,26 @@ function layerChips(combo, layers, actions) {
   };
   return h(
     'div.chips',
-    {},
+    { role: 'group', 'aria-labelledby': 'combo-layers-label' },
     named.map((n) => h('span.chip.on.named', { title: 'Named in the file; change it there' }, n)),
     layers.map((l, i) =>
-      h('button.chip', { class: numbers.includes(i) ? 'on' : '', onclick: () => toggle(i) }, l.name),
+      h(
+        'button.chip',
+        {
+          class: numbers.includes(i) ? 'on' : '',
+          'aria-pressed': String(numbers.includes(i)),
+          onclick: () => toggle(i),
+        },
+        l.name,
+      ),
     ),
   );
+}
+
+// Back to the combo list, with keyboard focus on the combo just edited (the panel renders a frame later).
+function finishCombo(idx, actions) {
+  actions.finishCombo();
+  requestAnimationFrame(() => document.querySelector(`#inspector [data-focus="combo-${idx}"]`)?.focus());
 }
 
 function comboEditor(state, actions) {
@@ -107,7 +123,7 @@ function comboEditor(state, actions) {
   return h(
     'div.combo-editor',
     {},
-    h('p.muted', {}, 'Click keys on the keyboard to add or remove them.'),
+    h('p.muted', {}, 'Click keys on the keyboard to add or remove them, or move with the arrow keys and press Space.'),
     h(
       'label.field',
       {},
@@ -138,14 +154,22 @@ function comboEditor(state, actions) {
       }),
       ' Slow release',
     ),
-    h('div.field', {}, h('span', {}, 'Layers'), layerChips(combo, state.keymap.layers, actions)),
+    h(
+      'div.field',
+      {},
+      h('span', { id: 'combo-layers-label' }, 'Layers'),
+      layerChips(combo, state.keymap.layers, actions),
+    ),
     h('p.muted.small', {}, 'No layers selected = active on all layers.'),
     h(
       'div.finish-row',
       {},
       h(
         'button.primary',
-        { onclick: actions.finishCombo, title: 'Changes are already applied; this returns to the combo list (Esc)' },
+        {
+          onclick: () => finishCombo(state.ui.combo, actions),
+          title: 'Changes are already applied; this returns to the combo list (Esc)',
+        },
         'Save Combo',
       ),
       h('button.danger', { onclick: actions.removeCombo }, 'Delete Combo'),
