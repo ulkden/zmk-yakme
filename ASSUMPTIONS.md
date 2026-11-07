@@ -154,3 +154,32 @@ Decisions made while building unattended. Each one can be changed. Review and te
 35. ✅ **Agreed:** Manual testing uses NVDA (Firefox and Chrome), VoiceOver with Safari, Narrator with
     Edge, and Orca with Firefox. `docs/ACCESSIBILITY.md` becomes the accessibility statement, linked
     from the README and the welcome screen. Problems are reported with the `accessibility` label.
+36. ✅ **Agreed:** Keyboard focus shows as a **2 px light ring (#e8ecf2) with a 2 px gap** on every
+    control (`:focus-visible`: buttons and keys show it for keyboard focus only, text fields whenever
+    they are focused, as browsers do). It was chosen from previews on a real Corne over a ring in the
+    accent blue, where a key with only focus still read as selected, and over a ring inside the keys,
+    which covered the key numbers. Contrast is 13.8:1 on a key.
+37. ✅ **Agreed (a deviation from the usual flow):** QA can't keep pace with the accessibility PRs, so
+    they land on **`initiative/accessibility`** (named to show it is temporary) instead of `main`. Each
+    PR still gets CI. The agent merges it after a clean local run (fresh worktree, `npm ci`, all three
+    engines, built-site smoke test), green CI and its own code review. The maintainer reviews each PR
+    as step 0 of its QA issue, and changes go through QA. The live site stays at v0.2.0 meanwhile, so
+    QA runs on a local checkout of the branch. At the end each PR is re-landed on `main` in order,
+    keeping per-PR history and release notes under the squash-only ruleset. Accepted risks: errors in
+    early PRs can carry into later ones (refined during QA), CodeQL probably only scans PRs into
+    `main`, and the branch must be kept in step with `main`.
+38. ✅ **Agreed:** Key position numbers turn **#8a919c**, the dimmest grey that passes 4.5:1 on every
+    key state (4.55:1 at worst, on hover), and stay always visible. Rejected: the brighter general grey
+    (busy on a full board), and numbers only on the selected key, under the pointer and in Combos
+    (positions hidden when wanted).
+39. ✅ **Agreed:** Secondary grey text (`--muted`) goes from #858d99 to **#959ca7** everywhere: 5:1 or
+    better on every surface, including the blue-tinted info box and selected list items. Rejected:
+    changing it only on tinted surfaces, which needs the exception repeated for each new one.
+40. ✅ **Agreed:** In forced-colours (high-contrast) mode, selected, active and "on" items (the
+    selected key, combo keys, the active tab, chips, the selected list item) **fill with the theme's
+    `Highlight` colour** with `HighlightText`, like a selected item in any Windows list. Rejected: a
+    thick Highlight border, which was easier to miss next to the focus ring.
+41. ✅ **Agreed:** A screen reader reads a key as **its label first, then its position**, e.g.
+    "A, key 13", "Esc, hold Ctrl, key 12", "Lower layer while held, key 37", with "selected" for the
+    selected key. Rejected: position first (slower to scan by sound) and the raw binding (symbols are
+    spelled out). The full binding stays in the side panel.

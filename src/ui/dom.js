@@ -1,4 +1,5 @@
 // Tiny DOM helpers.
+import { focusIds, focusTarget } from '../core/focus-target.js';
 
 // h('button.primary', { onclick, title }, 'Text', childEl)
 export function h(spec, props = {}, ...children) {
@@ -66,43 +67,91 @@ export function download(name, text) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+// Screen readers read messages from #announcer, a live region present from page load (regions
+// added later are often not watched). While a modal dialog is open the rest of the page is inert,
+// #announcer included, so messages go to the dialog's own region instead (see modal.js). A region
+// is cleared first and filled a moment later, so the same message twice in a row is read twice.
+const ANNOUNCE_DELAY_MS = 50;
+let announceTimer;
+export function announce(message) {
+  const dialog = [...document.querySelectorAll('dialog[open]')].at(-1);
+  const el = dialog?.querySelector('.dialog-announcer') ?? document.getElementById('announcer');
+  if (!el) return;
+  el.textContent = '';
+  clearTimeout(announceTimer);
+  announceTimer = setTimeout(() => (el.textContent = message), ANNOUNCE_DELAY_MS);
+}
+
+// A short visible message, also read out by screen readers. The visible copy is hidden from them
+// so it isn't read twice.
 let toastTimer;
 export function toast(message, kind = 'info') {
   let el = document.getElementById('toast');
   if (!el) {
-    el = h('div', { id: 'toast' });
+    el = h('div', { id: 'toast', 'aria-hidden': 'true' });
     document.body.append(el);
   }
   el.textContent = message;
   el.className = `show ${kind}`;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => (el.className = ''), 2600);
+  announce(message);
 }
 
-// Re-render `el` while keeping focus (and caret) on the field with the same `name`.
-// Text typed into that field but not committed yet is carried over, so a re-render
-// caused by another field's commit never discards what the user is typing.
-// Pair with requestAnimationFrame so a blur→change→focus sequence has finished first.
-export function renderKeepingFocus(el, render) {
-  const active = document.activeElement;
-  const name = active && el.contains(active) ? active.getAttribute('name') : null;
-  const caret = name && typeof active.selectionStart === 'number' ? [active.selectionStart, active.selectionEnd] : null;
-  const pending = name && active.dataset.pending ? active.value : null;
-  render();
-  const next = name && el.querySelector(`[name="${name}"]`);
-  if (!next || next === active) return;
+export const FOCUSABLE = 'button, input, select, textarea, a[href], summary, [tabindex]:not([tabindex="-1"])';
+
+// A control's identity across re-renders: `data-focus` for items whose text changes (keys, tabs,
+// list items), else its field name, else its label or text.
+export function focusName(el) {
+  return (
+    el.dataset.focus ??
+    el.getAttribute('name') ??
+    `${el.tagName}:${el.getAttribute('aria-label') ?? el.textContent.trim()}`
+  );
+}
+
+// Disabled or not rendered (hidden, or inside a closed <details>), so focus() would do nothing.
+export const unusable = (el) => el.disabled || !el.getClientRects().length;
+
+function restoreField(next, { caret, pending }) {
   if (pending !== null) {
     next.value = pending;
     next.dataset.pending = '1';
   }
-  next.focus();
-  if (caret) {
-    try {
-      next.setSelectionRange(...caret);
-    } catch {
-      // number inputs don't support selection ranges
-    }
+  if (!caret) return;
+  try {
+    next.setSelectionRange(...caret);
+  } catch {
+    // number inputs don't support selection ranges
   }
+}
+
+// Re-render `el` without losing keyboard focus: focus goes back to the same control (see
+// focusName), or to its nearest neighbour when that control is gone or disabled. For fields,
+// the caret and any text typed but not committed yet are carried over, so a re-render caused by
+// another field's commit never discards what the user is typing.
+// Pair with requestAnimationFrame where a blur→change→focus sequence must finish first.
+export function renderKeepingFocus(el, render) {
+  const active = document.activeElement;
+  const controls = () => [...el.querySelectorAll(FOCUSABLE)];
+  const beforeEls = active && el.contains(active) ? controls() : [];
+  const index = beforeEls.indexOf(active);
+  if (index < 0) return render();
+  const field = {
+    caret: typeof active.selectionStart === 'number' ? [active.selectionStart, active.selectionEnd] : null,
+    pending: active.dataset.pending ? active.value : null,
+  };
+  const before = focusIds(beforeEls.map(focusName));
+  render();
+  if (active.isConnected && el.contains(active)) return;
+  const afterEls = controls();
+  const after = focusIds(afterEls.map(focusName));
+  const j = focusTarget(before, index, after, (k) => unusable(afterEls[k]));
+  if (j < 0) return;
+  const next = afterEls[j];
+  const same = after[j] === before[index];
+  next.focus({ preventScroll: same });
+  if (same) restoreField(next, field);
 }
 
 // Coalesce many store updates into one render per animation frame.

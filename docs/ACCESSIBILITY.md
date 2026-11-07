@@ -39,7 +39,7 @@ example keyboard on every tab and in every dialog.
 | A2 | About 120 Tab presses reach the side panel (42 keys, then 71 palette buttons). There are no skip links | 2.4.1 Bypass Blocks (A), usability |
 | A3 | The selected key, active layer tab, selected combo and on/off chips show their state only by colour. Undo, redo and ✎ are read out as "↶", "↷" and "✎"; tabs as "0Base"; keys as "⇥ 0" | 4.1.2 Name, Role, Value (A) |
 | A4 | Pop-up messages (toasts), warnings and import errors are not announced to screen readers | 4.1.3 Status Messages (AA) |
-| A5 | Key numbers have a contrast of 2.07:1 (1.92:1 on the selected key); the Import dialog's info box 4.11:1 | 1.4.3 Contrast (AA) |
+| A5 | Key numbers have a contrast of 2.07:1 (1.92:1 on the selected key); the Import dialog's info box 4.11:1. axe 4.14 (PR 1) also flags the Behaviors tab's kind badge and the grey use count on a selected list item | 1.4.3 Contrast (AA) |
 | A6 | The Export preview can't be scrolled by keyboard | 2.1.1 Keyboard (A) |
 | A7 | Typing a letter assigns it to the selected key wherever focus is (outside text fields), and this can't be turned off | 2.1.4 Character Key Shortcuts (A) |
 | A8 | The focus ring and the selected-key highlight look the same (both a 1 px accent-coloured outline) | 2.4.7 Focus Visible (AA) |
@@ -51,8 +51,13 @@ two-dimensional layout, which covers the keyboard diagram but not the page as a 
 
 ## Rollout
 
-Agreed: **foundation first, then area by area**, in small PRs. Every merge deploys, so improvements
-reach users as they land. The app claims WCAG 2.2 AA only after the final pass.
+Agreed: **foundation first, then area by area**, in small PRs. The app claims WCAG 2.2 AA only after
+the final pass.
+
+The PRs land on `initiative/accessibility`, not `main` (ASSUMPTIONS.md #37). The agent merges each one
+after a clean local run, green CI and its own code review. The maintainer reviews each PR as step 0 of
+its QA, and changes are handled in QA. The live site stays at v0.2.0 until every PR is re-landed on
+`main` in order.
 
 1. **Foundation:** focus survives re-renders (A1), one shared screen-reader announcer (A4), and
    automated accessibility checks in the browser tests.
@@ -75,14 +80,31 @@ cheatsheet, `CHANGELOG.md`).
 | 3 | Keys and palette | Roving focus in the diagram and the palette (A2); key names and selected state (A3); type-to-assign only on focus (A7); key-number contrast (A5); palette group headings (A10); forced colours (A9) |
 | 4 | Layers | Layer tabs exposed as tabs, with arrow keys; names for ✎, ↶ and ↷ (A3); focus in the layer settings popover; forced colours for the active tab (A9) |
 | 5 | Combos | Selected combo and layer chips exposed as states (A3); key positions read out sensibly |
-| 6 | Behaviors | Chips and list states (A3); focus during delete confirmation |
+| 6 | Behaviors | Chips and list states (A3); focus during delete confirmation; badge and use-count contrast (A5) |
 | 7 | Warnings | New warnings announced (A4); focus after Clear Warnings |
 | 8 | Export and saving | Preview reachable by keyboard (A6); Copy, Download and Save announced (A4) |
 | 9 | Final pass | Reflow at 320 px; the full manual screen-reader pass; this file finished as the statement; welcome-screen link; release 0.3.0 |
 
-To be chosen when their PR comes up, from side-by-side previews of a real board: the focus ring style
-(PR 1), the key-number colour (PR 3), forced-colours styling (PRs 3 and 4), and how a screen reader
-reads a key (PR 3).
+Visual choices, made from previews on a real Corne (ASSUMPTIONS.md #38–#41):
+- **Key numbers:** #8a919c, always shown.
+- **Secondary grey text:** #959ca7 everywhere.
+- **Forced colours:** selected, active and "on" items fill with `Highlight`.
+- **How a screen reader reads a key:** its label, then its position ("A, key 13").
+
+### Progress
+
+| PR | Done |
+|---|---|
+| 1 | Focus stays on the control you used, or moves to its nearest neighbour when that control goes away (A1, everywhere). The light focus ring (A8). Skip links (A2, first half; roving focus follows in PR 3). One `#announcer` live region, through which every toast is read out (A4, first half; other messages follow per area). axe runs in the browser tests on every engine (`e2e/a11y.spec.js`) |
+
+### Focus ring (A8)
+
+Agreed (ASSUMPTIONS.md #36), from previews on a real Corne: a **2 px light ring (`--focus`, #e8ecf2)
+with a 2 px gap**, on every control. It is the only light outline in the app, so focus never looks
+like the blue selection, and a selected key that also has focus shows both. Contrast is 13.8:1 on a
+key and 16.1:1 on the page (WCAG 1.4.11 needs 3:1). It uses `:focus-visible`: buttons and keys
+show it for keyboard focus only, text fields whenever they are focused, as browsers do. Rejected: the same ring in the accent blue (a key that only has focus still
+read as selected) and a ring inside the keys (it covered the key numbers).
 
 ### Automated checks
 
@@ -122,4 +144,4 @@ screen-reader steps.
 Agreed: this file becomes the accessibility statement in the final pass. It will say which standard
 the app meets, which combinations were tested, any known gaps, and how to report a problem. It is
 linked from the README and from the welcome screen's version line (… · User guide · Accessibility).
-Problems are reported as GitHub issues labelled `accessibility`.
+Problems are reported as GitHub issues labelled `accessibility` (the label already exists).

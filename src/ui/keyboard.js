@@ -1,5 +1,5 @@
 // Renders the physical layout with the bindings of the active layer.
-import { h, replace, isGlyph } from './dom.js';
+import { h, replace, isGlyph, renderKeepingFocus } from './dom.js';
 import { activeLayout } from '../core/state.js';
 import { layoutBounds } from '../core/layout-ops.js';
 import { bindingLabel } from '../core/labels.js';
@@ -41,7 +41,7 @@ function renderKey(state, key, i, unit, origin, onClick) {
   }
   return h(
     'button.' + keyClasses(state, i, binding, label.kind).replace(/ /g, '.'),
-    { style, title: `#${i}  ${binding || '(no binding)'}`, onclick: () => onClick(i) },
+    { style, title: `#${i}  ${binding || '(no binding)'}`, 'data-focus': `key-${i}`, onclick: () => onClick(i) },
     h('span.hold', {}, label.hold),
     h('span.tap', { class: isGlyph(label.tap) ? 'glyph' : '' }, label.tap),
     h('span.idx', {}, String(i)),
@@ -49,7 +49,7 @@ function renderKey(state, key, i, unit, origin, onClick) {
 }
 
 export function mountKeyboard(el, store, actions) {
-  const render = () => {
+  const draw = () => {
     const state = store.get();
     const layout = activeLayout(state);
     if (!layout || !state.keymap) return replace(el);
@@ -63,6 +63,7 @@ export function mountKeyboard(el, store, actions) {
     layout.keys.forEach((key, i) => board.append(renderKey(state, key, i, unit, origin, actions.keyClick)));
     replace(el, board);
   };
+  const render = () => renderKeepingFocus(el, draw);
   store.subscribe(render);
   // Re-render only when the available width changes, and outside the observer callback:
   // rendering changes the board's height, which would otherwise re-trigger the observer

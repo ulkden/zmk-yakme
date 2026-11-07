@@ -33,7 +33,10 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
 - **No build step, no runtime dependencies.** Plain ES modules served as-is. Adding a runtime
   dependency or a build step needs the maintainer's explicit agreement.
 - `src/dts/`, `src/core/`, `src/data/`: pure logic, no DOM access, fully unit-tested.
-- `src/ui/`: DOM components. They change state only through `src/ui/actions.js`.
+- `src/ui/`: DOM components. They change state only through `src/ui/actions.js`. A component that
+  rebuilds its DOM renders through `renderKeepingFocus` (`src/ui/dom.js`) so keyboard focus survives,
+  and gives items whose text changes (keys, tabs, list items) a stable `data-focus` name.
+  Messages for the user go through `toast()` or `announce()`, so screen readers hear them.
 - State is immutable and updated through the store, so undo/redo works. Document changes go through
   the undo history; UI-only changes (`ui.*`) do not.
 - Browser-only side effects (storage, clipboard, toasts) are injected into actions, so actions stay
@@ -112,6 +115,11 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
 
 - Branch from `main` for every change: `feat/…`, `fix/…`, `docs/…`, `chore/…`. Keep PRs small and focused.
 - `main` is protected: changes land only by **squash merge** of a PR with green CI. Never push to `main`.
+- **Exception, the accessibility initiative only** (`ASSUMPTIONS.md` #37): its PRs branch from and
+  target `initiative/accessibility`. The agent merges each one (squash) after a clean local run, green CI
+  and its own code review; the maintainer reviews each PR as step 0 of its QA. At the end, every PR is
+  re-landed on `main` in order, and then the branch is deleted. Keep it in step by merging `main` into it
+  whenever `main` changes.
 - Commit in small steps. Messages: imperative subject, a body explaining *why*. AI-assisted commits
   carry a `Co-Authored-By:` trailer.
 - Formatting-only or mechanical changes (reformatting, renames) go in their **own PR**, so the squash

@@ -75,6 +75,7 @@ Step-by-step instructions with screenshots are in the **[user guide](docs/guide/
 | Start over | **Close Keymap** clears the layout, keymap, autosaved copy and undo history. |
 | Undo / redo | <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> |
 | Change a number | Click the field, then scroll: ±10 for milliseconds (<kbd>Shift</kbd> for ±1). |
+| Keyboard only | Press <kbd>Tab</kbd> once: *Skip to keys*, *Skip to keycodes* or *Skip to side panel* jumps there. |
 
 ## Feedback and contributing
 

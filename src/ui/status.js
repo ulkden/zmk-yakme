@@ -1,5 +1,5 @@
 // Bottom status bar: layout choice, key count, warnings and the app version.
-import { h, replace } from './dom.js';
+import { h, replace, renderKeepingFocus } from './dom.js';
 import { activeLayout, keyCount } from '../core/state.js';
 import { validate } from '../core/validate.js';
 import { versionLink } from './version.js';
@@ -17,7 +17,7 @@ function warningItem(w, actions) {
 const PULSE_MS = 900;
 
 function warnButton(count, pulseStart, onclick) {
-  const btn = h('button.warn', { onclick }, `⚠ ${count} warning${count > 1 ? 's' : ''}`);
+  const btn = h('button.warn', { onclick, 'data-focus': 'warnings' }, `⚠ ${count} warning${count > 1 ? 's' : ''}`);
   const age = performance.now() - pulseStart;
   if (age < PULSE_MS) {
     btn.classList.add('pulse');
@@ -29,7 +29,11 @@ function warnButton(count, pulseStart, onclick) {
 
 function warningSummary(visible, hidden, pulseStart, ui) {
   const restore = hidden
-    ? h('button.link.muted', { onclick: ui.restore, title: 'Show the cleared warnings again' }, `${hidden} hidden`)
+    ? h(
+        'button.link.muted',
+        { onclick: ui.restore, title: 'Show the cleared warnings again', 'data-focus': 'warnings-hidden' },
+        `${hidden} hidden`,
+      )
     : null;
   if (visible.length) return [warnButton(visible.length, pulseStart, ui.toggle), restore];
   if (!hidden) return h('span.ok', {}, '✓ No issues');
@@ -46,7 +50,7 @@ export function mountStatus(el, store, actions) {
     restore: () => ((dismissed = new Set()), (open = true), render()),
     clear: (texts) => ((dismissed = new Set(texts)), (open = false), render()),
   };
-  const render = () => {
+  const draw = () => {
     const s = store.get();
     const layout = activeLayout(s);
     if (!s.keymap) {
@@ -67,7 +71,7 @@ export function mountStatus(el, store, actions) {
       s.layouts.length > 1
         ? h(
             'select',
-            { onchange: (e) => actions.selectLayout(Number(e.target.value)) },
+            { name: 'layout', onchange: (e) => actions.selectLayout(Number(e.target.value)) },
             s.layouts.map((l, i) => h('option', { value: i, selected: i === s.layoutIndex }, l.name)),
           )
         : h('span', {}, layout?.name ?? 'No layout'),
@@ -101,6 +105,7 @@ export function mountStatus(el, store, actions) {
         : null,
     );
   };
+  const render = () => renderKeepingFocus(el, draw);
   store.subscribe(render);
   render();
 }
