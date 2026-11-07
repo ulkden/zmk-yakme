@@ -29,6 +29,13 @@ CDNs. The only network requests are the ones you ask for, when you import from a
 go to GitHub only. A Content-Security-Policy in the page enforces this. Autosave uses your browser's
 local storage; **Close Keymap** clears it.
 
+## Accessibility
+
+zmk-yakme is working towards [WCAG 2.2](https://www.w3.org/TR/WCAG22/) Level AA: full keyboard use,
+screen-reader support (NVDA, VoiceOver, Narrator, Orca) and sufficient contrast. It doesn't meet that
+yet. [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md) lists what is still missing and the plan.
+Problems are welcome as [issues](https://github.com/ulkden/zmk-yakme/issues/new).
+
 ## How it compares
 
 There are good tools for ZMK keymaps already. Pick the one that fits how you work:
