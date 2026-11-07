@@ -183,3 +183,11 @@ Decisions made while building unattended. Each one can be changed. Review and te
     "A, key 13", "Esc, hold Ctrl, key 12", "Lower layer while held, key 37", with "selected" for the
     selected key. Rejected: position first (slower to scan by sound) and the raw binding (symbols are
     spelled out). The full binding stays in the side panel.
+42. ⏳ **Assumed (review at QA 48):** Key names keep #41's order even though axe's *label in name*
+    check (WCAG 2.5.3) flags them: it wants the small hold legend and the corner number in screen order
+    ("Ctrl Esc 12"). The assumption is that a key's label is its main legend, and the hold legend and
+    number are extra information. Names start with the legend and include the other words, so speech
+    input ("click Esc") finds the key. A test checks that every text legend starts its key's name, and
+    the axe list records this as an accepted exception. The palette had a real 2.5.3 gap: spoken names
+    such as "Right Ctrl" for "RCtrl" left out the visible text. Its names now start with the label's
+    own letters ("R Shift", "Vol up", "kp Enter"), and plain-text labels keep their text.

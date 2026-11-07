@@ -8,8 +8,16 @@ import { test, expect, loadExample } from './helpers.js';
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'];
 
 // { rule, target: pattern for the element's CSS selector, row: audit row, pr: the PR that fixes it }
+// An entry with `accepted` instead of `pr` is a deliberate exception, with its reason.
 const KNOWN = [
-  { rule: 'color-contrast', target: /\.idx$/, row: 'A5', pr: 3 },
+  {
+    rule: 'label-content-name-mismatch',
+    // Keys on the diagram: `button[title="#13 …"]`, or `.kind-hold` / `.selected` when that is unique.
+    target: /^(button\[title="#\d+\s|\.kind-[a-z]+$|\.selected$|\.combo-on$)/,
+    row: '2.5.3',
+    accepted:
+      'ASSUMPTIONS.md #42: a key is named legend first ("Esc, hold Ctrl, key 12", #41); axe wants the hold legend and corner number in screen order. e2e/keys.spec.js checks that names start with the legend.',
+  },
   { rule: 'scrollable-region-focusable', target: /(^|[\s>])pre$/, row: 'A6', pr: 8 },
 ];
 
