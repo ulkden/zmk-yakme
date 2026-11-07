@@ -1,10 +1,15 @@
 // Modal dialog helpers built on <dialog>.
 import { h } from './dom.js';
 
+let dialogCount = 0;
+
 // Every dialog closes the same ways: its own buttons, Esc, the ✕ in the corner, or a click on
 // the backdrop. Closing that way counts as Cancel. The ✕ comes last in the DOM so that showModal()
 // still focuses the first field or button.
-export function dialog(title, body, buttons, className = '') {
+// Screen readers name the dialog by its title. With `describe`, they also read the body when it
+// opens: for short messages (confirmations, errors), not for forms.
+export function dialog(title, body, buttons, className = '', { describe = false } = {}) {
+  const id = `dialog-${++dialogCount}`;
   const x = h(
     'button.icon.dialog-x',
     { type: 'button', title: 'Close (Esc)', 'aria-label': 'Close dialog', onclick: () => dlg.close() },
@@ -12,10 +17,11 @@ export function dialog(title, body, buttons, className = '') {
   );
   // The page behind a modal dialog is inert, so its messages need a live region inside it (announce()).
   const live = h('div.sr-only.dialog-announcer', { 'aria-live': 'polite', 'aria-atomic': 'true' });
+  if (describe) body.id = `${id}-body`;
   const dlg = h(
     'dialog.modal',
-    { class: className },
-    h('div.dialog-inner', {}, h('h2', {}, title), body, h('div.dialog-buttons', {}, buttons), x),
+    { class: className, 'aria-labelledby': `${id}-title`, 'aria-describedby': describe ? body.id : null },
+    h('div.dialog-inner', {}, h('h2', { id: `${id}-title` }, title), body, h('div.dialog-buttons', {}, buttons), x),
     live,
   );
   closeOnBackdrop(dlg);
@@ -54,6 +60,7 @@ export function askConfirm(title, message, okLabel = 'Continue') {
         h('button.primary', { onclick: () => ((result = true), dlg.close()) }, okLabel),
       ],
       'confirm',
+      { describe: true },
     );
     dlg.addEventListener('close', () => resolve(result));
   });

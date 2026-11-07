@@ -48,9 +48,13 @@ export function errorContent(result) {
 
 export function reportImportError(result, name) {
   if (result.errorKind !== 'helper-macros') return toast(`${name ? `${name}: ` : ''}${result.errors[0]}`, 'error');
-  const dlg = dialog(`Can't import ${name || 'this file'}`, h('div.error-body', {}, errorContent(result)), [
-    h('button.primary', { onclick: () => dlg.close() }, 'OK'),
-  ]);
+  const dlg = dialog(
+    `Can't import ${name || 'this file'}`,
+    h('div.error-body', {}, errorContent(result)),
+    [h('button.primary', { onclick: () => dlg.close() }, 'OK')],
+    '',
+    { describe: true },
+  );
 }
 
 // Parse texts ([{ name, text }]), report failures, and apply the rest as one import.

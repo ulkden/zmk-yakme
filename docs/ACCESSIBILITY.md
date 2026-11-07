@@ -65,6 +65,9 @@ its QA, and changes are handled in QA. The live site stays at v0.2.0 until every
    → saving. Each PR makes that area meet AA and comes with its QA issue.
 3. **Final pass:** keyboard-only and screen-reader testing of the whole journey, this file turned into
    the accessibility statement, and release 0.3.0.
+4. **Retrospective:** once everything is on `main`, look back at how the initiative went (QA findings
+   per PR, problems that carried forward, re-landing effort, what self-review missed). Then decide
+   whether to codify this approach in `AGENTS.md` as the general way to run unassisted initiatives.
 
 ### Planned PRs
 
@@ -80,7 +83,7 @@ cheatsheet, `CHANGELOG.md`).
 | 3 | Keys and palette | Roving focus in the diagram and the palette (A2); key names and selected state (A3); type-to-assign only on focus (A7); key-number contrast (A5); palette group headings (A10); forced colours (A9) |
 | 4 | Layers | Layer tabs exposed as tabs, with arrow keys; names for ✎, ↶ and ↷ (A3); focus in the layer settings popover; forced colours for the active tab (A9) |
 | 5 | Combos | Selected combo and layer chips exposed as states (A3); key positions read out sensibly |
-| 6 | Behaviors | Chips and list states (A3); focus during delete confirmation; badge and use-count contrast (A5) |
+| 6 | Behaviors | Chips and list states (A3); focus during delete confirmation |
 | 7 | Warnings | New warnings announced (A4); focus after Clear Warnings |
 | 8 | Export and saving | Preview reachable by keyboard (A6); Copy, Download and Save announced (A4) |
 | 9 | Final pass | Reflow at 320 px; the full manual screen-reader pass; this file finished as the statement; welcome-screen link; release 0.3.0 |
@@ -96,6 +99,7 @@ Visual choices, made from previews on a real Corne (ASSUMPTIONS.md #38–#41):
 | PR | Done |
 |---|---|
 | 1 | Focus stays on the control you used, or moves to its nearest neighbour when that control goes away (A1, everywhere). The light focus ring (A8). Skip links (A2, first half; roving focus follows in PR 3). One `#announcer` live region, through which every toast is read out (A4, first half; other messages follow per area). axe runs in the browser tests on every engine (`e2e/a11y.spec.js`) |
+| 2 | One `h1` for the page (the app name; the welcome title is now an `h2`) and dialogs named by their titles, with short ones (confirmations, errors, notices) also reading their message (A10). Visible labels for the Import paste and link fields (A10). The lighter secondary grey, #959ca7 (A5: info box, badge and use count, fixed for every surface at once). Import and repository messages are read out, and messages raised inside a dialog come from a live region within it (A4). When opening a keymap removes the welcome screen, or closing it removes the editor, focus moves to the first key or to Import Files; Example and blank keymaps are announced with their size |
 
 ### Focus ring (A8)
 

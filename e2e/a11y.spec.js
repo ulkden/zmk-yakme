@@ -10,9 +10,6 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa']
 // { rule, target: pattern for the element's CSS selector, row: audit row, pr: the PR that fixes it }
 const KNOWN = [
   { rule: 'color-contrast', target: /\.idx$/, row: 'A5', pr: 3 },
-  { rule: 'color-contrast', target: /\.info-box$/, row: 'A5', pr: 2 },
-  { rule: 'color-contrast', target: /\.badge$/, row: 'A5', pr: 6 },
-  { rule: 'color-contrast', target: /\.combo-item > \.muted$/, row: 'A5', pr: 6 },
   { rule: 'scrollable-region-focusable', target: /(^|[\s>])pre$/, row: 'A6', pr: 8 },
 ];
 

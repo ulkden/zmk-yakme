@@ -20,7 +20,7 @@
   --panel-2: #1a1e24;
   --border: #252a32;
   --text: #d8dce3;
-  --muted: #858d99;
+  --muted: #959ca7; /* 5:1 or better on every surface, tinted ones included (ASSUMPTIONS.md #39) */
   --accent: #7aa2f7;
   --accent-dim: rgba(122, 162, 247, 0.16);
   --focus: #e8ecf2;
@@ -184,6 +184,8 @@ body.empty .skip-links {
   background: var(--panel);
 }
 .brand {
+  margin: 0;
+  font-size: 1em;
   font-weight: 600;
   letter-spacing: 0.2px;
   white-space: nowrap;
@@ -243,10 +245,19 @@ body.empty .status {
   text-align: center;
   padding: 0 16px;
 }
-.welcome h1 {
+.stacked {
+  display: grid;
+  gap: 4px;
+}
+.stacked > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.welcome h2 {
   font-size: 22px;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin: 0.67em 0 6px; /* as when it was an h1, so the welcome screen doesn't shift */
 }
 .welcome-actions {
   display: flex;

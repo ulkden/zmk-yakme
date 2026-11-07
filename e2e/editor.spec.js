@@ -1,7 +1,7 @@
 import { test, expect, keys, key, loadExample, pick } from './helpers.js';
 
 test('welcome screen, then example loads with layers and status', async ({ page }) => {
-  await expect(page.getByRole('heading', { name: 'ZMK Keymap Editor' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'ZMK Keymap Editor' })).toBeVisible();
   await expect(page.locator('#inspector')).toBeHidden();
   await loadExample(page);
   await expect(page.locator('.tab-list .tab:not(.add)')).toHaveText(['0Base', '1Lower', '2Raise']);

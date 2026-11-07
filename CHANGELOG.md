@@ -10,17 +10,22 @@ merged pull request.
 
 - Keyboard users: the first <kbd>Tab</kbd> press shows **Skip to keys**, **Skip to keycodes** and
   **Skip to side panel** links.
-- Screen readers read out the app's short messages (such as "Project saved").
+- Screen readers read out the app's short messages (such as "Project saved"), including errors in
+  the Import dialog, and say when an example or blank keymap opens.
+- The Import dialog's paste box and link field have visible labels.
 
 ### Changed
 
 - Keyboard focus shows a clear light ring that no longer looks like the selected key. It doesn't
   appear when you click a button or key.
+- Secondary grey text is slightly lighter, so it is easier to read everywhere.
 
 ### Fixed
 
 - Using a key, a layer tab, the Combos or Behaviors tab or a list item from the keyboard no longer
   sends focus back to the top of the page.
+- After opening or closing a keymap, keyboard focus goes to the first key or to **Import Files**
+  instead of being lost.
 
 ## [0.2.0] - 2026-11-01
 

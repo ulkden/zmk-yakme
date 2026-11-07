@@ -1,5 +1,5 @@
 // Import dialog: choose files, paste text, or fetch a URL.
-import { h, replace } from './dom.js';
+import { h, showMessage } from './dom.js';
 import { dialog } from './modal.js';
 import { importText } from '../core/import.js';
 import { toRawUrl } from '../core/export.js';
@@ -54,13 +54,14 @@ function acceptedFiles() {
 export function openImport(store, actions) {
   const msg = h('p.dialog-msg');
   const text = h('textarea', {
-    placeholder: '…or paste a .keymap, .dtsi/.overlay, QMK info.json or KLE JSON here',
+    name: 'import-text',
+    placeholder: 'A .keymap, .dtsi/.overlay, QMK info.json or KLE JSON',
     spellcheck: false,
   });
   const url = h('input', {
     type: 'url',
     name: 'import-url',
-    placeholder: '…or a URL: a file link, or a GitHub repo to browse its files',
+    placeholder: 'A file link, or a GitHub repository to browse its files',
   });
   const repoPanel = h('div.repo-panel');
   const fileInput = h('input', {
@@ -82,11 +83,11 @@ export function openImport(store, actions) {
         src = await fetchText(url.value);
         name = url.value.split('/').pop();
       } catch (err) {
-        return replace(msg, `Could not fetch: ${err.message}`);
+        return showMessage(msg, `Could not fetch: ${err.message}`);
       }
     }
     const result = importText(src);
-    if (result.errors.length) return replace(msg, ...errorContent(result));
+    if (result.errors.length) return showMessage(msg, ...errorContent(result));
     if (await applyResult(result, name, store, actions)) dlg.close();
   };
   const body = h(
@@ -95,8 +96,9 @@ export function openImport(store, actions) {
     acceptedFiles(),
     h('button.primary.big', { onclick: () => fileInput.click() }, 'Choose Files…'),
     fileInput,
-    text,
-    url,
+    // Visible labels: placeholders alone disappear while typing and aren't read reliably (WCAG 3.3.2).
+    h('label.stacked', {}, h('span', {}, 'Or paste file contents'), text),
+    h('label.stacked', {}, h('span', {}, 'Or load from a link'), url),
     repoPanel,
     msg,
   );

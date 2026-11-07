@@ -43,7 +43,14 @@ The app targets WCAG 2.2 AA; plan and progress are in [ACCESSIBILITY.md](ACCESSI
   *Skip to keycodes* (the filter) and *Skip to side panel* (its first control). They are hidden on the
   welcome screen, and the keycodes link is hidden on the Behaviors tab.
 - **Messages:** every toast is also read out by screen readers, from one live region
-  (`#announcer`, polite).
+  (`#announcer`, polite). While a dialog is open the page behind it is inert, so messages come from a
+  live region inside the dialog instead. Error lines in dialogs (Import, repository listing) are read
+  out too, and so are an opened example or blank keymap with its size ("Example loaded: 42 keys,
+  3 layers").
+- **Headings and dialogs:** the app name in the top bar is the page's only `h1`. Each dialog is named
+  by its title; confirmations, errors and notices also read their message when they open.
+- **Focus between screens:** opening a keymap removes the welcome screen, so focus moves to the first
+  key; closing it moves focus to **Import Files**.
 
 ## Click budget (≤ 3 clicks)
 

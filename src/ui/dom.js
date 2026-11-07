@@ -82,6 +82,12 @@ export function announce(message) {
   announceTimer = setTimeout(() => (el.textContent = message), ANNOUNCE_DELAY_MS);
 }
 
+// Show a message in `el` (e.g. a dialog's error line) and read it out to screen readers.
+export function showMessage(el, ...content) {
+  replace(el, ...content);
+  if (el.textContent.trim()) announce(el.textContent.trim());
+}
+
 // A short visible message, also read out by screen readers. The visible copy is hidden from them
 // so it isn't read twice.
 let toastTimer;

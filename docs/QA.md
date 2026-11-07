@@ -21,6 +21,9 @@ auto-advance and layer-diagram settings.
 
 ## How to test and give feedback
 
+0. If the issue names a pull request that hasn't had your review yet (work on an initiative branch,
+   ASSUMPTIONS.md #37), review that PR first: it is step 0 of the QA. Changes it needs are handled
+   through the QA feedback, like any other finding.
 1. Pick the lowest-numbered open QA issue and set its **QA status** to *In QA* on the project board.
 2. Follow the **Test steps**, then check every **Acceptance criteria** item.
 3. Post **one comment per finding** using the template in the issue. Always post a `Result:` line,

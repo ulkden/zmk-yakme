@@ -28,5 +28,6 @@ export function openClose(store, actions) {
       h(dirty ? 'button.danger.solid' : 'button.primary', { onclick: close }, 'Close Keymap'),
     ],
     'close-keymap',
+    { describe: true },
   );
 }
