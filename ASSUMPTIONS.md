@@ -132,3 +132,25 @@ Decisions made while building unattended. Each one can be changed. Review and te
     keeps one keyboard's `QMK/` and `ZMK/` subfolders together when you list that keyboard's folder.
     When grouped, only the chosen keymap's own layouts are preselected (scottokeebs: 46 files from 45
     keyboards before, 1 now), and only its keyboard starts open.
+
+## Accessibility
+30. ✅ **Agreed:** The app targets **WCAG 2.2 Level AA** (also ISO/IEC 40500:2025), the level that
+    EN 301 549 v4.1.1 and current laws point to. The project very likely has no legal obligation (it is
+    free and sells nothing), so this is a voluntary commitment. WCAG 2.1 AA would save little, because
+    the app already mostly meets 2.2's new criteria. AAA criteria were not chosen, because they would
+    change the quiet dark design more. WCAG 3.0 is still a draft. The research, the audit of v0.2.0 and
+    the rollout plan are in [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
+31. ✅ **Agreed:** Rollout is **foundation first, then area by area** in QA order, one PR each, with
+    the AA claim and release 0.3.0 after a final pass. Fixing gaps level by level (all A, then all AA),
+    one PR per audit row, or one long-lived branch were rejected. Each of them touches the same files
+    repeatedly or goes against the small-PR flow.
+32. ✅ **Agreed:** Browser tests run **@axe-core/playwright**, a devDependency pinned exactly and never
+    shipped to the site. Known gaps are listed and shrink with each PR, and new violations fail CI.
+33. ✅ **Agreed:** The keyboard diagram and the keycode palette use **roving focus** (one Tab stop
+    each, arrow keys inside), plus **skip links**. This takes about 14 Tab presses to the side panel
+    instead of about 120. Mouse use is unchanged.
+34. ✅ **Agreed:** Type-to-assign (#22) works **only while the keyboard diagram has focus**, which
+    meets WCAG 2.1.4. There is no new setting.
+35. ✅ **Agreed:** Manual testing uses NVDA (Firefox and Chrome), VoiceOver with Safari, Narrator with
+    Edge, and Orca with Firefox. `docs/ACCESSIBILITY.md` becomes the accessibility statement, linked
+    from the README and the welcome screen. Problems are reported with the `accessibility` label.

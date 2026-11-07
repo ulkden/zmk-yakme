@@ -80,6 +80,16 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
 - **No action takes more than three clicks.** Update the click-budget table in `docs/DESIGN.md`
   when adding actions.
 - Everything must work in Chromium, Firefox and WebKit (Safari), and by keyboard.
+- **Accessibility target: WCAG 2.2 Level AA** (`ASSUMPTIONS.md` #30, plan and status in
+  `docs/ACCESSIBILITY.md`). New or changed UI must meet it, as follows:
+  - Use native controls first.
+  - Give every control an accessible name and expose its state (not by colour alone).
+  - Keep keyboard focus where the user is across re-renders.
+  - Announce status messages to screen readers.
+  - Meet contrast of 4.5:1 for text and 3:1 for UI parts.
+
+  Don't add new automated (axe) violations. Each QA issue includes keyboard-only and screen-reader
+  steps.
 - Destructive or replacing actions confirm first when there is unexported work, and are undoable
   wherever possible (Close keymap deliberately clears history, so it always explains that it does).
 - Visual and UX choices are the maintainer's. Prototype with real data (e.g. real keyboards from

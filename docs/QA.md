@@ -5,6 +5,11 @@ getting started → importing → editing keys → layers → combos → behavio
 exporting → saving. The issues also outline the user documentation: each one becomes a section of
 the user guide once it passes.
 
+The app targets WCAG 2.2 AA ([ACCESSIBILITY.md](ACCESSIBILITY.md)), so each QA issue also includes:
+- **Keyboard-only steps:** no mouse, with visible focus throughout.
+- **Screen-reader steps:** NVDA with Firefox or Chrome, VoiceOver with Safari, Narrator with Edge, or
+  Orca with Firefox. Name the combination in the `Actual:` field.
+
 ## Running the app
 
 ```sh
