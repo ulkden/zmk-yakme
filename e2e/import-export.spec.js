@@ -63,7 +63,7 @@ test('named combo layers are shown read-only and kept when layers are toggled', 
   await page.locator('dialog').getByRole('button', { name: 'Load', exact: true }).click();
   await page.locator('.tab.combos').click();
   await page.locator('.combo-item', { hasText: 'combo_tpsl_NUM' }).click();
-  await expect(page.locator('.chip.named')).toHaveText(['NUM']);
+  await expect(page.locator('.chip.named')).toContainText(['NUM']);
   await page.locator('button.chip', { hasText: 'base_layer' }).click();
   await page.getByRole('button', { name: 'Export…' }).click();
   await expect(page.locator('pre.preview')).toContainText('layers = <NUM 0 1>;');

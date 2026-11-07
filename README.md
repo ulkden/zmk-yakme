@@ -68,7 +68,7 @@ Step-by-step instructions with screenshots are in the **[user guide](docs/guide/
 | Clear a key | Select it and press <kbd>Delete</kbd>, or use *Transparent* / *None*. |
 | Move between keys | Arrow keys on a focused key (they follow the physical layout); <kbd>Home</kbd> / <kbd>End</kbd> for the first / last. <kbd>Enter</kbd> on the selected key edits it in the side panel. |
 | Layers | `+` adds a layer. ✎ (or double-click the active tab) opens layer settings: display name, node name, move, delete. With a tab focused, ←/→ switch layers. |
-| Combos | **Combos** tab → **+ New Combo**, then click keys. Set the binding, timeout, prior-idle, slow-release and layers in the side panel. **Save Combo** (or <kbd>Esc</kbd>) finishes. |
+| Combos | **Combos** tab → **+ New Combo**, then click keys (or use the arrow keys and <kbd>Space</kbd>). Set the binding, timeout, prior-idle, slow-release and layers in the side panel. **Save Combo** (or <kbd>Esc</kbd>) finishes. |
 | Behaviors | **Behaviors** tab → add a hold-tap, mod-morph or macro. **Save Behavior** (or clicking a key) goes back to editing keys, where you pick it from the Behavior list. |
 | Export | **Export…** → set the file name, choose whether to add layer diagrams, then **Download** or **Copy**. |
 | Back up work | **Save Project** / **Open Project** (JSON; also on the welcome screen). Work also autosaves in the browser. |

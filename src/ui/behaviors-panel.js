@@ -32,6 +32,8 @@ function list(state, actions) {
         'button.combo-item',
         {
           class: ui.behavior === i ? 'active' : '',
+          // Pressing the selected behavior again deselects it, so this is a toggle.
+          'aria-pressed': String(ui.behavior === i),
           'data-focus': `behavior-${i}`,
           onclick: () => actions.selectBehavior(ui.behavior === i ? null : i),
         },

@@ -99,14 +99,21 @@ export function selectField(label, name, value, options, onChange) {
   );
 }
 
-// Toggle chips for a multi-select; onChange receives the new list.
-export function chips(items, selected, labelOf, onChange) {
+// Toggle chips for a multi-select; onChange receives the new list. `group` names the set for
+// screen readers (the id of its visible label); `before` adds read-only chips in front.
+export function chips(items, selected, labelOf, onChange, { group = null, before = [] } = {}) {
   const toggle = (item) => onChange(selected.includes(item) ? selected.filter((x) => x !== item) : [...selected, item]);
   return h(
     'div.chips',
-    {},
-    items.map((item) =>
-      h('button.chip', { class: selected.includes(item) ? 'on' : '', onclick: () => toggle(item) }, labelOf(item)),
-    ),
+    group ? { role: 'group', 'aria-labelledby': group } : {},
+    before,
+    items.map((item) => {
+      const on = selected.includes(item);
+      return h(
+        'button.chip',
+        { class: on ? 'on' : '', 'aria-pressed': String(on), onclick: () => toggle(item) },
+        labelOf(item),
+      );
+    }),
   );
 }

@@ -4,7 +4,7 @@ import { bindingEditor } from './binding-editor.js';
 import { bindingLabel } from '../core/labels.js';
 import { allCustomBehaviors } from '../core/behavior-ops.js';
 import { behaviorsPanel } from './behaviors-panel.js';
-import { numberField } from './fields.js';
+import { numberField, chips } from './fields.js';
 
 function ctxOf(state) {
   return { layers: state.keymap.layers, customBehaviors: allCustomBehaviors(state.keymap) };
@@ -61,6 +61,8 @@ function comboList(state, actions) {
         'button.combo-item',
         {
           class: ui.combo === i ? 'active' : '',
+          // Pressing the selected combo again deselects it, so this is a toggle.
+          'aria-pressed': String(ui.combo === i),
           'data-focus': `combo-${i}`,
           onclick: () => actions.selectCombo(ui.combo === i ? null : i),
         },
@@ -87,27 +89,36 @@ function comboList(state, actions) {
 function layerChips(combo, layers, actions) {
   const named = combo.layers.filter((l) => typeof l !== 'number');
   const numbers = combo.layers.filter((l) => typeof l === 'number');
-  const toggle = (i) => {
-    const next = numbers.includes(i) ? numbers.filter((l) => l !== i) : [...numbers, i].sort((a, b) => a - b);
-    actions.updateCombo({ layers: [...named, ...next] });
-  };
-  return h(
-    'div.chips',
-    {},
-    named.map((n) => h('span.chip.on.named', { title: 'Named in the file; change it there' }, n)),
-    layers.map((l, i) =>
-      h('button.chip', { class: numbers.includes(i) ? 'on' : '', onclick: () => toggle(i) }, l.name),
+  // Read-only: shown as on, and screen readers hear that too.
+  const namedChips = named.map((n) =>
+    h(
+      'span.chip.on.named',
+      { title: 'Named in the file; change it there' },
+      n,
+      h('span.sr-only', {}, ', on, set in the file'),
     ),
+  );
+  return chips(
+    layers.map((_, i) => i),
+    numbers,
+    (i) => layers[i].name,
+    (next) => actions.updateCombo({ layers: [...named, ...next.sort((a, b) => a - b)] }),
+    { group: 'combo-layers-label', before: namedChips },
   );
 }
 
 function comboEditor(state, actions) {
   const combo = state.keymap.combos[state.ui.combo];
-  if (!combo) return h('p.muted', {}, 'Select a combo, or press "+ New Combo" and then click keys to add them.');
+  if (!combo)
+    return h(
+      'p.muted',
+      {},
+      'Select a combo, or press "+ New Combo" and then click keys (or use the arrow keys and Space) to add them.',
+    );
   return h(
     'div.combo-editor',
     {},
-    h('p.muted', {}, 'Click keys on the keyboard to add or remove them.'),
+    h('p.muted', {}, 'Click keys on the keyboard to add or remove them, or move with the arrow keys and press Space.'),
     h(
       'label.field',
       {},
@@ -138,14 +149,22 @@ function comboEditor(state, actions) {
       }),
       ' Slow release',
     ),
-    h('div.field', {}, h('span', {}, 'Layers'), layerChips(combo, state.keymap.layers, actions)),
+    h(
+      'div.field',
+      {},
+      h('span', { id: 'combo-layers-label' }, 'Layers'),
+      layerChips(combo, state.keymap.layers, actions),
+    ),
     h('p.muted.small', {}, 'No layers selected = active on all layers.'),
     h(
       'div.finish-row',
       {},
       h(
         'button.primary',
-        { onclick: actions.finishCombo, title: 'Changes are already applied; this returns to the combo list (Esc)' },
+        {
+          onclick: actions.finishCombo,
+          title: 'Changes are already applied; this returns to the combo list (Esc)',
+        },
         'Save Combo',
       ),
       h('button.danger', { onclick: actions.removeCombo }, 'Delete Combo'),
@@ -162,7 +181,19 @@ export function mountInspector(el, store, actions) {
     else if (state.ui.mode === 'behaviors') replace(el, behaviorsPanel(state, actions));
     else replace(el, keyPanel(state, actions));
   };
-  const schedule = frameScheduler(() => renderKeepingFocus(el, render));
+  // Finishing a combo (Save Combo, Esc, Delete) from inside its editor returns focus to that combo
+  // in the list, or the next one, or + New Combo; otherwise focus follows renderKeepingFocus.
+  let editing = null;
+  const update = () => {
+    const { ui } = store.get();
+    const finished = editing !== null && ui.combo === null && document.activeElement?.closest('.combo-editor');
+    const idx = editing;
+    editing = ui.mode === 'combos' ? ui.combo : null;
+    if (!finished) return renderKeepingFocus(el, render);
+    render();
+    (el.querySelector(`[data-focus="combo-${idx}"]`) ?? el.querySelector('.add-combo'))?.focus();
+  };
+  const schedule = frameScheduler(update);
   actions.refreshInspector = schedule;
   store.subscribe(schedule);
   render();
