@@ -186,8 +186,9 @@ Decisions made while building unattended. Each one can be changed. Review and te
 42. ⏳ **Assumed (review at QA 48):** Key names keep #41's order even though axe's *label in name*
     check (WCAG 2.5.3) flags them: it wants the small hold legend and the corner number in screen order
     ("Ctrl Esc 12"). The assumption is that a key's label is its main legend, and the hold legend and
-    number are extra information. Names start with the legend and include the other words, so speech
-    input ("click Esc") finds the key. A test checks that every text legend starts its key's name, and
-    the axe list records this as an accepted exception. The palette had a real 2.5.3 gap: spoken names
-    such as "Right Ctrl" for "RCtrl" left out the visible text. Its names now start with the label's
-    own letters ("R Shift", "Vol up", "kp Enter"), and plain-text labels keep their text.
+    number are extra information. Names are built from the legend the key shows, so every name starts
+    with it ("SEL 0, Bluetooth", "Raise layer, toggle"), and speech input ("click Esc") finds the key.
+    The axe scan accepts such a finding only after checking that the key's name starts with its legend,
+    and a test checks every key on every layer. The palette had a real 2.5.3 gap: spoken names such as
+    "Right Ctrl" for "RCtrl" left out the visible text. Its names now start with the label's own
+    letters ("R Shift", "Vol up", "kp Enter"), and plain-text labels keep their text.

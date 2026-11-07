@@ -29,14 +29,17 @@ test('keys are a listbox of options named legend first, then position', async ({
   await expect(key(page, 12)).toHaveAccessibleName('Esc, hold Ctrl, key 12');
   await expect(key(page, 37)).toHaveAccessibleName('Lower layer while held, key 37');
   await expect(key(page, 0)).toHaveAccessibleName('Tab, key 0');
-  // Every text legend starts its key's name, so speech input ("click Esc") finds the key.
-  const mismatched = await keys(page).evaluateAll((els) =>
-    els
-      .map((el) => [el.querySelector('.tap').textContent, el.getAttribute('aria-label')])
-      .filter(([tap]) => /^[\p{L}\p{N}]/u.test(tap))
-      .filter(([tap, name]) => !name.startsWith(tap)),
-  );
-  expect(mismatched).toEqual([]);
+  // On every layer, each text legend starts its key's name, so speech input ("click Esc") finds it.
+  for (const tab of await page.locator('[role="tab"]').all()) {
+    await tab.click();
+    const mismatched = await keys(page).evaluateAll((els) =>
+      els
+        .map((el) => [el.querySelector('.tap').textContent, el.getAttribute('aria-label')])
+        .filter(([tap]) => /^[\p{L}\p{N}]/u.test(tap))
+        .filter(([tap, name]) => !name.startsWith(tap)),
+    );
+    expect(mismatched).toEqual([]);
+  }
 });
 
 test('typing, Delete and Esc act on a key only while it has focus', async ({ page }) => {
@@ -54,13 +57,29 @@ test('typing, Delete and Esc act on a key only while it has focus', async ({ pag
   await expect(key(page, 1)).toHaveAttribute('aria-selected', 'false');
 });
 
-test('Enter on the selected key moves to the side panel to edit it', async ({ page }) => {
+test('Enter on the selected key moves to the side panel to edit it; Space still toggles', async ({ page }) => {
   await loadExample(page);
   await key(page, 5).click();
   await key(page, 5).focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('#inspector select[name=behavior]')).toBeFocused();
   await expect(key(page, 5)).toHaveAttribute('aria-selected', 'true');
+  await key(page, 5).focus();
+  await page.keyboard.press('Space');
+  await expect(key(page, 5)).toHaveAttribute('aria-selected', 'false');
+});
+
+test('there is only ever one Tab stop in the diagram and the palette', async ({ page }) => {
+  await loadExample(page);
+  const stops = (sel) => page.locator(`${sel}[tabindex="0"]`);
+  await page.locator('.palette .pk[data-code="Q"]').click();
+  await page.keyboard.press('ArrowRight');
+  await expect(stops('.palette .pk')).toHaveCount(1);
+  await expect(page.locator('.palette .pk[data-code="R"]')).toHaveAttribute('tabindex', '0');
+  await key(page, 5).click();
+  await key(page, 5).press('Escape');
+  await expect(stops('#keyboard .key')).toHaveCount(1);
+  await expect(key(page, 5)).toHaveAttribute('tabindex', '0');
 });
 
 test('in Combos, arrows move focus and Space adds or removes the key', async ({ page }) => {

@@ -2,7 +2,7 @@
 import { LABELS, ALIASES } from '../data/keycodes.js';
 import { parseBinding } from './bindings.js';
 
-const MOD_FN = { LS: '⇧', LC: '⌃', LA: '⌥', LG: '◆', RS: 'R⇧', RC: 'R⌃', RA: 'R⌥', RG: 'R◆' };
+export const MOD_FN = { LS: '⇧', LC: '⌃', LA: '⌥', LG: '◆', RS: 'R⇧', RC: 'R⌃', RA: 'R⌥', RG: 'R◆' };
 
 export function keyLabel(code = '') {
   const m = /^([LR][SCAG])\((.+)\)$/.exec(code);

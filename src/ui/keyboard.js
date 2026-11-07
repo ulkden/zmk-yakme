@@ -44,7 +44,7 @@ function listLabel({ ui, keymap }) {
 function renderKey(state, key, i, view) {
   const layerIdx = state.ui.mode === 'combos' ? 0 : state.ui.layer;
   const binding = state.keymap.layers[layerIdx]?.bindings[i] ?? '';
-  const custom = allCustomBehaviors(state.keymap);
+  const { custom } = view;
   const label = bindingLabel(binding, state.keymap.layers, custom);
   const on = isOn(state, i, binding);
   const { unit, origin } = view;
@@ -68,7 +68,7 @@ function renderKey(state, key, i, view) {
       'aria-label': keyName(binding, state.keymap.layers, custom, i),
       tabindex: i === view.roving ? '0' : '-1',
       'data-focus': `key-${i}`,
-      onclick: (e) => view.onClick(i, e),
+      onclick: () => view.onClick(i),
     },
     h('span.hold', { 'aria-hidden': 'true' }, label.hold),
     h('span.tap', { class: isGlyph(label.tap) ? 'glyph' : '', 'aria-hidden': 'true' }, label.tap),
@@ -106,23 +106,32 @@ function editKey(e, i, store, actions, moveTo) {
 function keyHandlers(el, store, actions, view) {
   const keyEl = (i) => el.querySelector(`[data-focus="key-${i}"]`);
   const moveTo = (i) => {
-    view.last = i;
     if (store.get().ui.mode === 'layers') actions.selectKey(i);
-    else el.querySelectorAll('.key').forEach((k, j) => (k.tabIndex = j === i ? 0 : -1));
     keyEl(i)?.focus();
   };
-  view.onClick = (i, e) => {
-    const { ui } = store.get();
-    // Enter on the key that is already selected opens it for editing in the side panel.
-    if (e.detail === 0 && ui.mode === 'layers' && ui.key === i) return focusPanel();
+  view.onClick = (i) => {
     keyEl(i)?.focus(); // WebKit doesn't focus a clicked button; typing on it needs focus
-    view.last = i;
     actions.keyClick(i);
   };
+  // Whatever moves focus to a key (arrows, a click, a skip link) makes it the diagram's one Tab
+  // stop, so there is never a second one.
+  el.addEventListener('focusin', (e) => {
+    const k = e.target.closest?.('.key');
+    if (!k) return;
+    view.last = Number(k.dataset.focus.slice(4));
+    el.querySelectorAll('.key').forEach((key) => (key.tabIndex = key === k ? 0 : -1));
+  });
   el.addEventListener('keydown', (e) => {
     const k = e.target.closest?.('.key');
     if (!k || e.ctrlKey || e.metaKey || e.altKey) return;
     const i = Number(k.dataset.focus.slice(4));
+    const { ui } = store.get();
+    // Enter on the key that is already selected opens it for editing in the side panel. Space and
+    // other activations (clicks, assistive technology) still toggle it, as a click does.
+    if (e.key === 'Enter' && ui.mode === 'layers' && ui.key === i) {
+      e.preventDefault();
+      return focusPanel();
+    }
     const keys = activeLayout(store.get())?.keys ?? [];
     const next = ARROWS[e.key] ? nearestKey(keys, i, ARROWS[e.key]) : { Home: 0, End: keys.length - 1 }[e.key];
     if (next !== undefined) {
@@ -134,7 +143,7 @@ function keyHandlers(el, store, actions, view) {
 }
 
 export function mountKeyboard(el, store, actions) {
-  const view = { last: 0, onClick: () => {} };
+  const view = { last: 0, custom: [], onClick: () => {} };
   keyHandlers(el, store, actions, view);
   const draw = () => {
     const state = store.get();
@@ -147,6 +156,7 @@ export function mountKeyboard(el, store, actions) {
     view.unit = Math.min(MAX_UNIT, avail / width);
     view.origin = { x: b.minX, y: b.minY };
     view.roving = rovingIndex(state, view.last);
+    view.custom = allCustomBehaviors(state.keymap);
     const board = h('div.board', {
       role: 'listbox',
       'aria-label': listLabel(state),

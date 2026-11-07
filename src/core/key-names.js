@@ -1,77 +1,55 @@
 // Words for screen readers: what a key does, then where it is ("Esc, hold Ctrl, key 12";
-// ASSUMPTIONS.md #41). Symbols on the keycaps (⇥, ⇧, ⏯) are read as words.
-import { SPOKEN, LABELS, ALIASES } from '../data/keycodes.js';
+// ASSUMPTIONS.md #41). Names are built from the legend the key shows (bindingLabel), so every name
+// starts with its visible legend and speech input ("click Esc") finds the key (#42, WCAG 2.5.3).
+import { SPOKEN, LABELS } from '../data/keycodes.js';
 import { behaviorDef } from '../data/behaviors.js';
+import { bindingLabel, MOD_FN } from './labels.js';
 import { parseBinding } from './bindings.js';
 
+// Symbol legend → words, e.g. '⇥' → 'Tab'. SPOKEN names keep a legend's own letters ('R⇧' → 'R Shift').
+const BY_LEGEND = Object.fromEntries(Object.entries(SPOKEN).map(([code, words]) => [LABELS[code], words]));
 const MOD_WORDS = {
   LS: 'Shift',
   LC: 'Ctrl',
   LA: 'Alt',
   LG: 'Gui',
-  RS: 'Right Shift',
-  RC: 'Right Ctrl',
-  RA: 'Right Alt',
-  RG: 'Right Gui',
+  RS: 'R Shift',
+  RC: 'R Ctrl',
+  RA: 'R Alt',
+  RG: 'R Gui',
 };
+const BY_MOD_GLYPH = Object.entries(MOD_FN)
+  .map(([fn, glyph]) => [glyph, MOD_WORDS[fn]])
+  .sort((a, b) => b[0].length - a[0].length); // 'R⇧' before '⇧'
 
-// Underscores are spelled out by screen readers ("B T underscore S E L"), so they become spaces.
-const words = (text) => String(text).replace(/_/g, ' ');
-
-export function spokenKey(code = '') {
-  const m = /^([LR][SCAG])\((.+)\)$/.exec(code);
-  if (m && MOD_WORDS[m[1]]) return `${MOD_WORDS[m[1]]}+${spokenKey(m[2])}`;
-  const canonical = ALIASES[code] ?? code;
-  return SPOKEN[canonical] ?? LABELS[canonical] ?? words(canonical);
+export function speak(legend = '') {
+  if (BY_LEGEND[legend]) return BY_LEGEND[legend];
+  const mod = BY_MOD_GLYPH.find(([glyph]) => legend.startsWith(glyph) && legend.length > glyph.length);
+  return mod ? `${mod[1]}+${speak(legend.slice(mod[0].length))}` : legend;
 }
 
-function layerName(param, layers) {
-  const layer = /^\d+$/.test(param ?? '') ? layers[Number(param)] : null;
-  return layer ? layer.name : words(param ?? '?');
-}
+const LAYER_ACTION = { to: 'switch to', tog: 'toggle', sl: 'sticky' };
 
-// Hold-taps (built-in or custom) read as "tap, hold modifier" or "tap, layer while held".
-function holdTap(holdIsLayer, hold, tap, layers) {
-  return holdIsLayer
-    ? `${spokenKey(tap)}, ${layerName(hold, layers)} layer while held`
-    : `${spokenKey(tap)}, hold ${spokenKey(hold)}`;
+// What the small hold legend means, after the main legend.
+function holdWords(behavior, { hold, kind }) {
+  if (kind === 'hold') return `hold ${speak(hold)}`;
+  if (kind === 'layer') return `${hold} layer while held`;
+  if (!hold) return '';
+  if (hold === 'sticky') return 'sticky';
+  return behaviorDef(behavior)?.label ?? hold;
 }
 
 // customBehaviors: as from allCustomBehaviors(), so custom hold-taps read like &mt / &lt.
 export function bindingWords(binding, layers = [], customBehaviors = []) {
-  const { behavior, params } = parseBinding(binding);
-  const [a, b] = params;
-  const custom = customBehaviors.find((c) => c.label === behavior);
-  if (custom?.kind === 'hold-tap' && params.length >= 2) return holdTap(custom.params?.[0] === 'layer', a, b, layers);
-  switch (behavior) {
-    case 'kp':
-      return spokenKey(a);
-    case 'kt':
-      return `${spokenKey(a)}, toggle`;
-    case 'sk':
-      return `Sticky ${spokenKey(a)}`;
-    case 'mt':
-      return holdTap(false, a, b, layers);
-    case 'lt':
-      return holdTap(true, a, b, layers);
-    case 'mo':
-      return `${layerName(a, layers)} layer while held`;
-    case 'to':
-      return `To ${layerName(a, layers)} layer`;
-    case 'tog':
-      return `Toggle ${layerName(a, layers)} layer`;
-    case 'sl':
-      return `Sticky ${layerName(a, layers)} layer`;
-    case 'trans':
-      return 'Transparent';
-    case 'none':
-    case '':
-      return 'None';
-    default: {
-      const label = behaviorDef(behavior, customBehaviors)?.label.replace(/ \(custom\)$/, '') ?? behavior;
-      return words([label, ...params].join(' '));
-    }
-  }
+  const { behavior } = parseBinding(binding);
+  const label = bindingLabel(binding, layers, customBehaviors);
+  if (label.kind === 'trans') return 'Transparent';
+  if (label.kind === 'none' || !behavior) return 'None';
+  // mo/to/tog/sl show the layer as their legend: "Lower layer while held", "Raise layer, toggle".
+  if (label.kind === 'layer' && label.hold === behavior)
+    return behavior === 'mo' ? `${label.tap} layer while held` : `${label.tap} layer, ${LAYER_ACTION[behavior]}`;
+  const parts = [speak(label.tap), holdWords(behavior, label)].filter(Boolean);
+  return parts.length ? parts.join(', ') : (behaviorDef(behavior, customBehaviors)?.label ?? behavior);
 }
 
 export const keyName = (binding, layers, customBehaviors, index) =>

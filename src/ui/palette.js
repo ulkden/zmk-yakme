@@ -114,10 +114,14 @@ export function mountPalette(el, store, actions) {
     const to = from < 0 || e.ctrlKey || e.metaKey || e.altKey ? undefined : neighbour(buttons, from, e.key);
     if (to === undefined) return;
     e.preventDefault();
-    buttons[from].tabIndex = -1;
-    buttons[to].tabIndex = 0;
-    current = buttons[to].dataset.code;
     buttons[to].focus();
+  });
+  // Whatever focuses a keycode (arrows, a click) makes it the palette's one Tab stop.
+  groupsEl.addEventListener('focusin', (e) => {
+    const pk = e.target.closest?.('.pk');
+    if (!pk) return;
+    current = pk.dataset.code;
+    groupsEl.querySelectorAll('.pk').forEach((b) => (b.tabIndex = b === pk ? 0 : -1));
   });
 
   const datalist = h(
