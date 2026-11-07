@@ -73,8 +73,11 @@ export function download(name, text) {
 // is cleared first and filled a moment later, so the same message twice in a row is read twice.
 // The region is chosen when the message is written, not when it is sent: a dialog that closes
 // right after (Import after a successful import) takes its region with it.
+// Messages sent within the delay are read together ("Imported keymap. New warning: …"), so a
+// warning that follows an import doesn't silence the import's own message.
 const ANNOUNCE_DELAY_MS = 50;
 let announceTimer;
+let pending = [];
 const region = () =>
   [...document.querySelectorAll('dialog[open]')].at(-1)?.querySelector('.dialog-announcer') ??
   document.getElementById('announcer');
@@ -82,9 +85,11 @@ export function announce(message) {
   const before = region();
   if (before) before.textContent = '';
   clearTimeout(announceTimer);
+  pending.push(message);
   announceTimer = setTimeout(() => {
     const el = region();
-    if (el) el.textContent = message;
+    if (el) el.textContent = pending.join('. ').replace(/\.\. /g, '. ');
+    pending = [];
   }, ANNOUNCE_DELAY_MS);
 }
 

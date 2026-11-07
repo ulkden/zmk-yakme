@@ -12,3 +12,10 @@ export function stillDismissed(dismissed, current) {
   const now = new Set(current);
   return new Set([...dismissed].filter((t) => now.has(t)));
 }
+
+// What screen readers hear when warnings appear: the warning itself, or how many there are.
+export function newWarningsMessage(added) {
+  if (!added.length) return null;
+  if (added.length === 1) return `New warning: ${added[0]}`;
+  return `${added.length} new warnings. Open the warnings in the status bar to read them.`;
+}

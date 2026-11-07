@@ -1,11 +1,16 @@
 // Bottom status bar: layout choice, key count, warnings and the app version.
-import { h, replace, renderKeepingFocus } from './dom.js';
+import { h, replace, renderKeepingFocus, announce } from './dom.js';
 import { activeLayout, keyCount } from '../core/state.js';
 import { validate } from '../core/validate.js';
 import { versionLink } from './version.js';
-import { addedWarnings, stillDismissed } from '../core/warning-diff.js';
+import { addedWarnings, stillDismissed, newWarningsMessage } from '../core/warning-diff.js';
 
-const FIXES = { trim: { label: 'Trim Extra Bindings', run: (actions) => actions.trimExtraBindings() } };
+const FIXES = {
+  trim: {
+    label: 'Trim Extra Bindings',
+    run: (actions) => (actions.trimExtraBindings(), announce('Extra bindings trimmed')),
+  },
+};
 
 function warningItem(w, actions) {
   const fix = FIXES[w.fix];
@@ -16,8 +21,12 @@ function warningItem(w, actions) {
 // continues on the new element (negative delay) instead of starting over.
 const PULSE_MS = 900;
 
-function warnButton(count, pulseStart, onclick) {
-  const btn = h('button.warn', { onclick, 'data-focus': 'warnings' }, `⚠ ${count} warning${count > 1 ? 's' : ''}`);
+function warnButton(count, pulseStart, onclick, open) {
+  const btn = h(
+    'button.warn',
+    { onclick, 'data-focus': 'warnings', 'aria-expanded': String(open), 'aria-controls': 'warnings-box' },
+    `⚠ ${count} warning${count > 1 ? 's' : ''}`,
+  );
   const age = performance.now() - pulseStart;
   if (age < PULSE_MS) {
     btn.classList.add('pulse');
@@ -35,7 +44,7 @@ function warningSummary(visible, hidden, pulseStart, ui) {
         `${hidden} hidden`,
       )
     : null;
-  if (visible.length) return [warnButton(visible.length, pulseStart, ui.toggle), restore];
+  if (visible.length) return [warnButton(visible.length, pulseStart, ui.toggle, ui.isOpen()), restore];
   if (!hidden) return h('span.ok', {}, '✓ No issues');
   return h('span.ok', {}, '✓ No new issues ', restore);
 }
@@ -45,10 +54,13 @@ export function mountStatus(el, store, actions) {
   let seen = [];
   let dismissed = new Set();
   let pulseStart = -Infinity;
+  // Clear Warnings and "N hidden" remove themselves, so focus moves to the control that replaces them.
+  const focus = (name) => el.querySelector(`[data-focus="${name}"]`)?.focus();
   const ui = {
+    isOpen: () => open,
     toggle: () => ((open = !open), render()),
-    restore: () => ((dismissed = new Set()), (open = true), render()),
-    clear: (texts) => ((dismissed = new Set(texts)), (open = false), render()),
+    restore: () => ((dismissed = new Set()), (open = true), render(), focus('warnings')),
+    clear: (texts) => ((dismissed = new Set(texts)), (open = false), render(), focus('warnings-hidden')),
   };
   const draw = () => {
     const s = store.get();
@@ -61,7 +73,11 @@ export function mountStatus(el, store, actions) {
     const warnings = validate(s);
     const texts = warnings.map((w) => w.text);
     dismissed = stillDismissed(dismissed, texts);
-    if (addedWarnings(seen, texts).length) pulseStart = performance.now();
+    const added = addedWarnings(seen, texts);
+    if (added.length) {
+      pulseStart = performance.now();
+      announce(newWarningsMessage(added));
+    }
     seen = texts;
     const visible = warnings.filter((w) => !dismissed.has(w.text));
     const layoutPart = h(
@@ -94,10 +110,10 @@ export function mountStatus(el, store, actions) {
       open && visible.length
         ? h(
             'div.warnings-box',
-            {},
+            { id: 'warnings-box' },
             h(
               'ul.warnings',
-              {},
+              { 'aria-label': 'Warnings' },
               visible.map((w) => warningItem(w, actions)),
             ),
             h('button.link.clear-warnings', { onclick: () => ui.clear(texts) }, 'Clear Warnings'),

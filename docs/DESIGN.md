@@ -68,6 +68,9 @@ The app targets WCAG 2.2 AA; plan and progress are in [ACCESSIBILITY.md](ACCESSI
 - **Behaviors:** Save Behavior returns focus to the edited key's Behavior list, ready to assign it.
   The Mods and Keep mods chips are labelled groups. Inline delete confirmations (behaviors, layers)
   read their question when focus lands on Cancel.
+- **Warnings:** new warnings are read out (the warning, or how many). The warnings button says
+  whether its list is open. Clear Warnings moves focus to "N hidden", and that moves it back to the
+  warnings button.
 - **High contrast:** in forced-colours mode the selected key, the keys of the selected combo, the
   active layer tab, on-chips and the selected list item fill with the theme's Highlight colour.
 
