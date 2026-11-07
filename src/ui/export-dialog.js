@@ -1,5 +1,5 @@
 // Export dialog: editable file name, notices about generated content, preview, copy and download.
-import { h, replace, download, toast } from './dom.js';
+import { h, replace, download, toast, announce, renderKeepingFocus } from './dom.js';
 import { dialog } from './modal.js';
 import { exportKeymapDetailed, exportFileName } from '../core/export.js';
 
@@ -52,12 +52,19 @@ export function openExport(store, actions) {
     onchange: (e) => actions.setFileName(e.target.value.trim() || null),
   });
   const content = h('div.export-content');
-  const render = () => {
-    const s = store.get();
-    const result = exportKeymapDetailed(s, { diagrams: s.ui.diagrams !== false });
-    text = result.text;
-    replace(content, notices(s, result.addedIncludes, actions, render), h('pre.preview', {}, text));
-  };
+  // Toggling the diagrams checkbox re-renders, so focus is kept on it.
+  const render = () =>
+    renderKeepingFocus(content, () => {
+      const s = store.get();
+      const result = exportKeymapDetailed(s, { diagrams: s.ui.diagrams !== false });
+      text = result.text;
+      replace(
+        content,
+        notices(s, result.addedIncludes, actions, render),
+        // Focusable so keyboard users can reach and scroll it (WCAG 2.1.1).
+        h('pre.preview', { tabindex: '0', role: 'region', 'aria-label': 'Keymap preview' }, text),
+      );
+    });
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(text);
@@ -69,9 +76,12 @@ export function openExport(store, actions) {
   };
   const save = () => {
     actions.setFileName(name.value.trim() || null);
-    download(exportFileName({ fileName: name.value.trim() }), text);
+    const file = exportFileName(store.get());
+    download(file, text);
     actions.markClean();
     dlg.close();
+    // "started": the browser may still ask where to save, and the user may cancel.
+    announce(`Download started: ${file}`);
   };
   render();
   const body = h('div.export-body', {}, h('label.field', {}, h('span', {}, 'File name'), name), content);

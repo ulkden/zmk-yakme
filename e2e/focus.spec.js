@@ -85,7 +85,7 @@ test('messages are announced to screen readers', async ({ page }) => {
   const announcer = page.locator('#announcer');
   await expect(announcer).toHaveAttribute('aria-live', 'polite');
   await page.getByRole('button', { name: 'Save Project' }).click();
-  await expect(announcer).toHaveText('Project saved');
+  await expect(announcer).toHaveText('Project saved: keymap.zmk-project.json');
   await expect(page.locator('#toast')).toHaveAttribute('aria-hidden', 'true');
 });
 
