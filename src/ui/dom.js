@@ -71,15 +71,21 @@ export function download(name, text) {
 // added later are often not watched). While a modal dialog is open the rest of the page is inert,
 // #announcer included, so messages go to the dialog's own region instead (see modal.js). A region
 // is cleared first and filled a moment later, so the same message twice in a row is read twice.
+// The region is chosen when the message is written, not when it is sent: a dialog that closes
+// right after (Import after a successful import) takes its region with it.
 const ANNOUNCE_DELAY_MS = 50;
 let announceTimer;
+const region = () =>
+  [...document.querySelectorAll('dialog[open]')].at(-1)?.querySelector('.dialog-announcer') ??
+  document.getElementById('announcer');
 export function announce(message) {
-  const dialog = [...document.querySelectorAll('dialog[open]')].at(-1);
-  const el = dialog?.querySelector('.dialog-announcer') ?? document.getElementById('announcer');
-  if (!el) return;
-  el.textContent = '';
+  const before = region();
+  if (before) before.textContent = '';
   clearTimeout(announceTimer);
-  announceTimer = setTimeout(() => (el.textContent = message), ANNOUNCE_DELAY_MS);
+  announceTimer = setTimeout(() => {
+    const el = region();
+    if (el) el.textContent = message;
+  }, ANNOUNCE_DELAY_MS);
 }
 
 // Show a message in `el` (e.g. a dialog's error line) and read it out to screen readers.

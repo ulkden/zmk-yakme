@@ -51,3 +51,12 @@ test('a blank keymap from the New dialog is announced', async ({ page }) => {
   await expect(page.locator('#announcer')).toHaveText('Blank keymap created: 42 keys, 3 layers');
   await expect(page.locator('#keyboard .key').first()).toBeFocused();
 });
+
+test('a successful import from the Import dialog is read out after it closes', async ({ page }) => {
+  await page.getByRole('button', { name: 'Import Files' }).click();
+  const keymap = '/ { keymap { compatible = "zmk,keymap"; base { bindings = <&kp A &kp B>; }; }; };';
+  await page.getByLabel('Or paste file contents').fill(keymap);
+  await page.getByRole('button', { name: 'Load' }).click();
+  await expect(page.locator('dialog[open]')).toHaveCount(0);
+  await expect(page.locator('#announcer')).toHaveText('Imported keymap');
+});

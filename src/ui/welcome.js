@@ -1,7 +1,7 @@
 // Empty state shown before anything is loaded.
 import { h, replace, renderKeepingFocus, announce, unusable } from './dom.js';
 import { versionLine } from './version.js';
-import { keyCount } from '../core/state.js';
+import { sizeSummary } from '../core/state.js';
 
 // Opening a keymap removes the welcome screen, and closing it removes the editor, so the control
 // that had focus is gone (or disabled, like Close Keymap). Focus then moves to where work
@@ -9,22 +9,22 @@ import { keyCount } from '../core/state.js';
 // handed focus back.
 function handOffFocus(open) {
   requestAnimationFrame(() => {
+    // A dialog still open (e.g. an import error) gets focus first; try again once it closes.
+    const dlg = document.querySelector('dialog[open]');
+    if (dlg) return dlg.addEventListener('close', () => handOffFocus(open), { once: true });
     // Firefox keeps focus on a control that was just disabled, so that counts as lost too.
     const a = document.activeElement;
     const lost = !a || a === document.body || !a.isConnected || unusable(a);
-    if (!lost || document.querySelector('dialog[open]')) return;
+    if (!lost) return;
     const target = open ? document.querySelector('#keyboard .key') : document.querySelector('.welcome button');
     target?.focus();
   });
 }
 
-export const loadedMessage = (state) =>
-  `${keyCount(state)} keys, ${state.keymap.layers.length} layer${state.keymap.layers.length === 1 ? '' : 's'}`;
-
 export function mountWelcome(el, store, actions, dialogs) {
   const tryExample = () => {
     actions.loadExample();
-    announce(`Example loaded: ${loadedMessage(store.get())}`);
+    announce(`Example loaded: ${sizeSummary(store.get())}`);
   };
   const draw = () => {
     if (store.get().keymap) return replace(el);

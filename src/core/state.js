@@ -28,6 +28,12 @@ export function keyCount(state) {
   return Math.max(0, ...(state.keymap?.layers ?? []).map((l) => l.bindings.length));
 }
 
+export const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+
+// "42 keys, 3 layers": read out when a keymap opens.
+export const sizeSummary = (state) =>
+  `${plural(keyCount(state), 'key')}, ${plural(state.keymap.layers.length, 'layer')}`;
+
 // Clamp UI selections after undo/import so they always point at something valid.
 export function normalizeUi(state) {
   const layers = state.keymap?.layers.length ?? 0;

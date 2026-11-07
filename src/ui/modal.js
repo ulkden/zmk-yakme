@@ -6,8 +6,9 @@ let dialogCount = 0;
 // Every dialog closes the same ways: its own buttons, Esc, the ✕ in the corner, or a click on
 // the backdrop. Closing that way counts as Cancel. The ✕ comes last in the DOM so that showModal()
 // still focuses the first field or button.
-// Screen readers name the dialog by its title. With `describe`, they also read the body when it
-// opens: for short messages (confirmations, errors), not for forms.
+// Screen readers name the dialog by its title. With `describe`, they also read a message when it
+// opens: the body (true) or one element in it. For short messages (confirmations, errors), never
+// for form fields, whose labels would be read twice.
 export function dialog(title, body, buttons, className = '', { describe = false } = {}) {
   const id = `dialog-${++dialogCount}`;
   const x = h(
@@ -17,10 +18,11 @@ export function dialog(title, body, buttons, className = '', { describe = false 
   );
   // The page behind a modal dialog is inert, so its messages need a live region inside it (announce()).
   const live = h('div.sr-only.dialog-announcer', { 'aria-live': 'polite', 'aria-atomic': 'true' });
-  if (describe) body.id = `${id}-body`;
+  const described = describe === true ? body : describe || null;
+  if (described) described.id = `${id}-desc`;
   const dlg = h(
     'dialog.modal',
-    { class: className, 'aria-labelledby': `${id}-title`, 'aria-describedby': describe ? body.id : null },
+    { class: className, 'aria-labelledby': `${id}-title`, 'aria-describedby': described?.id ?? null },
     h('div.dialog-inner', {}, h('h2', { id: `${id}-title` }, title), body, h('div.dialog-buttons', {}, buttons), x),
     live,
   );

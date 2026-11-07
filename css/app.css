@@ -1084,7 +1084,13 @@ dialog:has(pre.preview) {
   body {
     overflow: auto;
   }
+  /* Hidden visually only: it is the page's h1. Same as .sr-only. */
   .brand {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }

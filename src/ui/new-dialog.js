@@ -3,7 +3,7 @@ import { h, toast, announce } from './dom.js';
 import { dialog } from './modal.js';
 import { confirmReplace } from './import-flow.js';
 import { wheelStep } from './fields.js';
-import { loadedMessage } from './welcome.js';
+import { sizeSummary } from '../core/state.js';
 
 export function openNew(store, actions) {
   const hasLayout = store.get().layouts.length > 0;
@@ -19,7 +19,7 @@ export function openNew(store, actions) {
     if (!(await confirmReplace(store))) return;
     fn();
     dlg.close();
-    announce(`${done}: ${loadedMessage(store.get())}`);
+    announce(`${done}: ${sizeSummary(store.get())}`);
   };
   const create = (keep) => () => {
     const r = parseRows();

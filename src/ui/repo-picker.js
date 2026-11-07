@@ -1,6 +1,7 @@
 // "Import from a GitHub repository": list importable files and import the checked ones.
 import { h, replace, showMessage, announce } from './dom.js';
 import { listRepo, rawUrl, importOrder, groupRepoFiles } from '../core/github.js';
+import { plural } from '../core/state.js';
 import { importTexts } from './import-flow.js';
 
 async function fetchFiles(info, ref, paths) {
@@ -32,8 +33,6 @@ function fileRow(file) {
     h('span.badge', {}, file.kind),
   );
 }
-
-const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
 // One keyboard's files under a foldable header, e.g. "ScottoFrog  1 keymap · 1 layout · 2 selected".
 // The header counts the files listed and those ticked, so folding never hides what will be imported.
@@ -156,5 +155,6 @@ export async function showRepoPicker(panel, info, store, actions, done) {
     h('div.repo-actions', {}, h('button.primary', { onclick: run }, 'Import Selected'), msg),
   );
   const ticked = listing.files.filter((f) => f.selected).length;
-  announce(`${plural(listing.files.length, 'file')} listed, ${ticked} selected. Import Selected imports them.`);
+  const next = ticked ? `${ticked} selected; Import Selected imports them.` : 'Tick the files to import.';
+  announce(`${plural(listing.files.length, 'file')} listed. ${next}`);
 }
