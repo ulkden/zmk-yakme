@@ -26,3 +26,14 @@ export function focusTarget(before, index, after, unusable = () => false) {
   }
   return -1;
 }
+
+// Roving focus in a one-dimensional list (layer tabs, the palette's ←/→): the index that ←/→ and
+// Home/End move to from `index` among `count` items, or undefined for any other key.
+export function rovingStep(key, index, count, { wrap = false } = {}) {
+  const last = count - 1;
+  if (key === 'Home') return 0;
+  if (key === 'End') return last;
+  if (key === 'ArrowRight') return index < last ? index + 1 : wrap ? 0 : last;
+  if (key === 'ArrowLeft') return index > 0 ? index - 1 : wrap ? last : 0;
+  return undefined;
+}

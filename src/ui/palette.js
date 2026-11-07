@@ -4,6 +4,7 @@
 import { h, replace, isGlyph } from './dom.js';
 import { KEY_GROUPS, SPOKEN } from '../data/keycodes.js';
 import { nearestKey } from '../core/layout-ops.js';
+import { rovingStep } from '../core/focus-target.js';
 
 function matches(key, q) {
   return !q || key.code.toLowerCase().includes(q) || key.label.toLowerCase() === q;
@@ -11,12 +12,7 @@ function matches(key, q) {
 
 // The keycode in direction `key` from button `from`, or undefined for other keys.
 function neighbour(buttons, from, key) {
-  const last = buttons.length - 1;
-  if (key === 'ArrowLeft') return Math.max(0, from - 1);
-  if (key === 'ArrowRight') return Math.min(last, from + 1);
-  if (key === 'Home') return 0;
-  if (key === 'End') return last;
-  if (key !== 'ArrowUp' && key !== 'ArrowDown') return undefined;
+  if (key !== 'ArrowUp' && key !== 'ArrowDown') return rovingStep(key, from, buttons.length);
   // Rows wrap and groups sit side by side, so ↑/↓ use positions on screen.
   const boxes = buttons.map((b) => {
     const r = b.getBoundingClientRect();

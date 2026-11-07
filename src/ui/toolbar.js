@@ -22,8 +22,8 @@ function projectButtons(store, actions, dialogs) {
 }
 
 export function mountToolbar(el, store, actions, dialogs) {
-  const undo = h('button.icon', { onclick: actions.undo, title: 'Undo (Ctrl+Z)' }, '↶');
-  const redo = h('button.icon', { onclick: actions.redo, title: 'Redo (Ctrl+Shift+Z)' }, '↷');
+  const undo = h('button.icon', { onclick: actions.undo, title: 'Undo (Ctrl+Z)', 'aria-label': 'Undo' }, '↶');
+  const redo = h('button.icon', { onclick: actions.redo, title: 'Redo (Ctrl+Shift+Z)', 'aria-label': 'Redo' }, '↷');
   const exportBtn = h(
     'button.primary',
     { onclick: dialogs.openExport, title: 'Preview, copy or download the .keymap' },

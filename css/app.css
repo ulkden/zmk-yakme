@@ -300,7 +300,12 @@ body.empty .status {
   font-family: var(--mono);
   font-size: 11px;
   color: var(--muted);
-  margin-right: 6px;
+  margin-right: 2px; /* plus the space after it (tabs.js): about 6px as before */
+}
+.layer-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
 }
 .tab.add {
   font-weight: 600;
@@ -470,8 +475,21 @@ input.mono {
     color: HighlightText;
   }
   .key.selected *,
-  .key.combo-on * {
+  .key.combo-on *,
+  .tab.active,
+  .tab.active * {
     color: HighlightText;
+  }
+  .tab.active {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+  }
+  /* These keep their own colours, so their focus ring needs a system colour to show on any theme. */
+  .key.selected:focus-visible,
+  .key.combo-on:focus-visible,
+  .tab.active:focus-visible {
+    outline-color: CanvasText;
   }
 }
 

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { focusIds, focusTarget } from '../src/core/focus-target.js';
+import { focusIds, focusTarget, rovingStep } from '../src/core/focus-target.js';
 
 test('identities number repeated names in order', () => {
   assert.deepEqual(focusIds(['save', 'chip:Base', 'chip:Base', 'save']), [
@@ -35,4 +35,16 @@ test('only the candidates tried are checked for usability', () => {
 test('nothing to focus when no control is left', () => {
   assert.equal(focusTarget(focusIds(['a']), 0, []), -1);
   assert.equal(focusTarget(focusIds(['a', 'b']), 0, focusIds(['c'])), -1);
+});
+
+test('roving keys: arrows step (optionally wrapping), Home/End go to the ends', () => {
+  assert.equal(rovingStep('ArrowRight', 1, 3), 2);
+  assert.equal(rovingStep('ArrowRight', 2, 3), 2);
+  assert.equal(rovingStep('ArrowRight', 2, 3, { wrap: true }), 0);
+  assert.equal(rovingStep('ArrowLeft', 0, 3, { wrap: true }), 2);
+  assert.equal(rovingStep('ArrowLeft', 0, 3), 0);
+  assert.equal(rovingStep('Home', 2, 3), 0);
+  assert.equal(rovingStep('End', 0, 3), 2);
+  assert.equal(rovingStep('ArrowUp', 1, 3), undefined);
+  assert.equal(rovingStep('a', 1, 3), undefined);
 });

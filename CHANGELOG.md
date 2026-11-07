@@ -19,8 +19,11 @@ merged pull request.
   a key.
 - Screen readers read each key as what it does, then where it is ("Esc, hold Ctrl, key 12"), and say
   which keys are selected. Symbol keycodes such as ⇥ and ⏯ have spoken names.
-- In Windows high-contrast mode, the selected key and the keys of a combo are filled with the
-  highlight colour.
+- Layer tabs work like tabs: with one focused, ←/→ and <kbd>Home</kbd> / <kbd>End</kbd> switch layers.
+  The layer settings (✎) take keyboard focus when they open and give it back when closed with
+  <kbd>Esc</kbd>. Undo, Redo, ✎ and + have names for screen readers.
+- In Windows high-contrast mode, the selected key, the keys of a combo and the active layer tab are
+  filled with the highlight colour.
 
 ### Changed
 
