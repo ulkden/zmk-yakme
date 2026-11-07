@@ -1,5 +1,5 @@
 // Export dialog: editable file name, notices about generated content, preview, copy and download.
-import { h, replace, download, toast } from './dom.js';
+import { h, replace, download, toast, announce } from './dom.js';
 import { dialog } from './modal.js';
 import { exportKeymapDetailed, exportFileName } from '../core/export.js';
 
@@ -56,7 +56,11 @@ export function openExport(store, actions) {
     const s = store.get();
     const result = exportKeymapDetailed(s, { diagrams: s.ui.diagrams !== false });
     text = result.text;
-    replace(content, notices(s, result.addedIncludes, actions, render), h('pre.preview', {}, text));
+    replace(
+      content,
+      notices(s, result.addedIncludes, actions, render), // Focusable so keyboard users can scroll it (WCAG 2.1.1).
+      h('pre.preview', { tabindex: '0', role: 'region', 'aria-label': 'Keymap preview' }, text),
+    );
   };
   const copy = async () => {
     try {
@@ -69,9 +73,11 @@ export function openExport(store, actions) {
   };
   const save = () => {
     actions.setFileName(name.value.trim() || null);
-    download(exportFileName({ fileName: name.value.trim() }), text);
+    const file = exportFileName({ fileName: name.value.trim() });
+    download(file, text);
     actions.markClean();
     dlg.close();
+    announce(`Downloaded ${file}`);
   };
   render();
   const body = h('div.export-body', {}, h('label.field', {}, h('span', {}, 'File name'), name), content);

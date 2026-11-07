@@ -28,6 +28,7 @@ merged pull request.
   behavior. Screen readers read delete confirmations and the Mods / Keep mods groups.
 - Screen readers read out new warnings, and the warnings button says whether its list is open.
   After **Clear Warnings** or "N hidden", keyboard focus stays in the status bar.
+- The Export preview can be scrolled with the keyboard, and screen readers confirm a download.
 - In Windows high-contrast mode, the selected key, the keys of a combo, the active layer tab, selected
   layer chips and the selected combo are filled with the highlight colour.
 
