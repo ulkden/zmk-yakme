@@ -65,6 +65,9 @@ The app targets WCAG 2.2 AA; plan and progress are in [ACCESSIBILITY.md](ACCESSI
 - **Combos:** each combo in the list and each layer chip is a toggle button that says whether it is
   on; the chips form a group named "Layers". Keys are added with the mouse or with the arrow keys
   and Space. Finishing a combo (Save Combo or Esc) returns focus to that combo in the list.
+- **Behaviors:** Save Behavior returns focus to the edited key's Behavior list, ready to assign it.
+  The Mods and Keep mods chips are labelled groups. Inline delete confirmations (behaviors, layers)
+  read their question when focus lands on Cancel.
 - **High contrast:** in forced-colours mode the selected key, the keys of the selected combo, the
   active layer tab, on-chips and the selected list item fill with the theme's Highlight colour.
 

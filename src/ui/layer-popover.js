@@ -1,33 +1,21 @@
 // Settings panel for the active layer: display name, node name, move and delete.
 import { h } from './dom.js';
+import { deleteControl } from './fields.js';
 import { layerIds } from '../core/keymap-write.js';
 
 let confirming = false;
 
 function deleteRow(layer, i, total, actions) {
-  if (!confirming) {
-    return h(
-      'button.danger',
-      {
-        disabled: total <= 1,
-        'data-focus': 'layer-delete',
-        onclick: () => ((confirming = true), actions.refreshLayerMenu()),
-      },
-      'Delete Layer',
-    );
-  }
-  return h(
-    'div.confirm-row',
-    {},
-    h('span', {}, `Delete "${layer.name}"? References to it become &trans.`),
-    // Cancel shares Delete Layer's focus name, so keyboard focus moves between them (focus-target.js).
-    h(
-      'button',
-      { 'data-focus': 'layer-delete', onclick: () => ((confirming = false), actions.refreshLayerMenu()) },
-      'Cancel',
-    ),
-    h('button.danger.solid', { onclick: () => ((confirming = false), actions.removeLayer(i)) }, 'Delete'),
-  );
+  return deleteControl({
+    label: 'Delete Layer',
+    name: 'layer-delete',
+    confirming,
+    disabled: total <= 1,
+    question: `Delete "${layer.name}"? References to it become &trans.`,
+    onAsk: () => ((confirming = true), actions.refreshLayerMenu()),
+    onCancel: () => ((confirming = false), actions.refreshLayerMenu()),
+    onConfirm: () => ((confirming = false), actions.removeLayer(i)),
+  });
 }
 
 export function layerPopover(state, actions) {

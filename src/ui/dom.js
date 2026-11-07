@@ -176,3 +176,23 @@ export function frameScheduler(fn) {
 
 // Single non-alphanumeric symbols (⇧ ⏎ ⌫ …) come from fallback fonts and render small.
 export const isGlyph = (text) => [...String(text)].length === 1 && /[^\w\s]/u.test(text) && /\P{ASCII}/u.test(text);
+
+// A one-shot request for where focus goes after the side panel next renders, made by the control
+// that finishes something and so removes itself (Save Combo, Delete Combo, Save Behavior, Esc). The
+// panel honours it after rendering (inspector.js). `name` is a data-focus name in the panel;
+// `fallbacks` are selectors tried in order.
+let focusRequest = null;
+export function requestFocus(name, ...fallbacks) {
+  focusRequest = { name, fallbacks };
+}
+export function takeFocusRequest() {
+  const request = focusRequest;
+  focusRequest = null;
+  return request;
+}
+export function focusRequested(el, { name, fallbacks }) {
+  const target =
+    (name && el.querySelector(`[data-focus="${name}"]`)) ??
+    fallbacks.map((selector) => document.querySelector(selector)).find(Boolean);
+  target?.focus();
+}

@@ -36,7 +36,9 @@ Run `npm run check` and the relevant browser tests before every commit. CI runs 
 - `src/ui/`: DOM components. They change state only through `src/ui/actions.js`. A component that
   rebuilds its DOM renders through `renderKeepingFocus` (`src/ui/dom.js`) so keyboard focus survives,
   and gives items whose text changes (keys, tabs, list items) a stable `data-focus` name.
-  Messages for the user go through `toast()` or `announce()`, so screen readers hear them.
+  A control that removes itself by finishing something (Save Combo, Save Behavior) says where focus
+  goes next with `requestFocus()`. Messages for the user go through `toast()` or `announce()`, so screen
+  readers hear them.
 - State is immutable and updated through the store, so undo/redo works. Document changes go through
   the undo history; UI-only changes (`ui.*`) do not.
 - Browser-only side effects (storage, clipboard, toasts) are injected into actions, so actions stay
