@@ -6,6 +6,22 @@ merged pull request.
 
 ## [Unreleased]
 
+### Added
+
+- Keyboard users: the first <kbd>Tab</kbd> press shows **Skip to keys**, **Skip to keycodes** and
+  **Skip to side panel** links.
+- Screen readers read out the app's short messages (such as "Project saved").
+
+### Changed
+
+- Keyboard focus shows a clear light ring that no longer looks like the selected key. It doesn't
+  appear after mouse clicks.
+
+### Fixed
+
+- Using a key, a layer tab, the Combos or Behaviors tab or a list item from the keyboard no longer
+  sends focus back to the top of the page.
+
 ## [0.2.0] - 2026-11-01
 
 ### Added

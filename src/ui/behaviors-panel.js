@@ -32,6 +32,7 @@ function list(state, actions) {
         'button.combo-item',
         {
           class: ui.behavior === i ? 'active' : '',
+          'data-focus': `behavior-${i}`,
           onclick: () => actions.selectBehavior(ui.behavior === i ? null : i),
         },
         h('span.combo-name.mono', {}, `&${b.label}`),

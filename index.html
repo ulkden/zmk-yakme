@@ -19,6 +19,11 @@
     <link rel="stylesheet" href="css/app.css" />
   </head>
   <body class="empty">
+    <nav class="skip-links" aria-label="Skip links">
+      <a href="#keyboard" data-skip="keys">Skip to keys</a>
+      <a href="#palette" data-skip="palette">Skip to keycodes</a>
+      <a href="#inspector" data-skip="panel">Skip to side panel</a>
+    </nav>
     <header class="topbar">
       <div class="brand">⌨ ZMK Keymap Editor</div>
       <nav id="toolbar" class="toolbar"></nav>
@@ -27,13 +32,15 @@
       <section class="center">
         <div id="welcome"></div>
         <div id="tabs" class="tabs"></div>
-        <div id="keyboard" class="keyboard"></div>
-        <div id="palette" class="palette"></div>
+        <div id="keyboard" class="keyboard" role="region" aria-label="Keyboard"></div>
+        <div id="palette" class="palette" role="region" aria-label="Keycodes"></div>
       </section>
-      <aside id="inspector" class="inspector"></aside>
+      <aside id="inspector" class="inspector skip-region" aria-label="Side panel" tabindex="-1"></aside>
     </main>
     <footer id="status" class="status"></footer>
     <div id="drop-overlay"><div>Drop layout or keymap files to import</div></div>
+    <!-- Messages for screen readers (see announce() in src/ui/dom.js). -->
+    <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
     <script type="module" src="src/main.js"></script>
   </body>
 </html>

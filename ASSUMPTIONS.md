@@ -154,3 +154,7 @@ Decisions made while building unattended. Each one can be changed. Review and te
 35. ✅ **Agreed:** Manual testing uses NVDA (Firefox and Chrome), VoiceOver with Safari, Narrator with
     Edge, and Orca with Firefox. `docs/ACCESSIBILITY.md` becomes the accessibility statement, linked
     from the README and the welcome screen. Problems are reported with the `accessibility` label.
+36. ✅ **Agreed:** Keyboard focus shows as a **2 px light ring (#e8ecf2) with a 2 px gap** on every
+    control, for keyboard focus only. It was chosen from previews on a real Corne over a ring in the
+    accent blue, where a key with only focus still read as selected, and over a ring inside the keys,
+    which covered the key numbers. Contrast is 13.8:1 on a key.

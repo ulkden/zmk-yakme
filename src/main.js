@@ -14,6 +14,7 @@ import { mountPalette } from './ui/palette.js';
 import { mountStatus } from './ui/status.js';
 import { mountWelcome } from './ui/welcome.js';
 import { mountShortcuts, mountDropzone } from './ui/shortcuts.js';
+import { mountSkipLinks } from './ui/skip-links.js';
 
 const prefs = loadPrefs();
 const { state: initial, notice } = loadDocument();
@@ -36,6 +37,7 @@ mountInspector($('inspector'), store, actions);
 mountStatus($('status'), store, actions);
 mountShortcuts(store, actions);
 mountDropzone(store, actions);
+mountSkipLinks(store);
 autosave(store);
 
 if (notice) {

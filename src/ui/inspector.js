@@ -59,7 +59,11 @@ function comboList(state, actions) {
     keymap.combos.map((c, i) =>
       h(
         'button.combo-item',
-        { class: ui.combo === i ? 'active' : '', onclick: () => actions.selectCombo(ui.combo === i ? null : i) },
+        {
+          class: ui.combo === i ? 'active' : '',
+          'data-focus': `combo-${i}`,
+          onclick: () => actions.selectCombo(ui.combo === i ? null : i),
+        },
         h('span.combo-name', {}, c.name),
         h('span.combo-out', {}, bindingLabel(c.binding, keymap.layers).tap || c.binding),
         c.keyPositions.length

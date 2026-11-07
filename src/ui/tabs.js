@@ -1,5 +1,5 @@
 // Layer tabs, the layer settings popover, and the combos/behaviors mode tabs.
-import { h, replace } from './dom.js';
+import { h, replace, renderKeepingFocus } from './dom.js';
 import { layerPopover, resetLayerPopover, popoverConfirming } from './layer-popover.js';
 
 function layerTab(state, layer, i, actions) {
@@ -9,6 +9,7 @@ function layerTab(state, layer, i, actions) {
     {
       class: active ? 'active' : '',
       title: active ? 'Double-click for layer settings' : `Layer ${i}`,
+      'data-focus': `layer-${i}`,
       onclick: () => actions.selectLayer(i),
       ondblclick: () => active && actions.openLayerMenu(),
     },
@@ -42,7 +43,7 @@ export function mountTabs(el, store, actions) {
   const slot = h('div.popover-slot');
   const cache = { key: null };
   el.append(bar, slot);
-  const render = () => {
+  const draw = () => {
     const state = store.get();
     if (!state.keymap) return (replace(bar), replace(slot));
     const { ui, keymap } = state;
@@ -75,6 +76,7 @@ export function mountTabs(el, store, actions) {
     );
     syncPopover(slot, state, actions, cache);
   };
+  const render = () => renderKeepingFocus(el, draw);
   actions.refreshLayerMenu = render;
   document.addEventListener('click', (e) => {
     if (store.get().ui.layerMenu && !e.target.closest('.layer-popover, .layer-edit, .tab.active'))

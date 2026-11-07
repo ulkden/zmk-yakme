@@ -1,5 +1,5 @@
 // Bottom status bar: layout choice, key count, warnings and the app version.
-import { h, replace } from './dom.js';
+import { h, replace, renderKeepingFocus } from './dom.js';
 import { activeLayout, keyCount } from '../core/state.js';
 import { validate } from '../core/validate.js';
 import { versionLink } from './version.js';
@@ -46,7 +46,7 @@ export function mountStatus(el, store, actions) {
     restore: () => ((dismissed = new Set()), (open = true), render()),
     clear: (texts) => ((dismissed = new Set(texts)), (open = false), render()),
   };
-  const render = () => {
+  const draw = () => {
     const s = store.get();
     const layout = activeLayout(s);
     if (!s.keymap) {
@@ -67,7 +67,7 @@ export function mountStatus(el, store, actions) {
       s.layouts.length > 1
         ? h(
             'select',
-            { onchange: (e) => actions.selectLayout(Number(e.target.value)) },
+            { name: 'layout', onchange: (e) => actions.selectLayout(Number(e.target.value)) },
             s.layouts.map((l, i) => h('option', { value: i, selected: i === s.layoutIndex }, l.name)),
           )
         : h('span', {}, layout?.name ?? 'No layout'),
@@ -101,6 +101,7 @@ export function mountStatus(el, store, actions) {
         : null,
     );
   };
+  const render = () => renderKeepingFocus(el, draw);
   store.subscribe(render);
   render();
 }

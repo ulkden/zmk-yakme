@@ -23,6 +23,7 @@
   --muted: #858d99;
   --accent: #7aa2f7;
   --accent-dim: rgba(122, 162, 247, 0.16);
+  --focus: #e8ecf2;
   --warn: #e0b562;
   --warn-dim: rgba(224, 181, 98, 0.35);
   --warn-pulse: rgba(224, 181, 98, 0.6);
@@ -116,12 +117,48 @@ textarea {
   padding: 5px 8px;
   min-width: 0;
 }
-input:focus,
-select:focus,
-textarea:focus,
-button:focus-visible {
-  outline: 1px solid var(--accent);
-  outline-offset: 0;
+/* Keyboard focus: a light ring with a gap (ASSUMPTIONS.md #36). It is the only light outline in the
+   app, so focus never looks like the blue selection, and a selected key with focus shows both. */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+/* A skip link can focus a whole region (an empty side panel); its ring stays inside the window. */
+.skip-region:focus-visible {
+  outline-offset: -4px;
+}
+
+/* Visible to screen readers only. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip links: off-screen until reached with Tab, then shown at the top left. */
+.skip-links a {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 8px 14px;
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transform: translateY(-200%);
+}
+.skip-links a:focus {
+  transform: none;
+}
+body.empty .skip-links {
+  display: none;
 }
 
 .muted {
